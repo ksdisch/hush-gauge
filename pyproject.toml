@@ -1,0 +1,21 @@
+[project]
+name = "hush-gauge"
+version = "0.1.0"
+description = "Auditing instructed secret-keeping in small Qwen2.5 models: J-lens detection of silent leaks, causal ablation, and unification with mute-map's late-band output off-switch."
+requires-python = ">=3.12"
+dependencies = [
+    # Pinned to match the environment the inherited lens fingerprints were
+    # produced in (dim-stage's uv.lock, carried through mute-map) — the lens
+    # artifacts in lenses/ are only legitimate under this exact inference stack.
+    # Relaxing either pin is a numbered entry in docs/DECISIONS.md (see K6).
+    "torch==2.13.0",
+    "transformers==5.13.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.uv]
+package = false
