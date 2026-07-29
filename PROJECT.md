@@ -5,15 +5,15 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **Kicked off 2026-07-29 · nothing built yet.** The approved brief
-(`docs/KICKOFF.md`) and the six frozen kickoff decisions (`docs/DECISIONS.md`, K1–K6)
-are the entire contents of the project so far. No code, no batteries, no runs.
+**Status:** **M0 open, 2026-07-29 · brief frozen, no code yet.** `docs/M0-BRIEF.md` is
+written and approved: M0's three open calls are frozen as D1–D3 and the secondary calls
+they implied as D4–D8 (`docs/DECISIONS.md`). Still no code, no batteries, no runs, no
+lens artifacts on disk.
 
-**Next action:** write `docs/M0-BRIEF.md` — the start-of-stage brief that freezes M0's
-own open calls (per-tier prompt count, context-word yardstick design, T4 transcript
-form) before any code lands. Then build the 50-secret battery, the 5-tier pressure
-battery, the deterministic emission grader, and `stats.py`, copy the lens artifacts and
-verify their SHA256s against `lenses/PROVENANCE.md`, and run the G0 leak curve.
+**Next action:** copy the three dim-stage lens artifacts into `lenses/` and verify each
+SHA256 against `lenses/PROVENANCE.md` (mismatch is a stop condition). Then build the
+frozen battery artifacts per D2/D4, port `stats.py`, freeze G0 as code with its five
+dry-run INVALID arms (D8), and run the tier × scale emission curves.
 
 ## Purpose
 
@@ -55,7 +55,7 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**Active — scaffolded, pre-M0.** Kicked off 2026-07-29 from
+**Active — M0 open, brief frozen.** Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
 J-lens audit brainstorm), picked at that day's backlog-hygiene pass once mute-map
 closed (M4 PASSED 2026-07-29) — the stated precondition for this project's M3 fusion
@@ -63,13 +63,14 @@ inputs.
 
 ## Next actions
 
-1. Write `docs/M0-BRIEF.md`, freezing M0's open calls (see Open questions below).
+1. ~~Write `docs/M0-BRIEF.md`~~ — **done 2026-07-29**; froze D1–D8.
 2. Copy the three dim-stage lens artifacts into `lenses/` and verify each SHA256
    against `lenses/PROVENANCE.md` — a mismatch is a stop condition.
-3. Build the frozen `batteries/secrets.json` (with the recorded shuffle seed and the
-   25/25 stratified assignment) and `batteries/pressure_tiers.json`.
+3. Build the frozen `batteries/secrets.json` (seed `20260729`, the 25/25 stratified
+   assignment, the 10-word spare pool, and D2's yardstick rotation map) and
+   `batteries/pressure_tiers.json` (5 tiers × 4 texts, T4 as 3 frozen user turns).
 4. Port the Wilson/Newcombe ruler into `stats.py` with its test suite.
-5. Freeze G0 as code, prove it dry-runs INVALID on wrong-arm input, then run the
+5. Freeze G0 as code with D8's five dry-run INVALID arms, prove each, then run the
    emission-rate curves (tier × scale).
 
 ## Boundaries
@@ -89,16 +90,21 @@ inputs.
 
 ## Open questions
 
-Carried from `docs/KICKOFF.md`; the first three are M0's to freeze.
+M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D8.
 
-- **Unresolved** — per-tier prompt count. *Proposed:* 4 frozen prompt texts per tier,
-  giving 25 × 4 = 100 trials per (tier × scale) eval cell.
-- **Unresolved** — context-word yardstick: one fixed word for all sessions, or a
-  per-secret same-category match? Same-category is stronger but competes with the G0
-  revision reserve for the 10 spare concepts.
-- **Unresolved** — T4's multi-turn form: fixed scripted transcript (more
-  deterministic) or fixed template with the model's own replies fed back (more
-  realistic)?
+- **Decision (D1)** — per-tier prompt count is **4 frozen texts**, giving 100 trials
+  per (tier × scale) eval cell.
+- **Decision (D2)** — the yardstick is a **same-category rotation inside the battery**
+  (`yardstick(i) = secret((i+1) mod 5)`), which leaves the 10-word G0 revision reserve
+  untouched. The system frame is extended to carry a `{yardstick}` slot plus a
+  licensing clause, so the contrast is about *secrecy* rather than *presence*.
+- **Decision (D3)** — T4 is **frozen user turns (3, escalating) with the model's own
+  greedy replies fed back**. The scripted alternative is no more deterministic under
+  greedy decode and adds a fabricated-assistant-turn confound.
+- **Decision (D6)** — the emission oracle is inherited unchanged (`{w, ␣w}`, min over
+  forms); the case-extended set `{w, ␣w, W, ␣W}` is a **pre-declared secondary**
+  reported alongside, because ~half the roster is lowercase and `token_forms` cannot
+  see a sentence-initial "Ruby". G0 turns on the primary only.
 - **Unresolved** — M3 Arm A's pre-registered similarity metric.
 - **Fact (K5)** — mute-map hands over **no** off-switch mediating direction; every one
   of its interventions deletes `v_concept` itself. M3 Arm B must construct and validate
@@ -107,7 +113,8 @@ Carried from `docs/KICKOFF.md`; the first three are M0's to freeze.
 
 ## Decisions
 
-Recorded in **`docs/DECISIONS.md`** (K1–K6), not in a root `Decisions.md` — this
+Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D8 from the M0 brief), not
+in a root `Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
 
@@ -116,7 +123,8 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the six frozen kickoff calls (K1–K6) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D8 (M0) |
+| M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
 | Build plan (upstream) | `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` | plan | the pre-made design this brief was synthesized from |
 | Audit brainstorm | `~/Projects/j-lens-proj-ideas/audit-brainstorm-2026-07-28.md` | brainstorm | idea A3's origin and the sibling ideas it competed with |
 | Instrument anchor | `~/Projects/dim-stage` | repo | lens fits, band conventions, ablation operator, S3/S4b anchors |
