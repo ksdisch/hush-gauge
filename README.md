@@ -66,8 +66,10 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
 - **`docs/M0-BRIEF.md`** — M0's start-of-stage brief: its frozen decisions, the
   design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D13** (M0). Read **D12/D13 before D10/D11** —
+  bars and the battery/split design) and **D1–D14** (M0). Read **D12/D13 before D10/D11** —
   the older two say why the oracle's boundary rule exists, the newer two say what it does.
+- **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that
+  bound how they may be read.
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 

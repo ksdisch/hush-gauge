@@ -20,8 +20,18 @@ _Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1
   and `pressure_tiers.json`, `stats.py` (ported), `gates/g0.py` with its `INVALID` arms, and
   `m0_leak_curve.py`. Plus `oracle.py` and `encode.py` before them.
 - **Froze `D12`, `D13` and `D14`** — every one forced by evidence, not preference. See below.
-- **Ran the `adversarial-review` loop on all three PRs: 13 rounds, 47 findings, 0 disputes,
-  0 waived.** Every `critical` and `should-fix` fixed and independently re-verified.
+- **Ran the `adversarial-review` loop on every PR — four loops, 16 rounds, zero disputed
+  findings.** The per-finding record is in `~/.claude/reviews/hush-gauge/` (four mailboxes);
+  no count is restated here, because restating one is how `F1` and `F7` both happened.
+  Two things that must not be smoothed over:
+  - **PR #1 (the M0 brief) merged `NOT CLEAR` under Kyle's explicit verification waiver** —
+    ten findings, including a `critical`, were never independently re-verified. That is the
+    residue this session discharged. "0 waived" is true of PRs #2–#4 only.
+  - **Each loop's final round of fixes has, by construction, no successor round to verify
+    it.** Every `critical` and `should-fix` was *fixed*; those landed in a loop's last round
+    are fixed-and-unverified, and the mailbox `Status:` line is the authority per finding.
+    **Do not read "fixed" as "verified"** — that conflation is what cost this project a round
+    in PR #1, and an earlier draft of this very bullet made it again.
 
 ### The three results caveats that matter more than the headline
 
@@ -235,32 +245,39 @@ artifact in the tree, while the conclusion they support is test-pinned).
 
 ## Files touched recently
 
-- `oracle.py` — **new**; the emission oracle (`D6`/`D10`/`D11` as corrected by `D12`/`D13`).
-- `encode.py` — **new**; `D2`'s byte-frozen system frame and the owned multi-turn chat encoder
-  (the one departure from `mute-map/harness.py:64`).
-- `roster.py` — **new**; the 60-word roster, `forbidden_forms` and the 12 M3 primes, copied
-  from mute-map per K2.
-- `tests/test_oracle.py`, `tests/test_encode.py`, `tests/conftest.py` — **new**; 345 tests.
-- `tests/fixtures/real_replies_0.5b.json` + `tests/capture_reply_fixture.py` — **new**; 180
-  committed greedy replies, so the suite tests real model output rather than only
-  hand-written reveal formats. This is the axis `D13` came in on.
-- `docs/M0-BRIEF.md` — `D12` and `D13` added; `D6`/`D9b`/`D10`/`D11` annotated where
-  superseded; `D8`'s field contract extended with the new counters.
-- `docs/DECISIONS.md` — `K1`–`K6` plus `D1`–`D13`.
-- `CLAUDE.md` — oracle conventions rewritten for `D12`/`D13`, with a never-reintroduce list.
+**M0's full deliverable set** (three merged PRs — #2 oracle, #3 artifacts + gate + runner,
+#4 results):
+
+- `oracle.py` — the emission oracle (`D6`/`D10`/`D11` as corrected by `D12`/`D13`).
+- `encode.py` — `D2`'s byte-frozen system frame and the owned multi-turn chat encoder.
+- `roster.py` — the 60-word roster, `forbidden_forms`, the 12 M3 primes, copied per `K2`.
+- `battery.py` + `build_batteries.py` — `D4`'s selection and both asserting loaders.
+- `batteries/secrets.json` (`f839ebcb…`), `batteries/pressure_tiers.json` (`d9220481…`) —
+  the two frozen artifacts.
+- `stats.py` — the Wilson/Newcombe ruler, **ported verbatim** from mute-map.
+- `gates/g0.py` — G0 frozen as code; `GATE_WORDING` byte-identical to `M0-BRIEF.md` §D8.
+- `m0_leak_curve.py` — the sweep.
+- `results/m0-leak-curve-qwen2.5-{0.5b,1.5b,3b}-instruct.json` — the three curves.
+- `docs/M0-RESULTS.md` — **new**; G0 decided, the full curves, and the three caveats.
+- `tests/` — `test_oracle.py`, `test_encode.py`, `test_battery.py`, `test_stats.py`,
+  `test_g0.py`, `conftest.py`, `capture_reply_fixture.py`,
+  `fixtures/real_replies_0.5b.json`. **412 tests.**
+- `docs/M0-BRIEF.md` / `docs/DECISIONS.md` — `D12`, `D13`, `D14` added; superseded passages
+  annotated in place, never rewritten.
+- `CLAUDE.md`, `README.md`, `PROJECT.md`, `HANDOFF.md` — propagated.
 - `lenses/PROVENANCE.md` — restated as **verified** (2026-07-30, dim-stage `43ff405`).
-- `pyproject.toml` — `pyarrow` dev dep (reads the cached WikiText parquet without pulling
-  `datasets`, so K6's pins stay untouched) and `pythonpath = ["."]`.
-- `docs/KICKOFF.md` — the approved brief; still source of truth for scope, gates, risks.
-- `PROJECT.md` / `HANDOFF.md` — this wiki.
 
 ---
 
 **Run-config note:** the next session starts fresh from `docs/M0-BRIEF.md` (with
-`docs/KICKOFF.md` for scope, and `D12`/`D13` read before `D10`/`D11`). Recommended model +
-effort: **Opus 5 at high** — every design call is frozen and the oracle is built and verified,
-so what remains is well-specified build work with ordinary judgment in it. Launch:
-`claude --model claude-opus-5 --effort high`. Two escalation rules: if G0 fails in a way that
+`docs/KICKOFF.md` for scope, and `D12`/`D13`/`D14` read before `D10`/`D11`). **M0 is closed —
+the next session opens M1 with `docs/M1-BRIEF.md`, freezing its decisions before any run.**
+Recommended model + effort: **Fable 5 at xhigh** — writing a start-of-stage brief is
+judgment-first work with real tradeoffs (which cells carry signal on a saturated battery, how
+to size G2's population, the four FP baselines), not well-specified build work. Launch:
+`claude --model claude-fable-5 --effort xhigh`. The *build* that follows M1's brief is Opus 5
+at high. Launch:
+Two standing rules: if G0 fails in a way that
 questions the battery design rather than the models, bounce the revision decision to a Fable 5
 session rather than escalating effort in the build session; and if a review round turns up
 another oracle-class defect, that is a design question too, not a patch.

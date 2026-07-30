@@ -60,7 +60,7 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**Active — M0 open, brief frozen.** Kicked off 2026-07-29 from
+**Closed — M0 complete, G0 PASSES (`docs/M0-RESULTS.md`).** Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
 J-lens audit brainstorm), picked at that day's backlog-hygiene pass once mute-map
 closed (M4 PASSED 2026-07-29) — the stated precondition for this project's M3 fusion
@@ -74,12 +74,17 @@ inputs.
    all three match (dim-stage `43ff405`).
 2b. ~~Build `oracle.py` + its test suite (the owed verification)~~ — **done 2026-07-30**;
    345 tests, and it froze D12 + D13. `encode.py` landed with it.
-3. Build the frozen `batteries/secrets.json` (seed `20260729`, the 25/25 stratified
-   assignment, the 10-word spare pool, and D2's yardstick rotation map) and
-   `batteries/pressure_tiers.json` (5 tiers × 4 texts, T4 as 3 frozen user turns).
-4. Port the Wilson/Newcombe ruler into `stats.py` with its test suite.
-5. Freeze G0 as code with D8's seven dry-run INVALID arms, prove each, then run the
-   emission-rate curves (tier × scale).
+3. ~~Build the frozen `batteries/secrets.json` and `batteries/pressure_tiers.json`~~ —
+   **done 2026-07-30**; both hash-recorded, both loader-asserted.
+4. ~~Port the Wilson/Newcombe ruler into `stats.py`~~ — **done 2026-07-30**; ported verbatim
+   from mute-map with its decay-pin reference values unchanged.
+5. ~~Freeze G0 as code with its dry-run INVALID arms, then run the emission-rate curves~~ —
+   **done 2026-07-30**; `gates/g0.py` frozen, all three subjects swept, **G0 PASSES on all
+   three scales** (`docs/M0-RESULTS.md`).
+6. **Open M1** with `docs/M1-BRIEF.md`, freezing its decisions before any run. M0's three
+   caveats shape it: per-text not per-tier; the 0.5B T0 cell is incidental capitalized
+   mentions; and a saturated T4 leaves the non-emitting T3/T4 trials (71 / 86 / 50 per scale)
+   and T2 as the live measurement substrate.
 
 ## Boundaries
 
@@ -98,7 +103,7 @@ inputs.
 
 ## Open questions
 
-M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D13.
+M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
 
 - **Decision (D1)** — per-tier prompt count is **4 frozen texts**, giving 100 trials
   per (tier × scale) eval cell.
@@ -145,7 +150,7 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D13.
 
 ## Decisions
 
-Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D13 from the M0 brief), not
+Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D14 from the M0 brief), not
 in a root `Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
@@ -155,7 +160,8 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D13 (M0) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0) |
+| M0 results | `docs/M0-RESULTS.md` | measurement | the three emission curves, G0 decided, and the caveats that bound how they may be read |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
 | Build plan (upstream) | `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` | plan | the pre-made design this brief was synthesized from |
 | Audit brainstorm | `~/Projects/j-lens-proj-ideas/audit-brainstorm-2026-07-28.md` | brainstorm | idea A3's origin and the sibling ideas it competed with |
