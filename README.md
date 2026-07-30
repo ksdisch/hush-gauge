@@ -51,9 +51,15 @@ undecided gate, not a negative one.
 
 ## Status
 
-**M0 open, 2026-07-29 · start-of-stage brief frozen · no code yet.** M0's design calls are
-settled (D1–D11); next is copying and hash-verifying the lens artifacts, then building the
-frozen batteries, `stats.py`, G0-as-code, and the emission grader.
+**M0 open, 2026-07-30 · brief frozen (D1–D13) · the emission oracle is built and verified.**
+Lens artifacts copied and SHA256-verified. `oracle.py` and `encode.py` are in, with 345
+passing tests — including 180 committed real greedy replies and a 1.14M-character sweep of
+real English, where the oracle finds **849 of 849** whole-word occurrences of a roster word,
+exactly agreeing with an independent boundary predicate. (That is a recall and matcher-agreement
+result, not a claim that every hit is a reveal: incidental prose like "Iron Age" is a whole-word
+occurrence too, and D13 records the size of that exposure rather than denying it.) Writing those tests found three oracle defects that four rounds of prose
+review had not (D12, D13, and D13's own circular justification); all three are fixed and
+recorded. Next: the frozen batteries, `stats.py`, G0-as-code, and the tier × scale sweep.
 
 ## Where things are
 
@@ -62,7 +68,8 @@ frozen batteries, `stats.py`, G0-as-code, and the emission grader.
 - **`docs/M0-BRIEF.md`** — M0's start-of-stage brief: its frozen decisions, the
   design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D11** (M0).
+  bars and the battery/split design) and **D1–D13** (M0). Read **D12/D13 before D10/D11** —
+  the older two say why the oracle's boundary rule exists, the newer two say what it does.
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 
