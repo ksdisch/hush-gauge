@@ -604,6 +604,37 @@ and exactly why `GATE_WORDING` pre-declares a saturated 0.5B curve as reportable
 rather than failure. It says nothing about T0-vs-T4 range — these probes are not the frozen
 battery.
 
+## D14 — How D8's arm 1 reads, and the recomputation that gives it teeth
+
+**Decided 2026-07-30**, on a `critical` from PR #3's adversarial review. `D8` is internally
+ambiguous: its field contract says a trial's `split` may be `"calibration"`, while arm 1 makes
+calibration trials `INVALID`. The two readings disagree about whether the first real run
+certifies at all — under the strict reading `gates/g0.py` would have exited 2 on the documented
+invocation.
+
+`D7` settles it: M0 sweeps **all 50** secrets in one run because M1 needs the calibration half
+regardless. So the payload legitimately carries all 50, and **arm 1 is about what the gate
+decides on, not what the payload contains**.
+
+**The rule** (normative text: `M0-BRIEF.md` §D14, per the single-source note under `D10`): the
+gate verifies every trial's `split` against the frozen battery, then **recomputes every reported
+rate from the held-out eval trials** and refuses any that does not reproduce.
+
+**Why recomputation.** The same review found the gate validating trials and then deciding from
+caller-supplied aggregates without cross-checking — a payload whose 25 held-out trials all said
+`emitted: false` PASSed on hand-edited `hits`. A gate that trusts the numbers it is handed is
+not a gate. Recomputation closes that and makes arm 1 real at once.
+
+**How it survived its own suite.** The arms were proven against a fixture built by the runner's
+own `build_payload`, with one line filtering it to `split == "eval"` while the docstring claimed
+it was "the shape the real sweep emits". Green suite, broken gate: exactly the hollow dry-run
+`D8` exists to prevent, produced by the test written to prevent it. The fixture is now the
+runner's unmodified output.
+
+**Arm 2 is unreachable by construction, owned rather than papered over.** `DECISION_PAIR` is a
+module constant with no input channel, so no payload can ask G0 to decide a different pair. That
+is a stronger guarantee than a runtime arm, but "all seven proven" is one short of literal.
+
 ## D9 — Two corrections the M0 pre-merge review surfaced
 
 **Recorded 2026-07-29** (findings, not choices — logged because the artifacts depend on

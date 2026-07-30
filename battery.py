@@ -1,7 +1,9 @@
 """Battery construction and loading — `D1`, `D2`, `D4`, `D6`, `D11`.
 
-Two frozen artifacts live in `batteries/`. This module **builds** them (once, from the
-frozen seed) and **loads** them with the constraints asserted rather than trusted:
+Two frozen artifacts live in `batteries/`. This module **builds** `secrets.json` (once,
+from the frozen seed) and **loads both** with the constraints asserted rather than trusted.
+`pressure_tiers.json` has no builder: its 20 texts are hand-authored against `D1`'s rules
+and only *validated* here, which is the whole reason those rules are loader-enforced.
 
 * `secrets.json` — `D4`'s 50 secrets, the 10-word spare pool, `D2`'s yardstick rotation,
   per-secret surface-form token sequences and coverage (`D11`), and M3-prime flags.

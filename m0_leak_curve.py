@@ -45,16 +45,23 @@ def rate_cell(k: int, n: int) -> dict:
             "wilson_95": [lo, hi], "underpowered": n < MIN_N}
 
 
+def pad_id(tokenizer) -> int:
+    """`F9`: `pad or eos` is a truthiness test, so a tokenizer whose pad id is legitimately
+    `0` would silently use the eos id. Not live for Qwen2.5, but `--subject` is free-form and
+    the runner is frozen after certification."""
+    return tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id
+
+
 def generate(model, tokenizer, prompt_ids) -> tuple[list[int], bool]:
     """One greedy turn (`D5`). Returns the generated ids and whether the turn was cut off
     by `max_new_tokens` rather than stopping on its own — `D10`'s indeterminate case turns
     on exactly that distinction."""
     with torch.no_grad():
         out = model.generate(
-            prompt_ids,
+            prompt_ids.to(model.device),
             max_new_tokens=MAX_NEW_TOKENS,
             do_sample=False,
-            pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+            pad_token_id=pad_id(tokenizer),
         )
     generated = out[0, prompt_ids.shape[1] :].tolist()
     truncated = len(generated) >= MAX_NEW_TOKENS and generated[-1] not in tokenizer.all_special_ids
@@ -75,7 +82,12 @@ def run_trial(model, tokenizer, secret: str, yardstick: str, turns: list[str]) -
         generated, truncated = generate(model, tokenizer, prompt_ids)
         turn = oracle.decode_turn(generated, tokenizer, truncated=truncated)
         decoded.append(turn)
-        history.append(("assistant", turn.text))
+        # `F3`: feed back the reply **without special tokens**. `turn.text` keeps them,
+        # deliberately — `D10`'s right boundary reads the stop token, which is how a reply
+        # that ends on the secret because the model chose to stop still counts. But putting
+        # that same text into a chat message doubles `<|im_end|>` in every T4 turn-2/3
+        # prompt, which changes the input the T4 arm of G0's decision is measured on.
+        history.append(("assistant", tokenizer.decode(generated, skip_special_tokens=True)))
 
     primary = oracle.score_turns(decoded, secret)
     # `D3`: the mandatory exposure-matched companion — the same trial, re-scored over the
@@ -163,6 +175,7 @@ def build_payload(subject: str, trials: list[dict], elapsed: float) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--subject", required=True)
+    parser.add_argument("--device", default="auto", choices=("auto", "mps", "cpu"))
     parser.add_argument("--limit", type=int, default=None,
                         help="smoke-test only: cap the number of secrets swept")
     args = parser.parse_args()
@@ -175,6 +188,13 @@ def main() -> int:
     tokenizer = AutoTokenizer.from_pretrained(args.subject)
     model = AutoModelForCausalLM.from_pretrained(args.subject, dtype=torch.float32)
     model.eval()
+    # `K6`'s environment is local MPS at fp32 (the lens fits were produced there), and the
+    # brief's ~2.5h cost model assumes it. Silently running on CPU is a different machine.
+    device = args.device
+    if device == "auto":
+        device = "mps" if torch.backends.mps.is_available() else "cpu"
+    model.to(device)
+    print(f"subject {args.subject} on {device} ({model.dtype})", flush=True)
 
     started = time.time()
     trials = []

@@ -707,6 +707,48 @@ secret at all) showing up before M0's first real run, and it is exactly why `GAT
 pre-declares that a saturated curve at 0.5B alone is reportable texture rather than failure.
 It is not evidence about T0-vs-T4 range — these probes are not the frozen battery.
 
+### D14 — How `D8`'s arm 1 reads, and the recomputation that gives it teeth
+
+**Decided 2026-07-30**, on a `critical` from PR #3's adversarial review. `D8` is internally
+ambiguous about calibration trials and the two readings disagree about whether the first real
+run certifies at all:
+
+- The field contract says `split` may be `"calibration"` — so the payload carries them.
+- Arm 1 says "trials from the calibration split" are `INVALID` — so the payload must not.
+
+`D7` settles which is right: **M0 sweeps all 50 secrets in one run** because G0 needs only
+the eval half but *M1 needs the calibration half regardless, and it is the same overnight
+job*. A result JSON that dropped the calibration trials would throw away half of what the
+run exists to produce. So the payload legitimately carries all 50, and arm 1 is about what
+the gate **decides on**, not about what the payload contains.
+
+**The rule.** `gates/g0.py` accepts a payload containing all 50 secrets' trials, verifies
+every trial's `split` label against the frozen battery (so a mislabelled trial cannot move a
+secret between halves), and then **recomputes every reported rate from the held-out eval
+trials**. A reported rate that does not reproduce is `INVALID`, naming the cell and both
+numbers.
+
+**Why recomputation rather than a label check.** The review found the gate validating the
+trials and then deciding entirely from the caller's aggregates, never cross-checking: a
+payload whose 25 held-out trials *all* said `emitted: false` passed with hand-edited `hits`.
+A gate that trusts the numbers it is handed is not a gate. Recomputation closes that and
+makes arm 1 real in the same stroke — a cell computed over the calibration half, or over all
+50, simply does not reproduce.
+
+**How the defect survived its own test suite, which is the part worth remembering.** The
+arms were "proven" against a fixture built by the runner's own `build_payload` — and then one
+line filtered it to `split == "eval"`, while the fixture's docstring claimed it was "the
+shape the real sweep emits". So the gate would have exited 2 on the first real sweep, and the
+suite was green. That is precisely the hollow dry-run `D8` exists to prevent, produced by the
+test that exists to prevent it. The fixture is now the runner's unmodified output.
+
+**Arm 2 is unreachable by construction — owned, not papered over.** `D8` lists "a decision
+pair other than T4-vs-T0" as an arm. `DECISION_PAIR` is a module constant with no input
+channel, so no payload can ask for another pair. The hardcoded constant is a *stronger*
+guarantee than a runtime check, but "all seven arms proven" is one arm short of literal, and
+the honest statement is this one. The remaining six are proven against the runner's real
+output shape.
+
 ### D9 — Two corrections the M0 review surfaced
 
 `D9` records two facts that invalidate claims made upstream. Both were found by the
@@ -907,7 +949,7 @@ therefore emit, and `gates/g0.py` must read:
 |---|---|---|
 | `battery_sha256` | run | SHA256 of `batteries/secrets.json` as loaded |
 | `tiers_sha256` | run | SHA256 of `batteries/pressure_tiers.json` as loaded |
-| `split` | trial | `"calibration"` \| `"eval"` |
+| `split` | trial | `"calibration"` \| `"eval"` — the payload carries **all 50** (`D7`); the gate verifies each label against the frozen battery and decides only on the eval half, enforced by recomputation (`D14`) |
 | `tier` | **trial** | `"T0"`…`"T4"` only — a trial belongs to exactly one tier |
 | `cell` | **cell** | `"T0"`…`"T4"`, plus `"T4_turn1"` — `T4_turn1` is a *re-scoring of the same T4 trials* over a position subset, so it is a cell label and can never be a trial's `tier` |
 | `oracle` | count | `"primary"` \| `"case_extended"` — equal sets under `D13`; the label is kept so `D8`'s INVALID arm stays checkable |

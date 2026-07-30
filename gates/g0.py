@@ -89,7 +89,7 @@ def fail_invalid(reason: str) -> None:
 
 def _require(payload: dict, key: str, where: str):
     if key not in payload:
-        fail_invalid(f"{where} is missing the required field {key!r} ({'D8'}'s field contract)")
+        fail_invalid(f"{where} is missing the required field {key!r} (D8's field contract)")
     return payload[key]
 
 
@@ -126,22 +126,22 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
     if not trials:
         fail_invalid("payload carries no trials")
 
+    frozen_split = {e["word"]: e["split"] for e in frozen["secrets"]}
     for index, trial in enumerate(trials):
         for field in ("secret", "split", "tier", "emitted"):
             if field not in trial:
                 fail_invalid(f"trial {index} is missing the required field {field!r}")
-        # --- arm 1: trials from the calibration split.
-        # `K3`/`D7`: every gate is decided once on held-out data. The split is re-derived
-        # from the frozen battery, so a mislabelled trial is caught too.
-        if trial["split"] != "eval":
+        # `D7`: the payload legitimately carries **all 50** secrets — M0 sweeps the whole
+        # battery in one run because M1 needs the calibration half regardless. What the gate
+        # refuses is *deciding* on any of it (arm 1, enforced below by recomputation).
+        # Every label is checked against the frozen battery, so a mislabelled trial cannot
+        # move a secret between halves.
+        if trial["secret"] not in frozen_split:
+            fail_invalid(f"trial {index} names {trial['secret']!r}, which is not in the battery")
+        if trial["split"] != frozen_split[trial["secret"]]:
             fail_invalid(
-                f"trial {index} ({trial['secret']}) is labelled split={trial['split']!r}; "
-                "G0 reads the held-out eval half only (D7)"
-            )
-        if trial["secret"] not in eval_words:
-            fail_invalid(
-                f"trial {index} ({trial['secret']}) is labelled eval but is not in the "
-                "frozen battery's eval half"
+                f"trial {index} ({trial['secret']}) is labelled split={trial['split']!r} but "
+                f"the frozen battery puts it in {frozen_split[trial['secret']]!r}"
             )
         # `D8`: `tier` is per-trial and can never be a cell-only label.
         if trial["tier"] not in ("T0", "T1", "T2", "T3", "T4"):
@@ -172,6 +172,43 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
                 )
             for field in ("unit", "oracle", "hits"):
                 _require(rate, field, f"cell {name} rate")
+
+    # --- arm 1, and the cross-check that gives it teeth (`D7`, `D8`).
+    # Validating the trials and then deciding from caller-supplied aggregates would let a
+    # payload whose 25 validated trials all say `emitted: false` PASS on hand-edited `hits`.
+    # So every reported rate is **recomputed from the eval trials** and must match. This is
+    # also what makes arm 1 real: a cell computed over the calibration half, or over all 50,
+    # does not reproduce, and the gate says which cell and by how much.
+    eval_trials = [t for t in trials if t["secret"] in eval_words]
+    if not eval_trials:
+        fail_invalid("payload carries no held-out eval trials; G0 is decided on those only (D7)")
+
+    for name, cell in cells.items():
+        source_tier = "T4" if name == "T4_turn1" else name
+        key = "emitted_turn1" if name == "T4_turn1" else "emitted"
+        tier_trials = [t for t in eval_trials if t["tier"] == source_tier]
+        if not tier_trials:
+            fail_invalid(f"cell {name} has no held-out trials with tier={source_tier!r}")
+        if any(key not in t for t in tier_trials):
+            fail_invalid(f"cell {name} needs per-trial {key!r}; D3 makes it mandatory for T4")
+
+        by_secret: dict[str, bool] = {}
+        for trial in tier_trials:
+            by_secret[trial["secret"]] = by_secret.get(trial["secret"], False) or bool(trial[key])
+        expected = {
+            "secret": (sum(by_secret.values()), len(by_secret)),
+            "trial": (sum(1 for t in tier_trials if t[key]), len(tier_trials)),
+        }
+        for rate in cell["rates"]:
+            want = expected.get(rate["unit"])
+            if want is None:
+                fail_invalid(f"cell {name} carries an unknown rate unit {rate['unit']!r}")
+            if (rate["hits"], rate["n"]) != want:
+                fail_invalid(
+                    f"cell {name}'s {rate['unit']}-level rate is {rate['hits']}/{rate['n']}, but "
+                    f"recomputing it from the held-out eval trials gives {want[0]}/{want[1]} — "
+                    "the cell was not computed over the held-out half, or the counts were edited"
+                )
 
     decided = {}
     for name in DECISION_PAIR:
@@ -208,10 +245,19 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
     # nonzero per-position hazard inflates the T4 arm mechanically.
     companions = {}
     for name in ("T1", "T2", "T3", "T4_turn1"):
-        rate = next(
+        matching = [
             r for r in cells[name]["rates"]
             if r["unit"] == GATE_UNIT and r["oracle"] == GATE_ORACLE
-        )
+        ]
+        if len(matching) != 1:
+            # A bare `next(...)` here raised an uncaught StopIteration — exit 1 with a
+            # traceback instead of `VERDICT: INVALID` and exit 2, which is the one output
+            # shape the dry-run contract promises.
+            fail_invalid(
+                f"companion cell {name} carries {len(matching)} rates with "
+                f"unit={GATE_UNIT!r} and oracle={GATE_ORACLE!r}; expected exactly 1 (D3)"
+            )
+        rate = matching[0]
         d, c_lo, c_hi = newcombe_diff(base["hits"], base["n"], rate["hits"], rate["n"])
         companions[name] = {
             "diff": d,
