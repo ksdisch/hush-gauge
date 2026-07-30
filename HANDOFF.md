@@ -31,6 +31,36 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
   Wilson/Newcombe trio, `rate_cell`, the roster + derivative test, thirds, the dose
   operator) and the one departure: `mute-map`'s `encode_chat` is single-user-turn only,
   so M0 writes its own system+multi-turn encoder.
+- **Ran the `adversarial-review` loop on the brief and fixed what it found.** Nine
+  findings, zero disputes — all nine were correct, and two were design defects that would
+  have shipped into frozen artifacts:
+  - **D9a (from F1)** — `K2`'s "12 M3 primes guaranteed inside the battery" is
+    **unsatisfiable**: all six `countries` roster words are mute-map primes, so 6 cannot
+    fit 5 slots. Corrected to a guaranteed floor of **11 of 12** via a new `D4`
+    constraint; `Egypt` is the forced loss. M3 Arm A gets 11 matched concepts — known now
+    instead of discovered after the battery froze.
+  - **D9b (from F3)** — **`opal` is unusable as a secret.** It is the only roster word
+    with no leading-space single-token form, so the primary oracle would be blind to a
+    mid-sentence leak of it: a false negative indistinguishable from successful secrecy.
+    Pinned as the gemstones spare; `jade` takes the slot.
+  - **F2** — T4 scores **≤192 output positions against T0's 64**, while `GATE_WORDING`
+    froze G0 as exactly `T4 − T0`. The gate was confounded with an asymmetry the brief
+    introduced itself. Now controlled by a pre-declared **T4-turn-1** companion rate
+    (free — same trials, re-scored), the T1/T2/T3-vs-T0 contrasts named as the
+    exposure-matched evidence, and an `EXPOSURE-CONFOUNDED` reporting rule inside
+    `GATE_WORDING`.
+  - **F4** — the case-extended secondary is *unrepresentable* for `violin`, `trumpet`,
+    `moth`, `mosquito`, so it is reported only over covered secrets with the denominator
+    stated, rather than as one number conflating "no case leak" with "none visible".
+  - **F5** — the 20 tier texts must be **roster-disjoint all-roster** (mute-map's rule is
+    per-item, but these texts are shared by all 50 secrets): no whole-word match against
+    the 60 roster words, or prompt-echo scores as emission under a token-identity oracle;
+    plus the inherited prefix/`forbidden_forms` rule.
+  - **F6–F9** — the frame's uncounterbalanced slot order is now an owned limit rather than
+    an absolute claim; `D1` states that the conservative unit is **25, not 100** and every
+    cell reports both trial- and secret-level rates; `D8` names the result-JSON field
+    contract (`split`, `tier`, `oracle`, `unit`, `battery_sha256`) its INVALID arms need
+    to be checkable against real output; `README.md` status propagated.
 - **Kicked off** via `/kickoff` consuming
   `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
   J-lens audit brainstorm), picked at the 2026-07-29 backlog-hygiene pass once
@@ -54,8 +84,13 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 **M0 open. No code, no batteries, no runs, no lens artifacts on disk yet.** Everything
 that exists is documentation: the approved brief, K1–K6, and now the M0 brief with
-D1–D8. Every design call M0 needs is frozen, so the next step is purely building — the
-next session should not re-open D1–D8 any more than it re-opens K1–K6.
+**D1–D9**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
+is purely building — the next session should not re-open D1–D9 any more than it re-opens
+K1–K6.
+
+**Two numbers to carry forward, because they are easy to get wrong later:** M3 Arm A has
+**11** matched primes, not 12 (D9a), and `opal` is a **spare, not a secret** (D9b). Both
+are consequences of facts about mute-map's roster and Qwen's tokenizer, not preferences.
 
 The instrument is inherited, not built: the lens fits, the band arithmetic
 (`0.38 ≤ l/(n_layers−1) ≤ 0.92`, thirds with late taking the remainder), and the dose
@@ -90,9 +125,11 @@ subjects and the WikiText dataset are already in the HuggingFace cache.
 ## Files touched recently
 
 - `docs/M0-BRIEF.md` — **new**; M0's frozen calls, the design-extraction pre-commit,
-  G0's byte-frozen `GATE_WORDING`, the INVALID arms, and M0's deviations table.
+  G0's byte-frozen `GATE_WORDING`, the INVALID arms and their field contract, and M0's
+  deviations table.
 - `docs/KICKOFF.md` — the approved brief; source of truth for scope, gates, risks.
-- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D8** (M0).
+- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D9** (M0).
+- `README.md` — status propagated to "M0 open"; D1–D9 and the M0 brief listed.
 - `PROJECT.md` / `HANDOFF.md` — this wiki.
 - `README.md` — public-facing framing and the gate table.
 - `CLAUDE.md` — house methodology and inherited instrument facts for every session.

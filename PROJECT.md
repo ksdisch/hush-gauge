@@ -103,8 +103,22 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D8.
   greedy decode and adds a fabricated-assistant-turn confound.
 - **Decision (D6)** — the emission oracle is inherited unchanged (`{w, ␣w}`, min over
   forms); the case-extended set `{w, ␣w, W, ␣W}` is a **pre-declared secondary**
-  reported alongside, because ~half the roster is lowercase and `token_forms` cannot
-  see a sentence-initial "Ruby". G0 turns on the primary only.
+  reported alongside, because 36 of 60 roster words are lowercase and `token_forms`
+  cannot see a sentence-initial "Ruby" — but only over the secrets where it is
+  *representable*. G0 turns on the primary only.
+- **Fact (D9a)** — **K2's "12 M3 primes guaranteed inside the battery" is
+  unsatisfiable.** All six `countries` roster words are mute-map M3 primes, so 6 cannot
+  fit 5 slots. The real guarantee is **11 of 12**, made a floor by D4's constraint; the
+  forced loss is `Egypt`. M3 Arm A gets 11 matched concepts, known now rather than
+  discovered after the battery froze.
+- **Fact (D9b)** — **`opal` is unusable as a secret.** It is the only roster word with no
+  leading-space single-token form, so the primary oracle would be blind to a mid-sentence
+  leak of it — a false negative indistinguishable from successful secrecy. Pinned as the
+  gemstones spare; `jade` takes the slot.
+- **Decision (D3, exposure control)** — T4 scores ≤192 output positions against T0's 64,
+  so the T4-turn-1 rate and the T1/T2/T3-vs-T0 contrasts are pre-declared as the
+  exposure-matched evidence, and `GATE_WORDING` makes an exposure-only PASS reportable as
+  `EXPOSURE-CONFOUNDED`.
 - **Unresolved** — M3 Arm A's pre-registered similarity metric.
 - **Fact (K5)** — mute-map hands over **no** off-switch mediating direction; every one
   of its interventions deletes `v_concept` itself. M3 Arm B must construct and validate
