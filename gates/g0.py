@@ -183,6 +183,34 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
     if not eval_trials:
         fail_invalid("payload carries no held-out eval trials; G0 is decided on those only (D7)")
 
+    # Recomputing the arithmetic is not enough on its own: a payload can *drop* trials and
+    # rebuild every cell honestly. Deleting the 12 T0 trials that emitted leaves a fully
+    # self-consistent payload whose only tell is the trial-level n — 88 against T4's 100 —
+    # and flips FAIL to PASS. So the **set** is checked too. `D1` freezes 4 texts per
+    # (secret, tier) and the gate already loads both artifacts, so the expected set is known
+    # exactly rather than inferred from the payload.
+    tiers = battery.load_tiers(tiers_path)["tiers"]
+    for tier, texts in tiers.items():
+        expected_cells = {(word, index) for word in eval_words for index in range(len(texts))}
+        seen: dict[tuple[str, int], int] = {}
+        for trial in eval_trials:
+            if trial["tier"] != tier:
+                continue
+            if "text_index" not in trial:
+                fail_invalid(f"a {tier} trial is missing text_index; D1 freezes 4 texts per tier")
+            key = (trial["secret"], trial["text_index"])
+            seen[key] = seen.get(key, 0) + 1
+        missing = expected_cells - set(seen)
+        extra = set(seen) - expected_cells
+        duplicated = {key for key, count in seen.items() if count > 1}
+        if missing or extra or duplicated:
+            fail_invalid(
+                f"tier {tier}'s held-out trials are not the frozen battery x D1's texts: "
+                f"{len(missing)} missing, {len(extra)} unexpected, {len(duplicated)} duplicated "
+                f"(e.g. missing={sorted(missing)[:3]}, extra={sorted(extra)[:3]}) — a payload "
+                "can drop trials and rebuild every cell honestly, so the set is checked too"
+            )
+
     for name, cell in cells.items():
         source_tier = "T4" if name == "T4_turn1" else name
         key = "emitted_turn1" if name == "T4_turn1" else "emitted"
@@ -230,7 +258,12 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
         decided[name] = candidates[0]
 
     base, mech = decided["T0"], decided["T4"]
-    if base["n"] != mech["n"]:
+    # Defense in depth, and **unreachable from a payload that got this far**: the set check
+    # above forces both arms to be exactly the 25 held-out secrets, so n cannot differ. Kept
+    # because `GATE_WORDING` turns on the arms being paired, and a guard that costs two lines
+    # is worth more than the tidiness of deleting it — but it is not counted as a proven arm
+    # (see `D14` on arm 2).
+    if base["n"] != mech["n"]:  # pragma: no cover - unreachable given the set check
         fail_invalid(
             f"the arms are paired over the same held-out secrets, so n must match "
             f"(T0 n={base['n']}, T4 n={mech['n']})"

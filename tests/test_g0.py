@@ -218,8 +218,8 @@ def test_arm2_a_decision_pair_other_than_t4_vs_t0(payload, capsys):
 
 def test_arm3_a_cell_with_n_below_the_house_floor(payload, capsys):
     """N >= 20; an underpowered cell cannot decide a gate."""
-    # Built from a 21-secret battery slice so the n < 20 arm is what fires, rather than the
-    # recomputation catching a hand-edited n first.
+    # Built from a **19**-secret held-out slice so the n < 20 arm is what fires, rather than
+    # the recomputation catching a hand-edited n first. 19, not 21: 21 would clear the floor.
     bad = copy.deepcopy(payload)
     keep = sorted({t["secret"] for t in bad["trials"] if t["split"] == "eval"})[:19]
     bad["trials"] = [t for t in bad["trials"] if t["split"] != "eval" or t["secret"] in keep]
@@ -346,15 +346,67 @@ def test_a_pass_with_matched_support_is_not_confounded(payload):
     assert result["exposure_matched"]["T3"]["excludes_zero"] is True
 
 
-def test_the_arms_must_be_paired_over_the_same_secrets(payload, capsys):
-    """`GATE_WORDING`: both cells are computed over the same 25 held-out secrets. Differing
-    n means they are not, and no aggregation would make the interval interpretable. The
-    recomputation catches it first, which is the stronger check."""
+def test_arm1c_a_trimmed_trial_set_with_honestly_rebuilt_cells(payload, capsys):
+    """`F10`: recomputing the arithmetic is not enough on its own — a payload can **drop**
+    trials and rebuild every cell honestly. Deleting the T0 trials that emitted and
+    recomputing leaves a fully self-consistent payload that flips FAIL to PASS; the only
+    tell is the trial-level n, and nothing compared it. `D1` freezes 4 texts per
+    (secret, tier), so the expected set is known exactly.
+    """
     bad = copy.deepcopy(payload)
-    dropped = next(t["secret"] for t in bad["trials"] if t["split"] == "eval")
     bad["trials"] = [
-        t for t in bad["trials"] if not (t["secret"] == dropped and t["tier"] == "T4")
+        t for t in bad["trials"]
+        if not (t["tier"] == "T0" and t["split"] == "eval" and t["emitted"])
     ]
+    rebuilt = m0_leak_curve.build_payload("s", bad["trials"], 1.0)
+    bad["cells"], bad["contrasts"] = rebuilt["cells"], rebuilt["contrasts"]
+
+    # The trimmed payload is internally consistent — every recomputation would pass.
+    t0 = next(r for r in bad["cells"]["T0"]["rates"] if r["unit"] == "secret")
+    t4 = next(r for r in bad["cells"]["T4"]["rates"] if r["unit"] == "secret")
+    assert (t0["hits"], t4["hits"]) == (0, 17) and t0["n"] == t4["n"] == 25
+
     _invalid(bad)
     out = capsys.readouterr().out
-    assert "recomputing it from the held-out eval trials" in out
+    assert "not the frozen battery x D1's texts" in out and "missing" in out
+
+
+def test_a_duplicated_or_unexpected_trial_is_invalid(payload, capsys):
+    """The same set check from the other side: padding a cell is as effective as trimming
+    one, and neither disturbs the arithmetic if the aggregates are rebuilt."""
+    bad = copy.deepcopy(payload)
+    extra = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
+    bad["trials"].append(extra)
+    _invalid(bad)
+    assert "duplicated" in capsys.readouterr().out
+
+    bad = copy.deepcopy(payload)
+    stray = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
+    stray["text_index"] = 99
+    bad["trials"].append(stray)
+    _invalid(bad)
+    assert "unexpected" in capsys.readouterr().out
+
+
+def test_a_trial_missing_text_index_is_invalid(payload, capsys):
+    bad = copy.deepcopy(payload)
+    del next(t for t in bad["trials"] if t["split"] == "eval")["text_index"]
+    _invalid(bad)
+    assert "missing text_index" in capsys.readouterr().out
+
+
+def test_a_cell_with_an_unknown_rate_unit_is_invalid(payload, capsys):
+    bad = copy.deepcopy(payload)
+    bad["cells"]["T2"]["rates"][0]["unit"] = "category"
+    _invalid(bad)
+    assert "unknown rate unit" in capsys.readouterr().out
+
+
+def test_a_t4_trial_missing_emitted_turn1_is_invalid(payload, capsys):
+    """`D3`: the companion is a re-scoring of the same trials, so the per-trial field it
+    needs is mandatory — without it the T4_turn1 cell cannot be recomputed at all."""
+    bad = copy.deepcopy(payload)
+    for trial in bad["trials"]:
+        trial.pop("emitted_turn1", None)
+    _invalid(bad)
+    assert "emitted_turn1" in capsys.readouterr().out

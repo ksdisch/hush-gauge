@@ -126,7 +126,8 @@ def cell_rates(trials: list[dict], *, key: str = "emitted") -> list[dict]:
     ]
 
 
-def build_payload(subject: str, trials: list[dict], elapsed: float) -> dict:
+def build_payload(subject: str, trials: list[dict], elapsed: float,
+                  environment: dict | None = None) -> dict:
     eval_trials = [t for t in trials if t["split"] == "eval"]
 
     cells = {}
@@ -157,6 +158,10 @@ def build_payload(subject: str, trials: list[dict], elapsed: float) -> dict:
         "battery_sha256": battery.sha256(battery.SECRETS_PATH),
         "tiers_sha256": battery.sha256(battery.TIERS_PATH),
         "generation": {"do_sample": False, "max_new_tokens": MAX_NEW_TOKENS},
+        # `F11`: the resolved device and dtype belong in the **tracked** record, not only in
+        # a gitignored run log. Greedy decode is deterministic *given a machine*, so a frozen
+        # result that cannot say which one it ran on cannot be re-derived.
+        "environment": environment or {},
         "oracle": "D6 primary, per D10/D12/D13: surface-form string at a word boundary",
         "elapsed_seconds": round(elapsed, 1),
         "trials": trials,
@@ -216,7 +221,15 @@ def main() -> int:
         print(f"[{index:2d}/{len(secrets)}] {entry['word']:10s} "
               f"({entry['split']:11s}) cumulative emitted {done}/{len(trials)}", flush=True)
 
-    payload = build_payload(args.subject, trials, time.time() - started)
+    payload = build_payload(
+        args.subject, trials, time.time() - started,
+        environment={
+            "device": str(device),
+            "dtype": str(model.dtype),
+            "torch": torch.__version__,
+            "transformers": __import__("transformers").__version__,
+        },
+    )
     RESULTS.mkdir(exist_ok=True)
     slug = args.subject.split("/")[-1].lower()
     path = RESULTS / f"m0-leak-curve-{slug}.json"
