@@ -51,15 +51,13 @@ undecided gate, not a negative one.
 
 ## Status
 
-**M0 open, 2026-07-30 · brief frozen (D1–D13) · the emission oracle is built and verified.**
-Lens artifacts copied and SHA256-verified. `oracle.py` and `encode.py` are in, with 345
-passing tests — including 180 committed real greedy replies and a 1.14M-character sweep of
-real English, where the oracle finds **849 of 849** whole-word occurrences of a roster word,
-exactly agreeing with an independent boundary predicate. (That is a recall and matcher-agreement
-result, not a claim that every hit is a reveal: incidental prose like "Iron Age" is a whole-word
-occurrence too, and D13 records the size of that exposure rather than denying it.) Writing those tests found three oracle defects that four rounds of prose
-review had not (D12, D13, and D13's own circular justification); all three are fixed and
-recorded. Next: the frozen batteries, `stats.py`, G0-as-code, and the tier × scale sweep.
+**M0 complete, 2026-07-30 — G0 PASSES on all three scales.** The battery has dynamic range:
+under benign chat with no ask the models sit at the floor, and under multi-turn extraction all
+25 held-out secrets leak, with the difference Newcombe-clean at every scale. Crucially the
+result survives *exposure matching* — a multi-turn trial gets 3× the scored positions of a
+benign one, and the position-matched contrast is clean too, so this is pressure and not
+arithmetic. Full curves, and three caveats that matter more than the headline, in
+[`docs/M0-RESULTS.md`](docs/M0-RESULTS.md). M1 (probe panel + detection) is next.
 
 ## Where things are
 

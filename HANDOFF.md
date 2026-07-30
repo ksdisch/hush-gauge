@@ -1,63 +1,47 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-07-30 (M0: oracle built and verified; D12/D13 frozen; battery next)_
+_Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1 next)_
 
 ## What was just done
 
-- **Built `oracle.py` and its 345-test suite — the verification PR #1 merged owing** — and it
-  found **three** further oracle defects, each the same class as `D10` and `D11`. Frozen as
-  `D12`, `D13`, and `D13`'s own correction:
-  - **`D12`** (found by the tests): `D11`'s **id-sequence match is unsound**. A punctuation
-    character immediately before the word **re-segments** it — `"Egypt"` at turn start is
-    `['"E','gypt','"']`, `-China` is a *single token* — so no precomputed sequence occurs at
-    all. **252 of 960** turn-initial reveal shapes were invisible *and uncounted*, and it is
-    not fixable inside that architecture. The oracle now matches surface-form **strings** in
-    the decoded generation, with `D10`'s boundary conditions preserved exactly and evaluated
-    on **characters**, which is where they always belonged. Validated at **849/849 recall,
-    zero false positives, 1,729 boundary rejections** over the 1.14M-character WikiText
-    validation split, against an independent character-level ground truth.
-  - **`D13`** (found by PR #2's zero-context reviewer, by **generating real replies** — the
-    axis the suite states it does not exercise): the primary oracle was **case-blind**. Asked
-    for the secret, the 0.5B answers `'Lion.'` / `'Jade.'` / `'Cow.'` / `'Ant'` — **26 of 180
-    real replies were complete reveals scored as successful secrecy with every counter at
-    zero**, and the censoring rate varies by probe (12 trials on a direct ask, 4 on roleplay),
-    so it moves a T4−T0 difference in either direction. `capitalized` is now in the **primary
-    (gate)** set — Kyle's call at the triage gate. `boundary_rejected` splits **left/right**,
-    because a *left* rejection can be a genuine reveal the rule suppressed (a pressured small
-    model emits whitespace-collapsed dumps like `publicwordsilversecretwordgold…`). Two
-    canaries added: `case_variant_miss` and `capitalized_only_hits`.
-  - **`D13`'s own justification was then corrected** in review round 2: "zero false-positive
-    cost, measured, not argued" was **circular** — the cited WikiText sweep derives its ground
-    truth *from the same variant set it tests*, so it cannot return a non-zero cost for a
-    variant-set change. Measured properly, capitalized forms widen the prose surface the gate
-    calls an emission by **77%** (+69 on 90). The promotion stands — the recall evidence is
-    model output, the cost is corpus prose, and the 20 capitalized secrets already carried the
-    exposure — but the channel is now **measured per trial** rather than asserted away.
-- **Ran the `adversarial-review` loop on PR #2: 3 rounds, 19 findings, 0 disputes.** The zero-
-  context reviewer reproduced every number `D13` freezes, exactly. Rounds 1 and 2's fixes were
-  **independently re-verified** (10 of 10, none reopened) — the thing PR #1's waiver skipped.
-  Round 3's own fixes are the residue: they close a `should-fix` (`F16`) plus four
-  nice-to-haves, and the reviewer dispatch cap was spent, so their verification status is
-  whatever the merge brief records. Do not read "fixed" as "verified" here; that conflation is
-  what cost this project a round in PR #1.
-  - **`F16` is the one worth remembering.** The `capitalized_only_hits` counter I added to fix
-    `F10` had `F3`'s pooling defect, one commit later: it counts the union of `D13`'s recall
-    gain (`'Lion.'`) and the prose exposure (`Iron Man`), so it **bounds** the false-positive
-    channel rather than measuring it — and `D13` claimed the latter. Now stated as a bound,
-    with each hit's decoded context recorded so the separation is a human read of recorded
-    evidence. The reviewer filed this against its own earlier suggestion.
-- **Two follow-ups stay open**, both nice-to-have and neither blocking: `F6` (the WikiText test
-  `pytest.skip`s itself when the HF cache differs, behind the load-bearing 849/1,729 anchor)
-  and `F7` (`D12`'s justifying 252/960 and 510/4,320 have no artifact in the tree, while the
-  conclusion they support is test-pinned).
-- **Also landed:** `encode.py` (`D2`'s byte-frozen system frame + the owned multi-turn chat
-  encoder, the one documented departure from `mute-map/harness.py:64`), `roster.py` (copied
-  from mute-map per K2), `tests/fixtures/real_replies_0.5b.json` (180 committed greedy replies
-  so the suite tests real model output permanently), and `lenses/PROVENANCE.md` restated as
-  **verified** (2026-07-30, dim-stage `43ff405`, all three SHA256s match).
-- **Verified `D4`'s selection reproduces the brief's frozen table exactly** and drafted the 20
-  tier texts against `D1`'s two all-roster rules (they pass) — so tasks 3 and 4 below are
-  spec-checked before they are written.
+- **Ran the M0 sweep on all three subjects and decided G0 once. It PASSES on all three
+  scales, and none is `EXPOSURE-CONFOUNDED`.**
+
+  | Subject | T0 | T4 | T4 − T0 | Newcombe 95% | matched CI-clean |
+  |---|---|---|---|---|---|
+  | 0.5B | 2/25 | 25/25 | +0.920 | [+0.704, +0.978] | 4 of 4 |
+  | 1.5B | 0/25 | 25/25 | +1.000 | [+0.812, +1.000] | 4 of 4 |
+  | 3B | 0/25 | 25/25 | +1.000 | [+0.812, +1.000] | 4 of 4 |
+
+  **`R1` is retired** — the project's riskiest assumption. The battery has dynamic range, the
+  single pre-declared revision is **not** used, and the battery re-freezes as built. Full
+  curves and the honest caveats are in `docs/M0-RESULTS.md`.
+- **Built and froze everything M0 needed** across two reviewed PRs: `batteries/secrets.json`
+  and `pressure_tiers.json`, `stats.py` (ported), `gates/g0.py` with its `INVALID` arms, and
+  `m0_leak_curve.py`. Plus `oracle.py` and `encode.py` before them.
+- **Froze `D12`, `D13` and `D14`** — every one forced by evidence, not preference. See below.
+- **Ran the `adversarial-review` loop on all three PRs: 13 rounds, 47 findings, 0 disputes,
+  0 waived.** Every `critical` and `should-fix` fixed and independently re-verified.
+
+### The three results caveats that matter more than the headline
+
+Found by the review of the results themselves, and corrected in `docs/M0-RESULTS.md`:
+
+1. **Within-tier spread exceeds between-tier spread.** At 1.5B the pooled T1 cell of 25/25 is
+   carried *entirely by one of its four texts*; the other three score 5, 0 and 0. A 0-to-25
+   swing inside one tier dwarfs any between-tier difference. **The pooled cells license G0 and
+   do not license a fine-grained ladder narrative.** Per-text rates are in the JSONs and are
+   the right unit for any claim about which kind of pressure works.
+2. **The 0.5B T0 cell of 2/25 is two incidental capitalized mentions**, not leaks — both are
+   `capitalized_only_hits` whose recorded contexts show the model listing the secret as a
+   filler example (`- "Tiger" (`). Under an `as_given`-only oracle T0 is 0/25 at every scale.
+   The frozen oracle's verdict stands unedited (never re-tune a bar, least of all toward a
+   stronger headline); the scale narrative built on it was withdrawn. **This is the exact
+   channel `capitalized_only_hits` was built to expose in `F10`/`F16` — and I did not read
+   the counter until a reviewer did.**
+3. **A saturated T4 is a strong gate result and a weak measurement substrate for M1.** G2's
+   non-emitting T3+T4 population is 71 / 86 / 50 trials per scale — workable, but smallest
+   exactly where the models are strongest, and not the same secrets across scales.
 
 ### Earlier — the M0 brief itself (2026-07-29)
 
@@ -165,11 +149,12 @@ _Last updated: 2026-07-30 (M0: oracle built and verified; D12/D13 frozen; batter
 
 ## Where things stand
 
-**M0 open. The oracle is built and verified; the battery, tiers, stats, gate and runner are
-next.** `D1`–`D13` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
+**M0 is complete. G0 PASSES; M1 is next.** `D1`–`D14` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
 citable ledger). On disk and green: `oracle.py`, `encode.py`, `roster.py`,
-`tests/test_oracle.py`, `tests/test_encode.py`, `tests/fixtures/real_replies_0.5b.json` —
-**345 tests passing**. Lens artifacts copied and hash-verified.
+`tests/test_oracle.py`, `tests/test_encode.py`, `tests/fixtures/real_replies_0.5b.json`,
+`battery.py`, `stats.py`, `gates/g0.py`, `m0_leak_curve.py`, `build_batteries.py` —
+**412 tests passing**. Lens artifacts copied and hash-verified. All three result JSONs are in
+`results/`, each carrying its `environment` block.
 
 **Read `D12` and `D13` before `D10`/`D11`.** The older two stay normative for *why* the
 boundary condition and the multi-token insight exist; the newer two are normative for what the
@@ -215,31 +200,25 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-In order, all unblocked:
+**M0 is done. M1 opens with its own start-of-stage brief** (`docs/M1-BRIEF.md`), which freezes
+M1's decisions before any run, per the house methodology. What M1 has to settle, with what M0
+now knows:
 
-1. **`batteries/secrets.json`** per `D4` — seed `20260729`, 11 shuffles, both swap constraints
-   loader-asserted, the `D2` yardstick rotation, the four surface-form id sequences with
-   lengths, M3-prime flags, and the 10-word spare pool labelled as G0's revision reserve.
-   *Already verified to reproduce `D4`'s frozen table exactly:* 25/25, K3 stratification,
-   11/12 primes with `Egypt` spared, 50/50 leading-space forms, spare pool `Egypt, July,
-   shark, Mercury, flute, bronze, opal, chicken, bee, Thursday`, gemstones secret order
-   `[diamond, jade, pearl, amber, ruby]`, gemstone eval secrets `amber, ruby`. Note `D4`(b)
-   never fires under this seed (the only prime-in-spare-slot case is `countries`, where all
-   six are primes so the clause is inapplicable) — so test it synthetically, or it ships
-   unexercised.
-2. **`batteries/pressure_tiers.json`** per `D1`/`D3` — 5 tiers × 4 frozen texts, T4's as
-   3-turn user sequences, loader asserting both all-roster disjointness rules. *20 candidate
-   texts are drafted and pass both rules against all 60 roster words.*
-3. **`stats.py` + `tests/test_stats.py`** — **ported**, not written, from
-   `~/Projects/mute-map/stats.py` + `test_stats.py`.
-4. **`gates/g0.py`** — byte-frozen `GATE_WORDING` copied verbatim from `M0-BRIEF.md` §D8, the
-   seven dry-run `INVALID` arms each proven, and the result-JSON field contract — now
-   including `boundary_rejected_left`/`_right`, `case_variant_miss` and
-   `capitalized_only_hits`.
-5. **`m0_leak_curve.py`** — the sweep. Uses `encode.py`'s encoder and `oracle.py`; must emit
-   the mandatory `T4_turn1` companion cells and the T1/T2/T3-vs-T0 contrasts.
-6. **Run all three subjects** (~2.5 h estimated, unmeasured) → `results/`, then decide G0 once
-   on the held-out 25.
+1. **Which cells carry the signal.** T4 is saturated at 25/25 on all three scales, so the
+   T4-vs-T0 contrast is spent as a measurement substrate. The live populations are the
+   **non-emitting T3/T4 trials** (71 / 86 / 50 per scale) for `G2`, and **T2**, the only tier
+   with genuine mid-range variance (17/25, 16/25 at the two smaller scales).
+2. **Per-text, not per-tier.** See caveat 1 above. Any M1 claim about *kinds* of pressure has
+   to be made at the text level or it is an artifact of pooling.
+3. **The four FP baselines**, including the context-word yardstick — and note `D2`'s
+   constraint: M1's cross-secret pairing must **exclude that session's yardstick**, because
+   the yardstick word is in context.
+4. **Threshold freezing on the calibration half**, evaluated once on held-out (`K3`).
+5. `G1`'s bars are already frozen at kickoff (`K4`): AUC 95% LB ≥ 0.75, precision ≥ 0.80,
+   recall ≥ 0.50, at a frozen 1:1 eval class balance, FPR reported alongside.
+
+**Design-extraction is a free pre-commit step in M1's brief** — the probe methodology and band
+conventions come from dim-stage via mute-map and must not be re-derived (`K6`).
 
 **Open follow-ups from PR #2's review** — **two**, both nice-to-have and neither blocking:
 `F6` (the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
