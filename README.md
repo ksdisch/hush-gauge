@@ -52,7 +52,7 @@ undecided gate, not a negative one.
 ## Status
 
 **M0 open, 2026-07-29 · start-of-stage brief frozen · no code yet.** M0's design calls are
-settled (D1–D10); next is copying and hash-verifying the lens artifacts, then building the
+settled (D1–D11); next is copying and hash-verifying the lens artifacts, then building the
 frozen batteries, `stats.py`, G0-as-code, and the emission grader.
 
 ## Where things are
@@ -62,7 +62,7 @@ frozen batteries, `stats.py`, G0-as-code, and the emission grader.
 - **`docs/M0-BRIEF.md`** — M0's start-of-stage brief: its frozen decisions, the
   design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D10** (M0).
+  bars and the battery/split design) and **D1–D11** (M0).
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 

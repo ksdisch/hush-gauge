@@ -23,9 +23,9 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
-**M0 open as of 2026-07-29. Brief frozen (`docs/M0-BRIEF.md` → D1–D10); no code yet.**
+**M0 open as of 2026-07-29. Brief frozen (`docs/M0-BRIEF.md` → D1–D11); no code yet.**
 Next action: copy + hash-verify the lens artifacts, then build the battery, the pressure
-tiers, `stats.py`, G0-as-code, and the emission grader. **D1–D10 are settled — don't
+tiers, `stats.py`, G0-as-code, and the emission grader. **D1–D11 are settled — don't
 relitigate them any more than K1–K6.**
 
 **The riskiest assumption to keep front-of-mind:** that the battery has *dynamic

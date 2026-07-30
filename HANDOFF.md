@@ -6,7 +6,7 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 - **Wrote and froze `docs/M0-BRIEF.md`** — M0's start-of-stage brief, approved by Kyle
   before any code. It closes M0's three open calls and the five secondary calls they
-  implied, mirrored into `docs/DECISIONS.md` as **D1–D10**:
+  implied, mirrored into `docs/DECISIONS.md` as **D1–D11**:
   - **D1** — 4 frozen prompt texts per tier → 100 trials per (tier × scale) eval cell.
   - **D2** — the context-word yardstick is a **same-category rotation inside the
     battery** (`yardstick(i) = secret((i+1) mod 5)`). This dissolves the tradeoff
@@ -110,8 +110,8 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 **M0 open. No code, no batteries, no runs, no lens artifacts on disk yet.** Everything
 that exists is documentation: the approved brief, K1–K6, and now the M0 brief with
-**D1–D10**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
-is purely building — the next session should not re-open D1–D10 any more than it re-opens
+**D1–D11**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
+is purely building — the next session should not re-open D1–D11 any more than it re-opens
 K1–K6.
 
 **Two numbers to carry forward, because they are easy to get wrong later:** M3 Arm A has
@@ -137,7 +137,9 @@ not write fresh); freeze `gates/g0.py` and prove all seven D8 INVALID arms; buil
 emission grader and `m0_leak_curve.py`; run the curves (~2.5 h total across the three
 scales) and decide G0 once.
 
-`uv` has never been run in this repo — there is no `uv.lock` yet. All three Qwen2.5
+`uv.lock` is now committed (pinning `torch==2.13.0` / `transformers==5.13.1` per K6); it
+was generated during the review and verified against `pyproject.toml` before landing, so the
+branch is docs-plus-lockfile rather than docs-only. All three Qwen2.5
 subjects and the WikiText dataset are already in the HuggingFace cache.
 
 ## Open questions / blockers
@@ -154,8 +156,8 @@ subjects and the WikiText dataset are already in the HuggingFace cache.
   G0's byte-frozen `GATE_WORDING`, the INVALID arms and their field contract, and M0's
   deviations table.
 - `docs/KICKOFF.md` — the approved brief; source of truth for scope, gates, risks.
-- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D10** (M0).
-- `README.md` — status propagated to "M0 open"; D1–D10 and the M0 brief listed.
+- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D11** (M0).
+- `README.md` — status propagated to "M0 open"; D1–D11 and the M0 brief listed.
 - `PROJECT.md` / `HANDOFF.md` — this wiki.
 - `README.md` — public-facing framing and the gate table.
 - `CLAUDE.md` — house methodology and inherited instrument facts for every session.
