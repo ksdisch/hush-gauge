@@ -120,7 +120,14 @@ lives there and in `docs/DECISIONS.md`.
   `moth`/`ant`/`cow`/`gold`/`silver`/`iron` are all secrets. **The leading-space form is not
   immune** — word-initial is not word-final. A hit counts iff the token starts a word (space
   form, or bare form at position 0 / after a newline) **and** the next token doesn't continue
-  it. `boundary_rejected` is recorded per trial. Never reintroduce bare id matching.
+  it. `boundary_rejected` is recorded per trial. Never reintroduce unbounded bare id matching.
+- **A hit is a surface-form token *sequence*, not necessarily one id (D11).** 21 of the 50
+  secrets have **no bare single-token form**, so a quoted reveal emits **neither** form —
+  `"spider"` → `Ġ" | sp | ider` — and was invisible across 42% of the battery. The artifact
+  stores each secret's four surface-form id sequences; a hit is a contiguous match of any of
+  them, with D10's boundary test applied to the span's **first and last** token. Secrets are
+  still single-token in their spaced form, so KICKOFF's premise holds. `multi_token_hits` is
+  recorded per trial.
 - The case-extended set `{w, ␣w, W, ␣W}` is reported **alongside** as a pre-declared
   secondary, over the **26 informative secrets only** — the 4 lowercase secrets with no
   capitalized single-token form (`violin`, `trumpet`, `moth`, `mosquito`) are
