@@ -141,6 +141,17 @@ def test_the_runner_emits_every_field_the_gate_requires(payload):
         assert all(r["oracle"] == "primary" for r in cell["rates"])
 
 
+def test_a_non_object_environment_is_invalid_not_a_traceback(payload, capsys):
+    """`F18`, the same shape as the companion-cell defect: `environment.get(...)` on an
+    unvalidated value raises an uncaught `AttributeError` — exit 1 with a traceback instead
+    of `VERDICT: INVALID` + exit 2, the one output shape the dry-run contract promises."""
+    for bad_value in (None, "mps", ["mps"], 3):
+        bad = copy.deepcopy(payload)
+        bad["environment"] = bad_value
+        _invalid(bad)
+        assert "must be an object" in capsys.readouterr().out
+
+
 def test_the_environment_record_is_required_not_defaulted(payload, capsys):
     """`F16`: a durability guarantee a caller can silently omit is not one. `build_payload`
     takes `environment` positionally and the gate refuses a payload without it."""
@@ -377,6 +388,10 @@ def test_arm1c_a_trimmed_trial_set_with_honestly_rebuilt_cells(payload, capsys):
     recomputing leaves a fully self-consistent payload that flips FAIL to PASS; the only
     tell is the trial-level n, and nothing compared it. `D1` freezes 4 texts per
     (secret, tier), so the expected set is known exactly.
+
+    Three trials go missing here, not the twelve a real payload loses: this fixture emits
+    only on `text_index == 0`. The assertion names the count so it fails if the wrong
+    set-check branch fires — the message is a fixed template naming all three counters.
     """
     bad = copy.deepcopy(payload)
     bad["trials"] = [

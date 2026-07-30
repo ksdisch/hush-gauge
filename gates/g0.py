@@ -113,6 +113,15 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
             f"batteries/secrets.json ({frozen_battery[:12]}...)"
         )
     environment = _require(payload, "environment", "run")
+    # Same shape as the companion-cell defect: a method called on an unvalidated value
+    # raises an uncaught AttributeError — exit 1 with a traceback instead of the
+    # `VERDICT: INVALID` + exit 2 the dry-run contract promises. `null`, a bare string and a
+    # list all reach this line from a hand-written payload.
+    if not isinstance(environment, dict):
+        fail_invalid(
+            f"run-level environment must be an object, got {type(environment).__name__} "
+            "(D14's field contract)"
+        )
     for field in ("device", "dtype", "torch", "transformers"):
         if not environment.get(field):
             fail_invalid(
