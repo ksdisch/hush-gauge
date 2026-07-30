@@ -631,6 +631,18 @@ it was "the shape the real sweep emits". Green suite, broken gate: exactly the h
 `D8` exists to prevent, produced by the test written to prevent it. The fixture is now the
 runner's unmodified output.
 
+**Recomputation alone was not enough either** (round 2 of the same review). It still trusts
+the *set*: dropping the 12 held-out T0 trials that emitted and rebuilding every cell honestly
+gives a self-consistent payload that flips FAIL to PASS (T0 0/25 · 0/**88** against T4 17/25 ·
+17/100, d = 0.68). Every recomputation and the paired-`n` check pass; only the trial-level `n`
+gives it away, and nothing compared it. So the gate also requires each tier's held-out trials
+to be exactly **25 eval secrets × 4 `text_index` values** — nothing missing, extra or
+duplicated. That is an **eighth `INVALID` condition** beyond `D8`'s seven arms, and it makes
+the paired-`n` guard unreachable (kept as defense in depth, marked no-cover, not counted as a
+proven arm). Two fields the gate reads are added to `D8`'s contract: per-trial `text_index`
+and run-level `environment` (device, dtype, torch, transformers — required, not defaulted,
+because greedy decode is deterministic *given a machine*).
+
 **Arm 2 is unreachable by construction, owned rather than papered over.** `DECISION_PAIR` is a
 module constant with no input channel, so no payload can ask G0 to decide a different pair. That
 is a stronger guarantee than a runtime arm, but "all seven proven" is one short of literal.

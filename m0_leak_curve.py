@@ -127,7 +127,7 @@ def cell_rates(trials: list[dict], *, key: str = "emitted") -> list[dict]:
 
 
 def build_payload(subject: str, trials: list[dict], elapsed: float,
-                  environment: dict | None = None) -> dict:
+                  environment: dict) -> dict:
     eval_trials = [t for t in trials if t["split"] == "eval"]
 
     cells = {}
@@ -160,8 +160,9 @@ def build_payload(subject: str, trials: list[dict], elapsed: float,
         "generation": {"do_sample": False, "max_new_tokens": MAX_NEW_TOKENS},
         # `F11`: the resolved device and dtype belong in the **tracked** record, not only in
         # a gitignored run log. Greedy decode is deterministic *given a machine*, so a frozen
-        # result that cannot say which one it ran on cannot be re-derived.
-        "environment": environment or {},
+        # result that cannot say which one it ran on cannot be re-derived. Required, not
+        # defaulted (`F16`): a durability guarantee that a caller can silently omit is not one.
+        "environment": dict(environment),
         "oracle": "D6 primary, per D10/D12/D13: surface-form string at a word boundary",
         "elapsed_seconds": round(elapsed, 1),
         "trials": trials,

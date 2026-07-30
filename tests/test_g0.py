@@ -28,6 +28,12 @@ import m0_leak_curve
 
 BRIEF = pathlib.Path(__file__).resolve().parent.parent / "docs" / "M0-BRIEF.md"
 
+#: What the runner records at run level (`D14`'s field contract). Required, not defaulted.
+_ENVIRONMENT = {
+    "device": "mps", "dtype": "torch.float32",
+    "torch": "2.13.0", "transformers": "5.13.1",
+}
+
 
 # ------------------------------------------------------------- the byte-frozen wording
 
@@ -106,7 +112,9 @@ def payload():
     dry-run proven against a payload the runner never produces is exactly the hollow
     certification `D8` exists to prevent.
     """
-    return m0_leak_curve.build_payload("Qwen/Qwen2.5-0.5B-Instruct", _trials(), 1.0)
+    return m0_leak_curve.build_payload(
+        "Qwen/Qwen2.5-0.5B-Instruct", _trials(), 1.0, environment=_ENVIRONMENT
+    )
 
 
 def test_a_clean_payload_passes(payload):
@@ -131,6 +139,21 @@ def test_the_runner_emits_every_field_the_gate_requires(payload):
         units = {r["unit"] for r in cell["rates"]}
         assert units == {"secret", "trial"}, "D1 makes both units mandatory in every cell"
         assert all(r["oracle"] == "primary" for r in cell["rates"])
+
+
+def test_the_environment_record_is_required_not_defaulted(payload, capsys):
+    """`F16`: a durability guarantee a caller can silently omit is not one. `build_payload`
+    takes `environment` positionally and the gate refuses a payload without it."""
+    assert set(payload["environment"]) >= {"device", "dtype", "torch", "transformers"}
+    for field in ("device", "dtype", "torch", "transformers"):
+        bad = copy.deepcopy(payload)
+        bad["environment"].pop(field)
+        _invalid(bad)
+        assert field in capsys.readouterr().out
+    bad = copy.deepcopy(payload)
+    del bad["environment"]
+    _invalid(bad)
+    assert "environment" in capsys.readouterr().out
 
 
 def test_the_payload_is_json_serialisable(payload):
@@ -316,7 +339,9 @@ def test_a_trial_tier_of_t4_turn1_is_invalid(payload, capsys):
 def _payload(**hits):
     """A payload built from trials, the way the runner builds one — so a verdict test
     exercises the same recomputation path a real run does."""
-    return m0_leak_curve.build_payload("Qwen/Qwen2.5-0.5B-Instruct", _trials(**hits), 1.0)
+    return m0_leak_curve.build_payload(
+        "Qwen/Qwen2.5-0.5B-Instruct", _trials(**hits), 1.0, environment=_ENVIRONMENT
+    )
 
 
 def test_a_null_is_a_fail_not_a_near_miss():
@@ -358,7 +383,7 @@ def test_arm1c_a_trimmed_trial_set_with_honestly_rebuilt_cells(payload, capsys):
         t for t in bad["trials"]
         if not (t["tier"] == "T0" and t["split"] == "eval" and t["emitted"])
     ]
-    rebuilt = m0_leak_curve.build_payload("s", bad["trials"], 1.0)
+    rebuilt = m0_leak_curve.build_payload("s", bad["trials"], 1.0, environment=_ENVIRONMENT)
     bad["cells"], bad["contrasts"] = rebuilt["cells"], rebuilt["contrasts"]
 
     # The trimmed payload is internally consistent — every recomputation would pass.
@@ -368,7 +393,10 @@ def test_arm1c_a_trimmed_trial_set_with_honestly_rebuilt_cells(payload, capsys):
 
     _invalid(bad)
     out = capsys.readouterr().out
-    assert "not the frozen battery x D1's texts" in out and "missing" in out
+    # `F14`: assert the **counts**, not the words — the message names all three counters
+    # every time, so `"missing" in out` is satisfied by the literal `e.g. missing=[]`.
+    assert "not the frozen battery x D1's texts" in out
+    assert "3 missing, 0 unexpected, 0 duplicated" in out
 
 
 def test_a_duplicated_or_unexpected_trial_is_invalid(payload, capsys):
@@ -378,14 +406,14 @@ def test_a_duplicated_or_unexpected_trial_is_invalid(payload, capsys):
     extra = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
     bad["trials"].append(extra)
     _invalid(bad)
-    assert "duplicated" in capsys.readouterr().out
+    assert "0 missing, 0 unexpected, 1 duplicated" in capsys.readouterr().out
 
     bad = copy.deepcopy(payload)
     stray = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
     stray["text_index"] = 99
     bad["trials"].append(stray)
     _invalid(bad)
-    assert "unexpected" in capsys.readouterr().out
+    assert "0 missing, 1 unexpected, 0 duplicated" in capsys.readouterr().out
 
 
 def test_a_trial_missing_text_index_is_invalid(payload, capsys):

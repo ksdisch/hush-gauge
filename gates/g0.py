@@ -112,6 +112,14 @@ def check(payload: dict, *, secrets_path=None, tiers_path=None) -> dict:
             f"battery_sha256 {claimed[:12]}... does not match the frozen "
             f"batteries/secrets.json ({frozen_battery[:12]}...)"
         )
+    environment = _require(payload, "environment", "run")
+    for field in ("device", "dtype", "torch", "transformers"):
+        if not environment.get(field):
+            fail_invalid(
+                f"run-level environment is missing {field!r} — greedy decode is deterministic "
+                "*given a machine*, so a result that cannot say which one it ran on cannot be "
+                "re-derived (D14's field contract)"
+            )
     claimed_tiers = _require(payload, "tiers_sha256", "run")
     if claimed_tiers != frozen_tiers:
         fail_invalid(

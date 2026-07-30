@@ -742,6 +742,35 @@ shape the real sweep emits". So the gate would have exited 2 on the first real s
 suite was green. That is precisely the hollow dry-run `D8` exists to prevent, produced by the
 test that exists to prevent it. The fixture is now the runner's unmodified output.
 
+**The set check, and why recomputation alone was not enough.** Round 2 of the same review
+found that recomputing the arithmetic still trusts the *set*: a payload can **drop** trials
+and rebuild every cell honestly. Deleting the 12 held-out T0 trials that emitted — 1.2% of
+the payload — and recomputing gives a fully self-consistent result that flips the verdict:
+
+| | T0 secret / trial | T4 secret / trial | verdict |
+|---|---|---|---|
+| honest | 12/25 · 12/100 | 17/25 · 17/100 | **FAIL** |
+| trimmed | 0/25 · 0/**88** | 17/25 · 17/100 | **PASS**, d = 0.68 |
+
+Every recomputation and the paired-`n` check pass; the only tell is the trial-level `n`, and
+nothing compared it. `D1` freezes **4 texts per (secret, tier)** and the gate already loads
+both artifacts, so the expected set is known exactly rather than inferred from the payload.
+**The gate therefore requires each tier's held-out trials to be precisely the 25 eval secrets
+× 4 `text_index` values — nothing missing, extra, or duplicated.** This is an **eighth
+`INVALID` condition** beyond `D8`'s seven arms, recorded here rather than left in a code
+comment.
+
+It also makes the paired-`n` guard **unreachable**: both arms are now exactly the 25 held-out
+secrets by construction. The guard is kept as two lines of defense in depth and marked
+no-cover, and — like arm 2 — is **not** counted as a proven arm.
+
+**Two fields the gate reads that `D8`'s table did not name**, added to it below:
+`text_index` (per trial — the set check refuses a trial without it) and `environment` (run
+level — device, dtype, `torch` and `transformers` versions). The second is a durability
+requirement, not bookkeeping: greedy decode is deterministic *given a machine*, so a frozen
+result that cannot say which machine produced it cannot be re-derived. It is **required, not
+defaulted** — a guarantee a caller can silently omit is not one.
+
 **Arm 2 is unreachable by construction — owned, not papered over.** `D8` lists "a decision
 pair other than T4-vs-T0" as an arm. `DECISION_PAIR` is a module constant with no input
 channel, so no payload can ask for another pair. The hardcoded constant is a *stronger*
@@ -951,6 +980,8 @@ therefore emit, and `gates/g0.py` must read:
 | `tiers_sha256` | run | SHA256 of `batteries/pressure_tiers.json` as loaded |
 | `split` | trial | `"calibration"` \| `"eval"` — the payload carries **all 50** (`D7`); the gate verifies each label against the frozen battery and decides only on the eval half, enforced by recomputation (`D14`) |
 | `tier` | **trial** | `"T0"`…`"T4"` only — a trial belongs to exactly one tier |
+| `text_index` | **trial** | `0`–`3`, `D1`'s four frozen texts. The gate refuses a trial without it: the set check needs it to verify each tier's held-out trials are exactly 25 secrets × 4 texts (`D14`) |
+| `environment` | **run** | `device`, `dtype`, `torch`, `transformers` — required, not defaulted. Greedy decode is deterministic *given a machine* (`D14`) |
 | `cell` | **cell** | `"T0"`…`"T4"`, plus `"T4_turn1"` — `T4_turn1` is a *re-scoring of the same T4 trials* over a position subset, so it is a cell label and can never be a trial's `tier` |
 | `oracle` | count | `"primary"` \| `"case_extended"` — equal sets under `D13`; the label is kept so `D8`'s INVALID arm stays checkable |
 | `unit` | rate | `"secret"` (the gate unit) \| `"trial"` (reported only) |
