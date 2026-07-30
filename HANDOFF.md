@@ -34,13 +34,19 @@ _Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1
     what the gate **decides on**), plus the recomputation and trial-set completeness check
     that give it teeth — and the eighth `INVALID` condition that check constitutes.
 - **Ran the `adversarial-review` loop on every PR — four loops, zero disputed findings.**
-  The per-finding record lives in `~/.claude/reviews/hush-gauge/` (four mailboxes) and is the
-  authority. **No round or finding totals are restated here**: the one attempt to
-  state them in this file (`F7`) was wrong three ways at once, because findings are
-  re-listed across rounds and any hand-carried number goes stale the moment another round
-  runs. The related lesson is broader than totals — `F1` and `F12`, both in
-  `docs/M0-RESULTS.md`, were a trial count and a per-text count **transcribed instead of
-  computed**. Compute from the JSONs; do not copy from prose, including your own.
+  The per-finding record lives in `~/.claude/reviews/hush-gauge/` (four mailboxes) and **is
+  the authority**. **No round or finding totals are restated here**, deliberately: two
+  attempts to state them in this file failed, for two *different* reasons, and the second one
+  was made while fixing the first.
+  - **`F7`** — "13 rounds, 47 findings" matched no grouping of the mailboxes *on arrival*: a
+    transposed cell (47 was one mailbox's column). Wrong when written.
+  - **`F13`** — "four loops, 16 rounds" was correct when written and **stale one round
+    later**. A hand-carried total cannot survive the next round, and a review loop always has
+    a next round until it doesn't.
+  - The related lesson is broader than totals: **`F1`** and **`F12`**, both in
+    `docs/M0-RESULTS.md`, were a trial count and a per-text count **transcribed rather than
+    computed** — one of them copied out of a reviewer's finding text. **Compute from the
+    JSONs. Never copy a number out of prose, including your own.**
   Two things that must not be smoothed over:
   - **PR #1 (the M0 brief) merged `NOT CLEAR` under Kyle's explicit verification waiver** —
     ten findings, including a `critical`, were never independently re-verified. That is the
