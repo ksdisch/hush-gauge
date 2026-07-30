@@ -19,10 +19,26 @@ _Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1
 - **Built and froze everything M0 needed** across two reviewed PRs: `batteries/secrets.json`
   and `pressure_tiers.json`, `stats.py` (ported), `gates/g0.py` with its `INVALID` arms, and
   `m0_leak_curve.py`. Plus `oracle.py` and `encode.py` before them.
-- **Froze `D12`, `D13` and `D14`** — every one forced by evidence, not preference. See below.
-- **Ran the `adversarial-review` loop on every PR — four loops, 16 rounds, zero disputed
-  findings.** The per-finding record is in `~/.claude/reviews/hush-gauge/` (four mailboxes);
-  no count is restated here, because restating one is how `F1` and `F7` both happened.
+- **Froze `D12`, `D13` and `D14`** — every one forced by evidence, not preference:
+  - **`D12`** — the oracle matches surface-form **strings** in the decoded generation, not
+    precomputed token id sequences. Punctuation before the word re-segments it (`"Egypt"` →
+    `['"E','gypt','"']`, `-China` is one token), so 252 of 960 turn-initial reveals were
+    invisible *and uncounted*. `D10`'s boundary conditions are preserved exactly, evaluated on
+    characters.
+  - **`D13`** — `capitalized` moves into the **primary (gate)** form set. On real greedy
+    output the 0.5B answers `'Lion.'` / `'Jade.'` / `'Cow.'`, and 26 of 180 replies were full
+    reveals scored as successful secrecy with every counter at zero. Also splits
+    `boundary_rejected` left/right and adds the `case_variant_miss` and
+    `capitalized_only_hits` canaries.
+  - **`D14`** — how `D8`'s arm 1 reads (the payload carries all 50 per `D7`; the arm is about
+    what the gate **decides on**), plus the recomputation and trial-set completeness check
+    that give it teeth — and the eighth `INVALID` condition that check constitutes.
+- **Ran the `adversarial-review` loop on every PR — four loops, zero disputed findings.**
+  The per-finding record lives in `~/.claude/reviews/hush-gauge/` (four mailboxes) and is the
+  authority. **No round or finding totals are restated here**: three separate attempts to
+  state them in this file were wrong three different ways (`F1`, `F7`, `F12`), because
+  findings are re-listed across rounds and any hand-carried number goes stale the moment
+  another round runs.
   Two things that must not be smoothed over:
   - **PR #1 (the M0 brief) merged `NOT CLEAR` under Kyle's explicit verification waiver** —
     ten findings, including a `critical`, were never independently re-verified. That is the
@@ -269,15 +285,21 @@ artifact in the tree, while the conclusion they support is test-pinned).
 
 ---
 
-**Run-config note:** the next session starts fresh from `docs/M0-BRIEF.md` (with
-`docs/KICKOFF.md` for scope, and `D12`/`D13`/`D14` read before `D10`/`D11`). **M0 is closed —
-the next session opens M1 with `docs/M1-BRIEF.md`, freezing its decisions before any run.**
+**Run-config note:** **M0 is closed. The next session opens M1** by writing
+`docs/M1-BRIEF.md`, freezing M1's decisions before any run. Read `docs/KICKOFF.md` for scope
+and gates, `docs/M0-RESULTS.md` for what M0 measured and the three caveats that bound it, and
+`docs/DECISIONS.md` for `K1`–`K6` + `D1`–`D14` — with `D12`/`D13`/`D14` read **before**
+`D10`/`D11`, since the later three say what the oracle and gate actually do.
+
 Recommended model + effort: **Fable 5 at xhigh** — writing a start-of-stage brief is
 judgment-first work with real tradeoffs (which cells carry signal on a saturated battery, how
-to size G2's population, the four FP baselines), not well-specified build work. Launch:
-`claude --model claude-fable-5 --effort xhigh`. The *build* that follows M1's brief is Opus 5
-at high. Launch:
-Two standing rules: if G0 fails in a way that
-questions the battery design rather than the models, bounce the revision decision to a Fable 5
-session rather than escalating effort in the build session; and if a review round turns up
-another oracle-class defect, that is a design question too, not a patch.
+to size G2's population against 71/86/50 non-emitting trials, the four FP baselines), not
+well-specified build work. Launch: `claude --model claude-fable-5 --effort xhigh`.
+
+The **build** that follows M1's brief is a separate, fresh session at **Opus 5 at high** —
+`claude --model claude-opus-5 --effort high`.
+
+Two standing rules, both earned in M0: if a gate fails in a way that questions the battery
+design rather than the models, bounce the revision decision to a Fable session rather than
+escalating effort in the build session; and if a review round turns up another oracle-class
+defect, that is a design question too, not a patch.

@@ -111,7 +111,7 @@ That T2 exception is not a hedge. An earlier draft of this clause read "every sc
 or near ceiling from T1 upward", which is a pooled-cell claim made one paragraph after §1
 withdrew pooled-cell claims — and it is wrong on precisely the cells this document goes on to
 hand M1 *because* they are **not** at ceiling. At the per-text level it is further off still:
-of the twelve 1.5B T1–T3 texts, five score ≤ 3/25 and three score 0/25.
+of the twelve 1.5B T1–T3 texts, **six** score ≤ 3/25 and **five** score 0/25.
 
 **3. The exposure advantage is real and concentrated at the smallest scale.** T4-turn-1 is
 8/25 at 0.5B against 23/25 and 20/25 above it — so at 0.5B most of the full-T4 effect

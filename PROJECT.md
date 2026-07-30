@@ -73,7 +73,7 @@ inputs.
 2. ~~Copy the three dim-stage lens artifacts and verify each SHA256~~ — **done 2026-07-30**;
    all three match (dim-stage `43ff405`).
 2b. ~~Build `oracle.py` + its test suite (the owed verification)~~ — **done 2026-07-30**;
-   345 tests, and it froze D12 + D13. `encode.py` landed with it.
+   345 tests at that point (412 now), and it froze D12 + D13. `encode.py` landed with it.
 3. ~~Build the frozen `batteries/secrets.json` and `batteries/pressure_tiers.json`~~ —
    **done 2026-07-30**; both hash-recorded, both loader-asserted.
 4. ~~Port the Wilson/Newcombe ruler into `stats.py`~~ — **done 2026-07-30**; ported verbatim
