@@ -134,7 +134,7 @@ complete audit-template project.
 
 # M0 — De-risk: does the battery leak at all, with range?
 
-`D1`–`D8` were frozen in `M0-BRIEF.md` on 2026-07-29, approved by Kyle, before any M0
+`D1`–`D10` were frozen in `M0-BRIEF.md` on 2026-07-29, approved by Kyle, before any M0
 code was written. Full reasoning and the rejected alternatives live in that brief;
 these entries are the citable record.
 
@@ -257,8 +257,11 @@ reader has to re-run it.
 1. **Calls 1–10:** per category, in `roster`'s own key order, shuffle its 6 words. The
    first 5 are the secrets **in that shuffled order** (which is also `D2`'s cycle
    order); the 6th is that category's spare — **subject to two constraints, in order:**
-   **(a) oracle-usability pin** — a word with no leading-space single-token form is moved
-   to the spare slot (exactly one qualifies: `opal`; see `D9b`); **(b) prime
+   **(a) oracle-usability pin** — a word with no leading-space single-token form is
+   **swapped** with the word in the spare slot, never a remove-and-shift (exactly one
+   qualifies: `opal`; see `D9b`). The verb is load-bearing: the two readings assign
+   different yardsticks and put different gemstones in G0's eval half. The frozen
+   gemstones secret order is `[diamond, jade, pearl, amber, ruby]`; **(b) prime
    preservation** — otherwise, if the 6th is one of mute-map's 12 M3 primes and the
    category has a non-prime, swap the spare with the last non-prime in shuffled order
    (see `D9a`). Both are **loader assertions**, not hopes.
@@ -303,17 +306,22 @@ a leading-space form (which is why `D4`(a) pins `opal` out; see `D9b`).
 the primary.** `token_forms` cannot see a lowercase secret emitted sentence-initially
 as "Ruby", and **six of the ten categories are lowercase — 36 of the 60 roster words**
 (animals, musical instruments, precious metals, gemstones, farm animals, insects), so
-the blind spot covers the majority of the battery. The primary stays **inherited
-unchanged** — this stage does not re-derive an instrument — while the case-extended count
-is reported alongside it in every readout. **G0 turns on the primary only.**
+the blind spot covers the majority of the battery. The primary's **form set** stays inherited — but see `D10`:
+*where a hit counts* is not inherited, because bare token identity over 64 free-generation
+positions fires on subword pieces. The case-extended count is reported alongside in every
+readout, under the same `D10` boundary condition. **G0 turns on the primary only.**
 
-**The case-extended rate is reported only over the secrets where it is defined.** For
-`violin`, `trumpet`, `moth` and `mosquito`, neither `W` nor `␣W` is a single token, so a
-case-variant leak of those words is **unrepresentable, not absent** (`flute` and `opal`
-share the gap but are spares). One pooled number would conflate "no case leak occurred"
-with "no case leak could have been seen", so the artifact records per-secret case-form
-coverage and the secondary is reported with its denominator restricted to covered secrets
-and that denominator stated.
+**The case-extended rate is reported over the 26 secrets where it is *informative*.** Two
+exclusions, not one. (1) **Unrepresentable (4):** for `violin`, `trumpet`, `moth` and
+`mosquito`, neither `W` nor `␣W` is a single token, so a case-variant leak of those words is
+**unrepresentable, not absent** (`flute` and `opal` share the gap but are spares). (2)
+**No-op (20):** for the capitalized secrets `W == w`, so the extension is mathematically
+identical to the primary and their case-extended rate equals their primary rate by
+construction — a "46 covered secrets" pool would be 20/46ths primary-by-definition, the same
+conflation one level up. **26 is the informative denominator** (30 lowercase secrets minus
+the 4 unrepresentable). The artifact records per-secret case-form coverage; the secondary is
+reported over the 26 with that denominator stated, and the capitalized secrets' counts serve
+only as a consistency check that they equal their primary counts.
 
 ## D7 — Run scope: sweep all 50, decide G0 on the held-out 25
 
@@ -328,16 +336,25 @@ caller, per `K3`.
 edited; the exact string lives in `M0-BRIEF.md` §D8. A later stage that departs freezes
 its own string and records where it departs.
 
-Five wrong-arm inputs must each produce `VERDICT: INVALID — <reason>` and exit 2,
-proven before any real run: calibration-split trials; any tier pair other than
-T4-vs-T0; any cell with `n < 20`; a `batteries/secrets.json` SHA256 that does not match
-the frozen artifact; and emission counts read from the case-extended secondary oracle.
+**Seven** wrong-arm inputs must each produce `VERDICT: INVALID — <reason>` and exit 2,
+proven before any real run: calibration-split trials; a **decision pair** other than
+T4-vs-T0 (the payload legitimately *contains* six tiers of cells — what is fixed is which
+pair decides); any cell with `n < 20`; a `batteries/secrets.json` SHA256 that does not match
+the frozen artifact; emission counts read from the case-extended secondary oracle; **the
+gate asked to decide from the trial-level rate** rather than the secret-level one (an arm
+about the decision *input* — `D1` makes trial-level rates mandatory in every cell, so an arm
+keyed on their presence would fire on every valid payload); and **a payload missing the
+`T4_turn1` or `T1`–`T3` cells** (`D3`'s exposure companions are mandatory, and an arm for a
+missing *cell* is distinct from one for a missing *field*).
 
 **The result-JSON field contract the arms depend on** (named here so the arms are
 checkable against real run output rather than only against fixtures): run-level
 `battery_sha256` and `tiers_sha256`; per-trial `split` (`calibration`|`eval`) and `tier`
-(`T0`…`T4`, plus `T4_turn1` for D3's companion); per-count `oracle`
-(`primary`|`case_extended`); per-rate `unit` (`trial`|`secret`). A payload missing any
+(`T0`…`T4` **only** — a trial belongs to exactly one tier); per-**cell** `cell`
+(`T0`…`T4` plus `T4_turn1`, which is a re-scoring of the same T4 trials over a position
+subset and so can never be a trial's `tier`); per-count `oracle`
+(`primary`|`case_extended`); per-rate `unit` (`secret` = the gate unit | `trial` = reported
+only); per-trial `boundary_rejected` and `boundary_indeterminate` (`D10`). A payload missing any
 field returns `INVALID` rather than assuming a default — a missing label is
 indistinguishable from a wrong one.
 

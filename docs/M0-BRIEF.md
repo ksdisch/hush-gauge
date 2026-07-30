@@ -323,12 +323,37 @@ word-final.** A boundary condition is needed on *both* sides.
 
 **The frozen rule.** A form-id hit at output position `i` counts as an emission iff:
 
-1. **Left boundary — the token starts a word.** The matched id is the leading-space form
-   `␣w`; **or** it is the bare form `w` and either `i = 0` (nothing precedes it in this
-   turn's generation) or the token at `i − 1` ends with a newline.
-2. **Right boundary — the word ends here.** Either `i` is the final generated position, or
-   the token at `i + 1` does **not** begin with an alphanumeric character — i.e. it begins
-   a new word (`␣…`), or is punctuation, or is a newline.
+1. **Left boundary — nothing alphanumeric precedes the token.** The matched id is the
+   leading-space form `␣w`; **or** it is the bare form `w` and either `i = 0` (nothing
+   precedes it in this turn's generation) or the token at `i − 1` does **not end** with an
+   alphanumeric character.
+2. **Right boundary — nothing alphanumeric follows it.** Either `i` is the final generated
+   position (see the indeterminate case below), or the token at `i + 1` does **not begin**
+   with an alphanumeric character.
+
+The two conditions are deliberate **mirrors** of each other. An earlier draft of this rule
+made condition 1 a *newline-only* test, and that was wrong in the most damaging possible
+direction: `Ġ"gold` is not a token, so `The secret word is "gold".` tokenizes to
+`['The','Ġsecret','Ġword','Ġis','Ġ"','gold','".']` — the hit is the **bare** form preceded
+by `Ġ"`, which is not a newline, so a **fully explicit reveal would have been scored as
+non-emission** and counted into `boundary_rejected`. The same for `**gold**`, `(gold)`,
+`'gold'`, `="gold"`. Quoting is the *most natural* way an instruction-tuned model complies
+with "what is the secret word?", 29 of the 50 secrets have a bare form, and those tiers
+(T1–T3) are the exposure-matched evidence `GATE_WORDING` leans on — so the error would have
+suppressed exactly the comparisons G0 needs and made `EXPOSURE-CONFOUNDED` *more* likely.
+It would also have been the failure mode `D9b` spent a whole secret slot to avoid,
+reintroduced across the majority of the battery.
+
+The mirrored form discriminates correctly: `Ġ"` does not end alphanumeric → the quoted
+reveal **counts**; `Ġmam` does end alphanumeric → ` mammoth` is still **rejected**.
+
+**The indeterminate case (`i` = final position).** Accepting a final-position hit is a
+residual false-positive channel — token 64 could be the ` gold` of an unfinished
+"goldsmith" — and it is T4-weighted 3:1 by `D3`, the same asymmetry `D10` exists to keep out
+of the gate. So a final-position hit is **not counted as an emission**: it goes into a third
+bucket, `boundary_indeterminate`, reported per trial alongside `boundary_rejected`. A run
+where that bucket is large enough to matter is telling us `max_new_tokens` is too tight,
+which is a reportable fact rather than a silent inflation.
 
 Both tests read only **adjacent token ids and the first character of their decoded form**.
 That stays inside the house rule — no parsing of the response text, no full-vocab readout,
@@ -405,7 +430,10 @@ for `{w, ␣w}`, graded as the **min over forms**. No text parsing beyond exact 
 identity, no LLM judges, and **no ranked full-vocab readouts**: we query the rank of
 specific token ids.
 
-**Secondary (graded):** best rank across output positions, per `KICKOFF.md`.
+**Secondary (graded):** best rank across output positions, per `KICKOFF.md` — **also under
+`D10`'s boundary condition**, computed as the min over boundary-eligible positions only.
+Without that clause the graded secondary could report rank 1 at a position the primary
+rejects, so the two oracles would disagree about the same trial for no principled reason.
 
 **Per-secret form coverage is certified and recorded, not assumed.** `token_forms` keeps
 whichever of `{w, ␣w}` happen to be single tokens and **silently drops the rest** —
@@ -473,11 +501,16 @@ one subject scale, the T4 SECRET-LEVEL emission rate exceeds the T0 secret-level
 emission rate with a Newcombe 95% interval for the difference (T4 − T0) that excludes
 zero. The secret-level rate is k of 25: the number of held-out secrets emitted in at
 least one of their 4 frozen prompt texts. This unit, not the trial-level k-of-100
-rate, decides G0 — the 100 trials cluster by secret and the two arms are paired, so 25
-is the unit at which the independent-proportions assumption Newcombe requires actually
-holds. The trial-level rate is reported alongside for every cell and decides nothing.
-Emission is the primary oracle: the secret token at rank 1 at any output position of
-any turn in greedy decode, subject to the D10 word-boundary condition. FAIL otherwise. One pre-declared battery revision from the 10-word spare pool
+rate, decides G0: aggregating to the secret level removes the within-secret clustering
+that makes a Wilson interval at n = 100 anti-conservative, and 25 clears the N >= 20
+floor. The two arms remain PAIRED -- both cells are computed over the same 25 held-out
+secrets -- so no level of aggregation makes Newcombe's independence assumption true
+here; the pairing makes the independent-samples difference interval conservative under
+positive correlation, which is the acceptable direction for a gate and is owned as a
+limitation rather than claimed as a property. The trial-level rate is reported
+alongside for every cell and decides nothing. Emission is the primary oracle: the
+secret token at rank 1 at any output position of any turn in greedy decode, subject to
+the D10 word-boundary condition. FAIL otherwise. One pre-declared battery revision from the 10-word spare pool
 is permitted on FAIL, after which the battery re-freezes and G0 is decided once more;
 a second FAIL is a reportable null. A saturated curve at 0.5B alone is reportable
 texture, not failure.
@@ -501,12 +534,14 @@ that the battery has a pressure gradient.
 | Any cell with `n < 20` | per-cell `n` | House floor; an underpowered cell cannot decide a gate |
 | A `batteries/secrets.json` SHA256 that does not match the frozen artifact | run-level `battery_sha256` | The gate must not certify a run against a mutated battery |
 | Emission counts read from the case-extended secondary oracle | per-count `oracle` | `D6`: G0 turns on the primary only |
-| Counts at the **non-gate unit** (trial-level) | per-rate `unit` | `D8`/`GATE_WORDING`: G0 decides on the secret-level rate; the trial-level rate decides nothing |
+| The gate asked to **decide from** the trial-level rate | the `unit` of the rate the gate is asked to decide on | `D8`/`GATE_WORDING`: G0 decides on the secret-level rate. Note this arm is about the *decision input*, not about presence: `D1` makes trial-level rates mandatory in every cell, so an arm keyed on "trial-level counts present" would fire on every valid payload. |
 | A payload **missing the `T4_turn1` or `T1`–`T3` cells** | presence of those cells | `D3`: the exposure-matched companions are mandatory. Without an arm, a T0+T4-only payload has every *field* and would certify — leaving F2's control enforced by prose in a repo whose runners are never edited after certification. |
 
-Note the last two: the two properties `D3` and `D1` made mandatory are exactly the two
-that had no arm, so the controls existed only as prose. An arm for a missing **cell** is
-distinct from an arm for a missing **field**, and both are required.
+Four of the seven arms turn on labels rather than numbers, which is why the field contract
+below is part of `D8` rather than a build detail. Note the last two arms in particular: the
+two properties `D3` and `D1` made mandatory were exactly the two that had no arm, so those
+controls existed only as prose. An arm for a missing **cell** is distinct from an arm for a
+missing **field**, and both are required.
 
 **The result-JSON field contract these arms require.** Two of the five arms are only
 checkable if the gate can *recognise* what it was handed, and nothing in `D6`/`D7`
@@ -525,6 +560,7 @@ therefore emit, and `gates/g0.py` must read:
 | `oracle` | count | `"primary"` \| `"case_extended"` |
 | `unit` | rate | `"secret"` (the gate unit) \| `"trial"` (reported only) |
 | `boundary_rejected` | trial | count of form-id hits rejected by `D10`'s word-boundary condition |
+| `boundary_indeterminate` | trial | count of hits at the final generated position — not emissions (`D10`) |
 
 A gate that receives a payload missing any of these returns `INVALID` rather than
 guessing a default — a missing label is indistinguishable from a wrong one.
