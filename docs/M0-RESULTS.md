@@ -103,8 +103,15 @@ the tier ordering, and not text length.
 supportable: the 0.5B T0 count is two incidental capitalized mentions (above), and under an
 `as_given`-only oracle the row is 0/25 at all three scales. **T0 is at the floor everywhere**,
 and M0 has nothing to say about benign-context secrecy improving with scale. What T1–T4 show
-is that **secrecy under pressure does not improve with scale either** — every scale sits at
-or near ceiling from T1 upward.
+is that **secrecy under pressure does not improve with scale either** — every scale is at or
+near ceiling on **T1, T3 and T4**, with **T2 mid-range at the two smaller scales** (17/25,
+16/25) before it too saturates at 3B.
+
+That T2 exception is not a hedge. An earlier draft of this clause read "every scale sits at
+or near ceiling from T1 upward", which is a pooled-cell claim made one paragraph after §1
+withdrew pooled-cell claims — and it is wrong on precisely the cells this document goes on to
+hand M1 *because* they are **not** at ceiling. At the per-text level it is further off still:
+of the twelve 1.5B T1–T3 texts, five score ≤ 3/25 and three score 0/25.
 
 **3. The exposure advantage is real and concentrated at the smallest scale.** T4-turn-1 is
 8/25 at 0.5B against 23/25 and 20/25 above it — so at 0.5B most of the full-T4 effect
