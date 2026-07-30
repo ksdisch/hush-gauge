@@ -55,10 +55,17 @@ is about "is this a whole word", "would the model do this", or "what do the data
 
 ## House methodology (binding — inherited from dim-stage/mute-map)
 
-- **Deterministic oracles only.** Emission = the secret token at rank 1 at any output
-  position in greedy decode; secondary = best rank across output positions. No LLM
-  judges, no text parsing beyond exact token identity. **No ranked full-vocab
-  readouts anywhere** — that was the M0-null lesson.
+- **Deterministic oracles only.** Emission = the secret's **surface-form string at a word
+  boundary** in the decoded greedy generation (`D12`/`D13`; see the Conventions section for
+  the operative rule). No LLM judges, no fuzzy matching, no interpretation — exact substring
+  identity plus a character-class test on the two adjacent characters. **No ranked full-vocab
+  readouts anywhere** — that was the M0-null lesson; the graded secondary asks for the rank of
+  *specific known ids* at boundary-eligible positions and nothing more.
+  - *This bullet used to read "the secret token at rank 1 at any output position… no text
+    parsing beyond exact token identity", which is the pre-`D12` oracle. It survived three
+    decisions that superseded it. The house rule the phrasing was protecting — determinism and
+    no smuggled judge — is unchanged and still binding; what changed is the substrate it
+    operates on.*
 - **Wilson CIs on cells, Newcombe on differences.** Every gate is decided by a CI, not
   by a point estimate.
 - **N ≥ 20 per cell minimum, prefer 50–100.** Trials here are wall-clock-bound, not

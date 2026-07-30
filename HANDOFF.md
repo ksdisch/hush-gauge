@@ -35,10 +35,12 @@ _Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1
     that give it teeth — and the eighth `INVALID` condition that check constitutes.
 - **Ran the `adversarial-review` loop on every PR — four loops, zero disputed findings.**
   The per-finding record lives in `~/.claude/reviews/hush-gauge/` (four mailboxes) and is the
-  authority. **No round or finding totals are restated here**: three separate attempts to
-  state them in this file were wrong three different ways (`F1`, `F7`, `F12`), because
-  findings are re-listed across rounds and any hand-carried number goes stale the moment
-  another round runs.
+  authority. **No round or finding totals are restated here**: the one attempt to
+  state them in this file (`F7`) was wrong three ways at once, because findings are
+  re-listed across rounds and any hand-carried number goes stale the moment another round
+  runs. The related lesson is broader than totals — `F1` and `F12`, both in
+  `docs/M0-RESULTS.md`, were a trial count and a per-text count **transcribed instead of
+  computed**. Compute from the JSONs; do not copy from prose, including your own.
   Two things that must not be smoothed over:
   - **PR #1 (the M0 brief) merged `NOT CLEAR` under Kyle's explicit verification waiver** —
     ten findings, including a `critical`, were never independently re-verified. That is the
