@@ -14,8 +14,16 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    # Reads the locally cached WikiText-103 parquet directly, so the oracle's
+    # precision/recall sweep runs against real English without pulling `datasets`
+    # (which would re-resolve the K6-pinned inference stack). Tests only.
+    "pyarrow>=25.0.0",
     "pytest>=8",
 ]
+
+[tool.pytest.ini_options]
+# Runners live at the repo root; tests import them from tests/.
+pythonpath = ["."]
 
 [tool.uv]
 package = false

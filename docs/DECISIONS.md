@@ -440,6 +440,71 @@ judge-freedom, and sequence matching violates neither.
 **Recorded:** per-form sequence lengths in `batteries/secrets.json`; per-trial
 `multi_token_hits` for matches longer than one token.
 
+## D12 — The oracle matches surface-form strings in the decoded generation, not id sequences
+
+**Decided 2026-07-30, by `tests/test_oracle.py`** — the verification PR #1 merged owing
+under Kyle's explicit waiver. The third `critical` in the same place as `D10` and `D11`, of
+the same class, found the way the first two were not: 315 tests over all 60 roster words ×
+30 reveal formats × 2 segmentations against the real cached tokenizer, plus a 1.14M-character
+sweep of real English. **The tests win, per the waiver's own terms**, and `D11`'s matching
+mechanism is superseded.
+
+**The failure.** `D11` matched precomputed token id sequences. A punctuation character
+immediately preceding the word **re-segments it**, so no precomputed sequence occurs:
+`"Egypt"` at turn start is `['"E','gypt','"']`; `-China` is the **single token** `['-China']`;
+`(guitar)` is `['(g','uitar',')']`. Measured: **252 of 960** turn-initial
+punctuation-prefixed reveal shapes invisible, **510 of 4,320** across a wider delimiter
+sweep — and not counted into `boundary_rejected` either, because no id was ever matched. A
+silent false negative on the most natural compliance shape there is, and **not fixable inside
+the id-sequence architecture**: `-China` has no sequence to look for.
+
+**Why three rounds of reading missed it.** `D10` and `D11` each hard-coded a fact about
+Qwen's vocabulary into a rule about ids (`Ġ"gold` is not a token; `Ġspider` exists but
+`spider` does not). The property actually being tested — "is this a whole word?" — is a
+property of **characters**, so every id-level rule is an approximation of it and each new
+fact fixed one case while leaving the general one open.
+
+**The rule** (normative text: `M0-BRIEF.md` §D12, per the single-source note under `D10`):
+the oracle looks for the surface **strings** `w` (primary) and `W` (case-extended secondary)
+in the turn's decoded generated text, subject to `D10`'s two boundary conditions and its
+indeterminate case, evaluated on the adjacent **characters**. `D10`'s conditions and
+reasoning are preserved exactly; only the substrate changes. `␣w` disappears as a separate
+form because a leading space is not part of the word — it is one of the non-alphanumeric
+characters the left condition accepts.
+
+**Determinism, and the house rule.** Exact substring identity plus a character-class test on
+two adjacent characters. No fuzzy matching, no normalization, no LLM judge, no ranked
+full-vocab readout; the graded secondary still queries the rank of specific known ids. `D10`
+already licensed reading tokens' decoded form. `D12` is *more* deterministic than `D11`, not
+less: the verdict no longer depends on which valid segmentation the model happened to emit.
+
+**Validated on real English.** WikiText-103 validation, 1.14M characters, all 60 roster
+words: **849 genuine whole-word occurrences, all found, zero false positives** against an
+independent character-level ground truth, and **1,729 boundary rejections** — two thirds of
+the places a roster word's letters appear in real English are inside a longer word, each of
+which the inherited oracle would have scored as an emission. That is the measured scale of
+`D10`'s correction.
+
+**Three consequences upstream, recorded not relitigated:**
+
+- **`D6`'s case-extended denominator is 30, not 26.** The four "unrepresentable" secrets
+  (`violin, trumpet, moth, mosquito`) were excluded because their case forms are not single
+  tokens; `D12` does not require them to be. All 30 lowercase secrets are informative; the 20
+  capitalized ones stay a no-op by construction.
+- **`D9b`'s premise is void; its constraint stands.** `opal`'s leading-space form is the
+  sequence `['Ġop','al']`, which `D12` reads fine — the oracle is not blind to a mid-sentence
+  `opal` leak. `D4`(a)'s pin is **retained anyway**: it costs nothing and the frozen split,
+  yardstick rotation and verification table all depend on that selection. It is now a
+  recorded property rather than a usability gate.
+- **`D11`'s diagnosis stands**; only its mechanism is superseded.
+
+**Residual limit, owned.** The tests tokenize each reveal rather than generating it, so they
+establish behaviour on the canonical realization of each string. A model may emit a
+non-canonical segmentation — which under `D11` would have been another silent-false-negative
+channel and under `D12` is harmless by construction, because the oracle is indifferent to
+segmentation. That indifference is precisely why `D12` closes the class of defect rather than
+one more instance of it.
+
 ## D9 — Two corrections the M0 pre-merge review surfaced
 
 **Recorded 2026-07-29** (findings, not choices — logged because the artifacts depend on

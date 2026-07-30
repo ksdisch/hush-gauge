@@ -7,24 +7,28 @@ WikiText prompts; 0.5B/1.5B on local MPS, 3B on a rented RTX 4090 — dim-stage
 `docs/DECISIONS.md`). The `.pt` files are gitignored; this record is the tracked
 fingerprint.
 
-**Status: not yet copied.** M0 copies the three artifacts, runs
-`shasum -a 256 lenses/*.pt`, and confirms each hash against the expected values
-below before any measurement runs.
+**Status: copied and VERIFIED 2026-07-30.** All three artifacts are on disk and all
+three SHA256s match. Copied from `~/Projects/dim-stage/lenses/` at dim-stage commit
+**`43ff405`** (`chore: run the offline test suites in CI`); verified with
+`shasum -a 256 lenses/*.pt`.
 
-## Expected SHA256
+## Verified SHA256
 
-Carried forward from mute-map's verified `lenses/PROVENANCE.md` (which fingerprinted
-the same dim-stage working tree, commit `e6c10b9`). A match confirms hush-gauge is
-holding the identical anchor instrument.
+Recorded here in advance from mute-map's verified `lenses/PROVENANCE.md` (which
+fingerprinted the same dim-stage working tree at commit `e6c10b9`), then confirmed
+against the copies on disk. Three independent records — dim-stage's fit, mute-map's
+copy, hush-gauge's copy — agree, which is what makes this the identical anchor
+instrument rather than merely a plausible one. Note the differing dim-stage commits:
+`e6c10b9` and `43ff405` are the same lens weights, since neither commit touched
+`fitter.py` or the artifacts.
 
-| File | Expected SHA256 |
-|---|---|
-| `qwen2.5-0.5b-instruct-n100.pt` | `ffd6c99098380320cc05d132340651dbd5e67392e8ef94bb88ad267b600963ce` |
-| `qwen2.5-1.5b-instruct-n100.pt` | `05143b6438743123d51e11c78d3fbc6aece74c1783b0bb1f2ae050413e60080f` |
-| `qwen2.5-3b-instruct-n100.pt` | `e8b922ae747c58229c91083b373ec658f7bef401eff333f6a9cca774a4551b2d` |
+| File | SHA256 | Verified |
+|---|---|---|
+| `qwen2.5-0.5b-instruct-n100.pt` | `ffd6c99098380320cc05d132340651dbd5e67392e8ef94bb88ad267b600963ce` | ✓ 2026-07-30 |
+| `qwen2.5-1.5b-instruct-n100.pt` | `05143b6438743123d51e11c78d3fbc6aece74c1783b0bb1f2ae050413e60080f` | ✓ 2026-07-30 |
+| `qwen2.5-3b-instruct-n100.pt` | `e8b922ae747c58229c91083b373ec658f7bef401eff333f6a9cca774a4551b2d` | ✓ 2026-07-30 |
 
-Once verified in M0, this table is restated as **verified** with the date and the
-dim-stage commit the copy was taken from.
+Re-verify after any copy, move, or refit.
 
 **A hash mismatch is a stop condition,** not a curiosity: it means a different
 environment produced a different fit, and that lens is not the anchor instrument the

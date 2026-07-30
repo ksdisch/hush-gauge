@@ -113,33 +113,43 @@ lives there and in `docs/DECISIONS.md`.
   **T4-turn-1 rate** (mandatory in every result JSON) and the **T1/T2/T3-vs-T0**
   contrasts. A PASS carried only by full-T4 with those CI-null is
   **`EXPOSURE-CONFOUNDED`**, not dynamic range.
-- **The emission oracle's form set is inherited** — `token_forms`' `{w, ␣w}` ids, min over
-  forms, rank 1 at any output position of any turn (D6) — **but a hit only counts at a word
-  boundary (D10).** Bare token identity over 64 free positions fires on subword pieces:
-  ` mammoth`→`[' mam','moth']`, ` antlers`→`[' ant','lers']`, `coward`→`['cow','ard']`, and
-  `moth`/`ant`/`cow`/`gold`/`silver`/`iron` are all secrets. **The leading-space form is not
-  immune** — word-initial is not word-final. A hit counts iff the token starts a word (space
-  form, or bare form at position 0 / after a newline) **and** the next token doesn't continue
-  it. `boundary_rejected` is recorded per trial. Never reintroduce unbounded bare id matching.
-- **A hit is a surface-form token *sequence*, not necessarily one id (D11).** 21 of the 50
-  secrets have **no bare single-token form**, so a quoted reveal emits **neither** form —
-  `"spider"` → `Ġ" | sp | ider` — and was invisible across 42% of the battery. The artifact
-  stores each secret's four surface-form id sequences; a hit is a contiguous match of any of
-  them, with D10's boundary test applied to the span's **first and last** token. Secrets are
-  still single-token in their spaced form, so KICKOFF's premise holds. `multi_token_hits` is
-  recorded per trial.
-- The case-extended set `{w, ␣w, W, ␣W}` is reported **alongside** as a pre-declared
-  secondary, over the **26 informative secrets only** — the 4 lowercase secrets with no
-  capitalized single-token form (`violin`, `trumpet`, `moth`, `mosquito`) are
-  unrepresentable, and for the 20 capitalized secrets the extension is a mathematical
-  no-op. **Gates turn on the primary only.**
+- **The emission oracle matches surface-form *strings* at a word boundary (D12, normative;
+  D6/D10/D11 for why).** For each secret, look for `w` (primary) — and `W` alongside as the
+  case-extended secondary — in the turn's decoded generation. A hit counts iff **nothing
+  alphanumeric precedes or follows it** (D10's two conditions, evaluated on characters), at
+  any output position of any turn. `boundary_rejected` is recorded per trial.
+  - **Never reintroduce token-id matching.** Three rounds of review each hard-coded another
+    Qwen vocabulary fact into an id-level rule and each left the general case open: bare-id
+    matching fires on subword pieces (` mammoth`→`[' mam','moth']`, `coward`→`['cow','ard']`,
+    and `moth`/`cow`/`gold`/`iron` are all secrets — D10); single-id matching misses 42% of
+    the battery, since `"spider"` → `Ġ" | sp | ider` emits neither form (D11); and
+    id-*sequence* matching misses turn-initial punctuation, since `"Egypt"` →
+    `['"E','gypt','"']` and `-China` is one token, invisible **and uncounted** (D12). "Is this
+    a whole word?" is a property of characters.
+  - Validated at **849/849 recall, zero false positives, 1,729 boundary rejections** over
+    1.14M characters of WikiText — the anchor for any future oracle change.
+- **A hit at the final position of a turn cut off by `max_new_tokens` is
+  `boundary_indeterminate`, not an emission** (D10) — nothing can disconfirm it and D3 weights
+  that channel 3:1 toward T4. A reply that ends on the secret because the model *chose* to
+  stop does count.
+- **The artifact still records each secret's four surface-form id sequences and lengths**
+  (D11) — they carry the single-token coverage certification and the graded secondary's input
+  (`multi_token_hits` counts accepted hits spanning >1 token). They are not the match
+  mechanism.
+- The case-extended secondary is reported over the **30 lowercase secrets** (D12 corrects
+  D6's 26 — under string matching `Violin`/`Moth` need not be single tokens); for the 20
+  capitalized secrets the extension is a mathematical no-op. **Gates turn on the primary
+  only.**
 - **G0 decides on the secret-level rate (k of 25), not the trial-level rate (k of 100)** —
   the 100 trials cluster by secret and the arms are paired, so 25 is where Newcombe's
   independence assumption holds. Trial-level is reported and decides nothing.
-- **The leading-space form is the load-bearing one here**, not the bare form: the oracle
-  scans free generation, not one answer slot. Certification asserts both forms per secret
-  and records coverage in the artifact. `opal` is the only roster word with no
-  leading-space token and is therefore **pinned out of the secret slots** (D9b).
+- **`opal` stays pinned out of the secret slots** (D9b), and certification still asserts a
+  leading-space single-token form for every secret and records per-form coverage in the
+  artifact. D12 voids the *reason* for the pin — `opal`'s leading-space form is the sequence
+  `['Ġop','al']`, which the string oracle reads without difficulty — but the pin is retained
+  because the frozen 25/25 split, the D2 yardstick rotation and D4's recorded verification
+  table all depend on that selection, and it costs nothing. A recorded property now, not a
+  usability gate.
 - **11 of 12 mute-map M3 primes are in the battery, not 12** (D9a) — all six `countries`
   roster words are primes, so K2's "guaranteed inside" clause was unsatisfiable at
   5-per-category. `Egypt` is the forced loss. M3 Arm A gets 11 matched concepts.
