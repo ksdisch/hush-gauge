@@ -33,10 +33,23 @@ _Last updated: 2026-07-30 (M0: oracle built and verified; D12/D13 frozen; batter
     calls an emission by **77%** (+69 on 90). The promotion stands — the recall evidence is
     model output, the cost is corpus prose, and the 20 capitalized secrets already carried the
     exposure — but the channel is now **measured per trial** rather than asserted away.
-- **Ran the `adversarial-review` loop on PR #2: 2 rounds, 14 findings, 0 disputes.** Every
-  `critical` and `should-fix` fixed and **independently re-verified** (no waiver this time).
-  The reviewer reproduced every number `D13` freezes, exactly. Five nice-to-haves are recorded
-  as follow-ups in the PR comment.
+- **Ran the `adversarial-review` loop on PR #2: 3 rounds, 19 findings, 0 disputes.** The zero-
+  context reviewer reproduced every number `D13` freezes, exactly. Rounds 1 and 2's fixes were
+  **independently re-verified** (10 of 10, none reopened) — the thing PR #1's waiver skipped.
+  Round 3's own fixes are the residue: they close a `should-fix` (`F16`) plus four
+  nice-to-haves, and the reviewer dispatch cap was spent, so their verification status is
+  whatever the merge brief records. Do not read "fixed" as "verified" here; that conflation is
+  what cost this project a round in PR #1.
+  - **`F16` is the one worth remembering.** The `capitalized_only_hits` counter I added to fix
+    `F10` had `F3`'s pooling defect, one commit later: it counts the union of `D13`'s recall
+    gain (`'Lion.'`) and the prose exposure (`Iron Man`), so it **bounds** the false-positive
+    channel rather than measuring it — and `D13` claimed the latter. Now stated as a bound,
+    with each hit's decoded context recorded so the separation is a human read of recorded
+    evidence. The reviewer filed this against its own earlier suggestion.
+- **Two follow-ups stay open**, both nice-to-have and neither blocking: `F6` (the WikiText test
+  `pytest.skip`s itself when the HF cache differs, behind the load-bearing 849/1,729 anchor)
+  and `F7` (`D12`'s justifying 252/960 and 510/4,320 have no artifact in the tree, while the
+  conclusion they support is test-pinned).
 - **Also landed:** `encode.py` (`D2`'s byte-frozen system frame + the owned multi-turn chat
   encoder, the one documented departure from `mute-map/harness.py:64`), `roster.py` (copied
   from mute-map per K2), `tests/fixtures/real_replies_0.5b.json` (180 committed greedy replies
@@ -194,7 +207,8 @@ PR #1 merged **NOT CLEAR with stated residue** under Kyle's explicit verificatio
 `tests/test_oracle.py` exercise `D10`/`D11` over all 60 roster words × 30 reveal formats × 2
 segmentations, a 50-word subword-distractor corpus, 180 real greedy replies, and 1.14M
 characters of WikiText. It found `D12`, `D13` and `D13`'s circular justification — which is
-precisely what it was written to do. PR #2 then ran the full review loop with **no waiver**.
+precisely what it was written to do. PR #2 then ran three full review rounds, with rounds 1
+and 2 independently re-verified rather than waived.
 
 Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 `2026-07-30-feat-oracle-and-tests.md`, plus the PR #1 and #2 comments.
@@ -227,10 +241,10 @@ In order, all unblocked:
 6. **Run all three subjects** (~2.5 h estimated, unmeasured) → `results/`, then decide G0 once
    on the held-out 25.
 
-**Open follow-ups from PR #2's review** (all nice-to-have, none blocking): the WikiText test
-`pytest.skip`s itself when the HF cache differs, behind the load-bearing 849/1,729 anchor
-(`F6`); and `D12`'s justifying 252/960 and 510/4,320 have no artifact in the tree, while the
-conclusion they support is test-pinned (`F7`).
+**Open follow-ups from PR #2's review** — **two**, both nice-to-have and neither blocking:
+`F6` (the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
+load-bearing 849/1,729 anchor) and `F7` (`D12`'s justifying 252/960 and 510/4,320 have no
+artifact in the tree, while the conclusion they support is test-pinned).
 
 ## Open questions / blockers
 

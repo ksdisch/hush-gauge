@@ -54,8 +54,10 @@ undecided gate, not a negative one.
 **M0 open, 2026-07-30 · brief frozen (D1–D13) · the emission oracle is built and verified.**
 Lens artifacts copied and SHA256-verified. `oracle.py` and `encode.py` are in, with 345
 passing tests — including 180 committed real greedy replies and a 1.14M-character sweep of
-real English, where the oracle finds **849 of 849** genuine whole-word occurrences with **zero
-false positives**. Writing those tests found three oracle defects that four rounds of prose
+real English, where the oracle finds **849 of 849** whole-word occurrences of a roster word,
+exactly agreeing with an independent boundary predicate. (That is a recall and matcher-agreement
+result, not a claim that every hit is a reveal: incidental prose like "Iron Age" is a whole-word
+occurrence too, and D13 records the size of that exposure rather than denying it.) Writing those tests found three oracle defects that four rounds of prose
 review had not (D12, D13, and D13's own circular justification); all three are fixed and
 recorded. Next: the frozen batteries, `stats.py`, G0-as-code, and the tier × scale sweep.
 

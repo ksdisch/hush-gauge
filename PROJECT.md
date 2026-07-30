@@ -9,7 +9,8 @@ test whether secrecy is mute-map's late-band output off-switch.
 verified.** `docs/M0-BRIEF.md` is approved and normative. Lens artifacts are copied and all
 three SHA256s verified. `oracle.py`, `encode.py` and `roster.py` are in with **345 passing
 tests**, including 180 committed real greedy replies and a 1.14M-character WikiText sweep
-(849/849 recall, zero false positives). Writing that suite found **three** oracle defects
+(849/849 recall, exact agreement with an independent boundary predicate — a matcher-agreement
+result, not a claim that every hit is a reveal; D13 records the prose exposure separately). Writing that suite found **three** oracle defects
 four rounds of prose review had missed — D12, D13, and D13's own circular justification — all
 fixed, all recorded. No batteries and no runs yet.
 

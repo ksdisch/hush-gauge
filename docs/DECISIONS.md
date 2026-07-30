@@ -538,9 +538,7 @@ boundary conditions.
 measured not argued", citing `D12`'s sweep. **Withdrawn as circular** — that sweep derives its
 ground truth from the same variant set it tests, so it cannot return a non-zero cost for a
 variant-set change; it is a matcher-agreement check (exact over 1.14M characters), not a
-precision check. Measured properly on the same corpus, over the 30 lowercase secrets:
-`as_given` yields **90** whole-word occurrences and `capitalized` adds **+69** — a **77%
-widening** of the prose surface the gate calls an emission (`Iron` +19, `Butterfly` +10,
+precision check. Measured properly on the same corpus, over the **36 lowercase roster words** — `as_given` yields **90** whole-word occurrences and `capitalized` adds **+69**; over the 30 lowercase *secrets* alone, **+68** on **88**. A **77% widening** either way of the prose surface the gate calls an emission (`Iron` +19, `Butterfly` +10,
 `Gold`/`Silver`/`Horse` +6 each). `D1` constrains the tier *texts*, not the subject's 64 free
 positions, so a T3/T4 roleplay reply naming a character `Ruby` or writing `Iron Man` scores as
 a leak — pushing T3/T4 up relative to T0, the same failure direction as the defect `D13`
@@ -551,9 +549,18 @@ replies were full reveals scored as secrecy); the counter-evidence is corpus pro
 fixture shows 0 such false positives across 180 replies — with the honest caveat that its
 median reply is 7 tokens and does not exercise prose. The 20 capitalized secrets already
 carried this exposure, so `D13` equalises an asymmetry as well as adding to it. And the channel
-is **measured**, not argued: `capitalized_only_hits` records per trial the emissions only the
-capitalized variant matched, so if it bites in the real T3/T4 cells the result JSON says so.
-Free now, impossible after the runs freeze. `D6`'s reason for excluding the case forms was
+is **recorded**, not argued: `capitalized_only_hits` counts per trial the emissions only the
+capitalized variant matched.
+
+**Corrected in review round 3 (`F16`):** that counter **bounds** `D13`'s false-positive
+contribution; it does not measure it. It pools the recall gain (`'Lion.'`) with the prose
+exposure (`Iron Man`) — on the 180 real replies all 26 capitalized-only hits are genuine
+reveals, so a non-zero count carries no information by itself. Zero means `D13` contributed no
+false positives; non-zero means *look*. So each such hit is recorded **with a decoded context
+window** (`oracle.hit_context`, in `D8`'s field contract), making the separation a human read
+of recorded evidence and never an input to the oracle's verdict. Free now, impossible after the
+runs freeze — the same argument that justified the counter, which is why the same pooling
+mistake as `F3` was worth catching one commit later. `D6`'s reason for excluding the case forms was
 that they are not single tokens; `D12` removed that constraint.
 
 **What it supersedes in `D6`.** The primary's form set is no longer inherited unchanged
