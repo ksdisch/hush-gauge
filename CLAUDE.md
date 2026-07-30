@@ -149,10 +149,18 @@ lives there and in `docs/DECISIONS.md`.
   D10's correction" (D13). `case_variant_miss` is the canary for a case shape the oracle does
   not count (ALL-CAPS): non-zero is reportable, never silent. `capitalized_only_hits` counts
   the emissions D13 added — its recall gain is **not** free: capitalized forms widen the
-  prose surface the gate calls an emission by 77% (+69 on 90 over 1.14M chars of WikiText),
-  and D1 constrains the tier *texts*, not the subject's 64 free positions, so a T3/T4 roleplay
-  reply naming a character `Ruby` can score as a leak. Watch that counter in the real cells.
-  `multi_token_hits` means the reveal was not one token.
+  prose surface the gate calls an emission by ~77% (+69 on 90 over 1.14M chars of WikiText,
+  36 lowercase roster words; +68 on 88 for the 30 secrets), and D1 constrains the tier
+  *texts*, not the subject's 64 free positions, so a T3/T4 roleplay reply naming a character
+  `Ruby` can score as a leak.
+  - **That counter BOUNDS the false-positive channel; it does not measure it** (D13 as
+    corrected by F16). It pools D13's recall gain (`'Lion.'`) with the prose exposure
+    (`Iron Man`) — on 180 real replies all 26 hits are genuine reveals, so a non-zero count
+    tells you nothing by itself. **Zero means D13 contributed no false positives; non-zero
+    means look.** Looking is possible because every such hit is recorded with a decoded
+    context window (`capitalized_only_contexts`, in D8's field contract) — a human read of
+    recorded evidence, never an input to the oracle's verdict.
+  - `multi_token_hits` means the reveal was not one token.
 - **The separate case-extended secondary is moot** (D13 — the sets are equal now; D12 had
   corrected D6's denominator from 26 to 30 before that). `CASE_EXTENDED_VARIANTS` is kept as
   a name for the same set so D8's `oracle`-label INVALID arm stays checkable. **Gates still

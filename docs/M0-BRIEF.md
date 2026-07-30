@@ -919,7 +919,7 @@ therefore emit, and `gates/g0.py` must read:
 | `multi_token_hits` | trial | count of accepted matches whose span exceeded one token (`D11`) |
 | `case_variant_miss` | trial | whole-word occurrences matching the secret case-insensitively that no counted variant matched (`D13`) |
 | `capitalized_only_hits` | trial | accepted occurrences only the `capitalized` variant matched — the emissions `D13` added. An **upper bound** on `D13`'s false-positive contribution, not a measurement: it pools the recall gain with the prose exposure (`F16`) |
-| `capitalized_only_contexts` | trial | a decoded window around each such hit (`oracle.hit_context`), so the pooling above is separable post hoc by reading recorded evidence rather than by any judge (`F16`) |
+| `capitalized_only_contexts` | trial | a decoded window around each such hit — a `TrialScore` field, not a caller-side recomputation, so `asdict` cannot drop it (`F16`/`F20`). Makes the pooling above separable post hoc by reading recorded evidence rather than by any judge |
 
 A gate that receives a payload missing any of these returns `INVALID` rather than
 guessing a default — a missing label is indistinguishable from a wrong one.

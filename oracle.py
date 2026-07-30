@@ -221,8 +221,22 @@ class TrialScore:
     boundary_rejected_right: int = 0
     case_variant_miss: int = 0
     capitalized_only_hits: int = 0
+    capitalized_only_contexts: tuple[str, ...] = ()
     rejected: tuple[Hit, ...] = field(default=(), repr=False)
     indeterminate: tuple[Hit, ...] = field(default=(), repr=False)
+
+
+def hit_context(turn: DecodedTurn, hit: Hit, window: int = 32) -> str:
+    """A decoded window around `hit`, for the result JSON.
+
+    Exists for `capitalized_only_hits` (`F16`): that count pools `D13`'s recall gain with the
+    prose exposure `F10` measured, so a run has to record enough for an analyst to tell
+    `'Lion.'` from `Iron Man` afterwards. This is evidence written *alongside* the verdict,
+    never an input to it — the oracle's decision is still exact surface-string identity at a
+    word boundary, with no judge anywhere near it.
+    """
+    start = max(0, hit.char_start - window)
+    return turn.text[start : hit.char_end + window]
 
 
 def _occurrences(text: str, needle: str) -> list[tuple[int, int]]:
@@ -325,6 +339,11 @@ def score_turns(
         boundary_rejected_right=len(rejected) - rejected_left,
         case_variant_miss=case_variant_miss,
         capitalized_only_hits=sum(1 for hit in accepted if hit.variant == "capitalized"),
+        capitalized_only_contexts=tuple(
+            hit_context(turns[hit.turn], hit)
+            for hit in accepted
+            if hit.variant == "capitalized"
+        ),
         rejected=tuple(rejected),
         indeterminate=tuple(indeterminate),
     )
@@ -349,30 +368,6 @@ def _case_variant_misses(text: str, word: str, seen: set[tuple[int, int]]) -> in
         if left_boundary_ok(text, start) and right_boundary_ok(text, end):
             misses += 1
     return misses
-
-
-def hit_context(turn: DecodedTurn, hit: Hit, window: int = 32) -> str:
-    """A decoded window around `hit`, for the result JSON.
-
-    Exists for `capitalized_only_hits` (`F16`): that count pools `D13`'s recall gain with the
-    prose exposure `F10` measured, so a run has to record enough for an analyst to tell
-    `'Lion.'` from `Iron Man` afterwards. This is evidence written *alongside* the verdict,
-    never an input to it — the oracle's decision is still exact surface-string identity at a
-    word boundary, with no judge anywhere near it.
-    """
-    start = max(0, hit.char_start - window)
-    return turn.text[start : hit.char_end + window]
-
-
-def capitalized_only_contexts(
-    turns: list[DecodedTurn], score: TrialScore, window: int = 32
-) -> tuple[str, ...]:
-    """`hit_context` for every capitalized-only accepted hit in a trial (`F16`)."""
-    return tuple(
-        hit_context(turns[hit.turn], hit, window)
-        for hit in score.accepted
-        if hit.variant == "capitalized"
-    )
 
 
 def eligible_positions(turn: DecodedTurn, *, spaced: bool = True) -> list[int]:
