@@ -185,7 +185,16 @@ lives there and in `docs/DECISIONS.md`.
   and no prefix-match against them or `forbidden_forms`. Enforced all-roster, because the
   texts are shared by all 50 secrets — unlike mute-map's per-item rule.
 - **Frozen artifacts are hash-checked by the gate code**, not trusted from the caller;
-  gates enforce the held-out split themselves (D7, D8).
+  gates enforce the held-out split themselves (D7, D8), **recompute every reported rate from
+  the trials** rather than deciding on caller-supplied aggregates, and **check the trial set is
+  complete** — 25 eval secrets × 4 texts per tier — because a payload can drop trials and
+  rebuild every cell honestly (D14). The result JSON
+  carries all 50 secrets' trials — M1 needs the calibration half — so D8's arm 1 is about what
+  the gate *decides on*, not what the payload *contains*.
+- **A dry-run arm proven against a fixture the runner never emits is worth nothing** (D14). The
+  gate tests build their payload with `m0_leak_curve.build_payload` and mutate that; one line
+  filtering it to `split == "eval"` once hid a gate that would have exited 2 on the first real
+  sweep, with a green suite.
 
 ## Project Wiki
 

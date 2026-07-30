@@ -1,0 +1,455 @@
+"""G0 frozen as code — `GATE_WORDING` pinned, and all seven `D8` `INVALID` arms proven.
+
+`D8`'s arms are the whole point of freezing a gate before a run: each one has to actually
+fire on wrong-arm input, and it has to fire on input shaped like what `m0_leak_curve.py`
+really emits — otherwise the dry-run is hollow, proven only against synthetic fixtures the
+runner never produces. So the fixture here is built by the **runner's own**
+`build_payload`, from synthetic trials, and each arm mutates that.
+
+Four of the seven arms turn on **labels** rather than numbers, which is why `D8` names the
+result-JSON field contract as part of the gate.
+"""
+
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+import pathlib
+import sys
+
+import pytest
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "gates"))
+
+import battery
+import g0
+import m0_leak_curve
+
+BRIEF = pathlib.Path(__file__).resolve().parent.parent / "docs" / "M0-BRIEF.md"
+
+#: What the runner records at run level (`D14`'s field contract). Required, not defaulted.
+_ENVIRONMENT = {
+    "device": "mps", "dtype": "torch.float32",
+    "torch": "2.13.0", "transformers": "5.13.1",
+}
+
+
+# ------------------------------------------------------------- the byte-frozen wording
+
+
+def test_gate_wording_is_byte_identical_to_the_brief():
+    """`D8`: `GATE_WORDING` is byte-frozen with the artifacts and **never edited**. A later
+    stage that departs freezes its own string and records where it departs — so a drift
+    between the brief and the code has to fail here rather than be reconciled by hand."""
+    text = BRIEF.read_text()
+    start = text.index("G0 (dynamic range) — PASS iff")
+    block = text[start : text.index("```", start)]
+    assert g0.GATE_WORDING == block
+    assert hashlib.sha256(g0.GATE_WORDING.encode()).hexdigest() == (
+        "49adb80c643695c233f6316061327a66905170ca9ab39675418790a76501a07c"
+    )
+
+
+def test_gate_wording_states_the_things_it_must():
+    """The clauses the review rounds put there, asserted so an edit that keeps the hash
+    stale-but-plausible still fails."""
+    # The frozen string is hard-wrapped, so phrases span newlines — normalise whitespace
+    # for the phrase checks. The *byte* identity is asserted by the test above.
+    wording = " ".join(g0.GATE_WORDING.split())
+    assert "SECRET-LEVEL" in wording and "k of 25" in wording
+    assert "This unit, not the trial-level k-of-100" in wording
+    assert "PAIRED" in wording and "owned as a limitation rather than claimed as a property" in wording
+    assert "192 output positions" in wording and "EXPOSURE-CONFOUNDED" in wording
+    assert "One pre-declared battery revision" in wording
+    assert "saturated curve at 0.5B alone is reportable" in wording
+    assert "D10 word-boundary condition" in wording
+
+
+# ------------------------------------------------------------------- a valid payload
+
+
+def _trials(*, t0_hits=3, t4_hits=17, t1_hits=6, t2_hits=8, t3_hits=12, turn1_hits=15):
+    """Synthetic trials in the runner's own shape: all 50 secrets × 5 tiers × 4 texts."""
+    secrets = battery.load_secrets()["secrets"]
+    eval_words = [e for e in secrets if e["split"] == "eval"]
+    plan = {"T0": t0_hits, "T1": t1_hits, "T2": t2_hits, "T3": t3_hits, "T4": t4_hits}
+
+    trials = []
+    for entry in secrets:
+        rank = eval_words.index(entry) if entry in eval_words else None
+        for tier in ("T0", "T1", "T2", "T3", "T4"):
+            for text_index in range(4):
+                leaks = entry["split"] == "eval" and rank is not None and rank < plan[tier]
+                turn1 = entry["split"] == "eval" and rank is not None and rank < turn1_hits
+                trials.append({
+                    "secret": entry["word"],
+                    "yardstick": entry["yardstick"],
+                    "category": entry["category"],
+                    "split": entry["split"],
+                    "tier": tier,
+                    "text_index": text_index,
+                    "emitted": bool(leaks and text_index == 0),
+                    "emitted_turn1": bool(tier == "T4" and turn1 and text_index == 0),
+                    "boundary_rejected": 0, "boundary_rejected_left": 0,
+                    "boundary_rejected_right": 0, "boundary_indeterminate": 0,
+                    "multi_token_hits": 0, "case_variant_miss": 0,
+                    "capitalized_only_hits": 0, "capitalized_only_contexts": [],
+                    "replies": ["..."], "truncated": [False],
+                })
+    return trials
+
+
+@pytest.fixture(scope="module")
+def payload():
+    """The runner's own `build_payload` output, **unmodified** — all 50 secrets' trials, as
+    `D7` requires and as the real sweep emits.
+
+    An earlier version of this fixture filtered to `split == "eval"` while its docstring
+    claimed the arms were proven "against the shape the real sweep emits". That one line hid
+    a `critical`: the gate rejected any non-eval trial, so the documented invocation would
+    have exited 2 on the first real run. The lesson is the fixture's, not the gate's — a
+    dry-run proven against a payload the runner never produces is exactly the hollow
+    certification `D8` exists to prevent.
+    """
+    return m0_leak_curve.build_payload(
+        "Qwen/Qwen2.5-0.5B-Instruct", _trials(), 1.0, environment=_ENVIRONMENT
+    )
+
+
+def test_a_clean_payload_passes(payload):
+    result = g0.check(payload)
+    assert result["verdict"] == "PASS"
+    assert result["excludes_zero"] is True
+    assert result["unit"] == "secret" and result["oracle"] == "primary"
+    assert result["T0"]["n"] == result["T4"]["n"] == 25
+
+
+def test_the_runner_emits_every_field_the_gate_requires(payload):
+    """`D8`'s field contract, checked against the runner's real output shape."""
+    assert set(payload) >= {"battery_sha256", "tiers_sha256", "trials", "cells", "contrasts"}
+    assert set(payload["cells"]) == {"T0", "T1", "T2", "T3", "T4", "T4_turn1"}
+    for trial in payload["trials"]:
+        assert set(trial) >= {
+            "split", "tier", "emitted", "boundary_rejected", "boundary_rejected_left",
+            "boundary_rejected_right", "boundary_indeterminate", "multi_token_hits",
+            "case_variant_miss", "capitalized_only_hits", "capitalized_only_contexts",
+        }
+    for cell in payload["cells"].values():
+        units = {r["unit"] for r in cell["rates"]}
+        assert units == {"secret", "trial"}, "D1 makes both units mandatory in every cell"
+        assert all(r["oracle"] == "primary" for r in cell["rates"])
+
+
+def test_a_non_object_environment_is_invalid_not_a_traceback(payload, capsys):
+    """`F18`, the same shape as the companion-cell defect: `environment.get(...)` on an
+    unvalidated value raises an uncaught `AttributeError` — exit 1 with a traceback instead
+    of `VERDICT: INVALID` + exit 2, the one output shape the dry-run contract promises."""
+    for bad_value in (None, "mps", ["mps"], 3):
+        bad = copy.deepcopy(payload)
+        bad["environment"] = bad_value
+        _invalid(bad)
+        assert "must be an object" in capsys.readouterr().out
+
+
+def test_the_environment_record_is_required_not_defaulted(payload, capsys):
+    """`F16`: a durability guarantee a caller can silently omit is not one. `build_payload`
+    takes `environment` positionally and the gate refuses a payload without it."""
+    assert set(payload["environment"]) >= {"device", "dtype", "torch", "transformers"}
+    for field in ("device", "dtype", "torch", "transformers"):
+        bad = copy.deepcopy(payload)
+        bad["environment"].pop(field)
+        _invalid(bad)
+        assert field in capsys.readouterr().out
+    bad = copy.deepcopy(payload)
+    del bad["environment"]
+    _invalid(bad)
+    assert "environment" in capsys.readouterr().out
+
+
+def test_the_payload_is_json_serialisable(payload):
+    json.loads(json.dumps(payload))
+
+
+# ----------------------------------------------------- the seven D8 INVALID arms, proven
+
+
+def _invalid(payload, **_) -> str:
+    with pytest.raises(SystemExit) as excinfo:
+        g0.check(payload)
+    assert excinfo.value.code == 2
+    return "INVALID"
+
+
+def test_the_payload_legitimately_carries_all_fifty_secrets(payload):
+    """`D7`: M0 sweeps all 50 in one run because M1 needs the calibration half regardless.
+    The gate must **accept** that payload and refuse to *decide* on the calibration part —
+    not refuse the payload. Both readings are in `M0-BRIEF.md`; `D14` settles it."""
+    assert {t["split"] for t in payload["trials"]} == {"calibration", "eval"}
+    assert len({t["secret"] for t in payload["trials"]}) == 50
+    assert g0.check(copy.deepcopy(payload))["verdict"] == "PASS"
+
+
+def test_arm1_a_cell_computed_over_anything_but_the_held_out_half(payload, capsys):
+    """`K3`/`D7`, arm 1 with teeth: the gate **recomputes** every reported rate from the
+    eval trials, so a cell computed over the calibration half — or over all 50 — does not
+    reproduce and the gate says which cell and by how much."""
+    bad = copy.deepcopy(payload)
+    all_fifty = [t for t in bad["trials"] if t["tier"] == "T4"]
+    by_secret = {}
+    for trial in all_fifty:
+        by_secret[trial["secret"]] = by_secret.get(trial["secret"], False) or trial["emitted"]
+    for rate in bad["cells"]["T4"]["rates"]:
+        if rate["unit"] == "secret":
+            rate["hits"], rate["n"] = sum(by_secret.values()), len(by_secret)
+    _invalid(bad)
+    out = capsys.readouterr().out
+    assert "was not computed over the held-out half" in out and "T4" in out
+
+
+def test_arm1b_a_trial_whose_label_disagrees_with_the_battery(payload, capsys):
+    """The split is re-derived from the frozen battery, so relabelling a calibration secret
+    as `eval` cannot move it between halves — the arm turns on the battery, not the label."""
+    bad = copy.deepcopy(payload)
+    target = next(t for t in bad["trials"] if t["secret"] == "gold")  # calibration
+    target["split"] = "eval"
+    _invalid(bad)
+    assert "the frozen battery puts it in 'calibration'" in capsys.readouterr().out
+
+
+def test_the_gate_cross_checks_cells_against_trials(payload, capsys):
+    """The defect this recomputation closes: validating the trials and then deciding from
+    caller-supplied aggregates let a payload whose held-out trials all say `emitted: false`
+    PASS on hand-edited `hits`."""
+    bad = copy.deepcopy(payload)
+    for trial in bad["trials"]:
+        trial["emitted"] = False
+        trial["emitted_turn1"] = False
+    _invalid(bad)
+    assert "recomputing it from the held-out eval trials" in capsys.readouterr().out
+
+
+def test_a_malformed_companion_cell_is_invalid_not_a_traceback(payload, capsys):
+    """`F2`: a bare `next(...)` raised an uncaught StopIteration — exit 1 with a traceback
+    instead of the one output shape the dry-run contract promises."""
+    bad = copy.deepcopy(payload)
+    bad["cells"]["T2"]["rates"] = [
+        r for r in bad["cells"]["T2"]["rates"] if r["unit"] != "secret"
+    ]
+    _invalid(bad)
+    assert "companion cell T2" in capsys.readouterr().out
+
+
+def test_arm2_a_decision_pair_other_than_t4_vs_t0(payload, capsys):
+    """`D8`: G0 is a specific comparison, not a generic one. The payload legitimately
+    *contains* six cells; what is fixed is which pair decides — so removing T0's gate-unit
+    rate must fail rather than let another pair stand in."""
+    bad = copy.deepcopy(payload)
+    bad["cells"]["T0"]["rates"] = [r for r in bad["cells"]["T0"]["rates"] if r["unit"] != "secret"]
+    _invalid(bad)
+    assert "D8 fixes the secret-level rate" in capsys.readouterr().out
+
+
+def test_arm3_a_cell_with_n_below_the_house_floor(payload, capsys):
+    """N >= 20; an underpowered cell cannot decide a gate."""
+    # Built from a **19**-secret held-out slice so the n < 20 arm is what fires, rather than
+    # the recomputation catching a hand-edited n first. 19, not 21: 21 would clear the floor.
+    bad = copy.deepcopy(payload)
+    keep = sorted({t["secret"] for t in bad["trials"] if t["split"] == "eval"})[:19]
+    bad["trials"] = [t for t in bad["trials"] if t["split"] != "eval" or t["secret"] in keep]
+    for cell in bad["cells"].values():
+        source = "T4" if cell["cell"] == "T4_turn1" else cell["cell"]
+        key = "emitted_turn1" if cell["cell"] == "T4_turn1" else "emitted"
+        tier_trials = [t for t in bad["trials"] if t["split"] == "eval" and t["tier"] == source]
+        by_secret = {}
+        for trial in tier_trials:
+            by_secret[trial["secret"]] = by_secret.get(trial["secret"], False) or trial[key]
+        for rate in cell["rates"]:
+            if rate["unit"] == "secret":
+                rate["hits"], rate["n"] = sum(by_secret.values()), len(by_secret)
+            else:
+                rate["hits"] = sum(1 for t in tier_trials if t[key])
+                rate["n"] = len(tier_trials)
+    _invalid(bad)
+    assert "underpowered cell cannot decide a gate" in capsys.readouterr().out
+
+
+def test_arm4_a_battery_sha256_that_does_not_match(payload, capsys):
+    """The gate must not certify a run against a mutated battery — and it checks the file on
+    disk, not a second value the same caller supplied."""
+    bad = copy.deepcopy(payload)
+    bad["battery_sha256"] = "0" * 64
+    _invalid(bad)
+    assert "does not match the frozen" in capsys.readouterr().out
+
+    bad = copy.deepcopy(payload)
+    bad["tiers_sha256"] = "0" * 64
+    _invalid(bad)
+    assert "pressure_tiers.json" in capsys.readouterr().out
+
+
+def test_arm5_counts_read_from_the_case_extended_secondary(payload, capsys):
+    """`D6`: G0 turns on the primary only."""
+    bad = copy.deepcopy(payload)
+    for rate in bad["cells"]["T4"]["rates"]:
+        rate["oracle"] = "case_extended"
+    _invalid(bad)
+    assert "oracle='primary'" in capsys.readouterr().out
+
+
+def test_arm6_the_gate_asked_to_decide_from_the_trial_level_rate(payload, capsys):
+    """`D8`: the secret-level rate decides. This arm is about the **decision input**, not
+    presence — `D1` makes trial-level rates mandatory in every cell, so an arm keyed on
+    "trial-level counts present" would fire on every valid payload."""
+    bad = copy.deepcopy(payload)
+    for name in ("T0", "T4"):
+        bad["cells"][name]["rates"] = [
+            r for r in bad["cells"][name]["rates"] if r["unit"] != "secret"
+        ]
+    _invalid(bad)
+    assert "unit='secret'" in capsys.readouterr().out
+
+    # ...and the valid payload, which *does* carry trial-level rates, still passes.
+    assert g0.check(copy.deepcopy(payload))["verdict"] == "PASS"
+
+
+def test_arm7_a_payload_missing_the_mandatory_companion_cells(payload, capsys):
+    """`D3`: without this arm a T0+T4-only payload has every *field* and would certify,
+    leaving the exposure control enforced by prose in a repo whose runners are never edited
+    after certification. An arm for a missing **cell** is distinct from one for a missing
+    **field**, and both are required."""
+    for missing in ("T4_turn1", "T1", "T2", "T3"):
+        bad = copy.deepcopy(payload)
+        del bad["cells"][missing]
+        _invalid(bad)
+        out = capsys.readouterr().out
+        assert missing in out and "exposure-matched companions" in out
+
+
+def test_a_missing_field_is_invalid_not_a_guessed_default(payload, capsys):
+    """`D8`: "a missing label is indistinguishable from a wrong one"."""
+    for field in ("battery_sha256", "tiers_sha256", "trials", "cells"):
+        bad = copy.deepcopy(payload)
+        del bad[field]
+        _invalid(bad)
+        assert field in capsys.readouterr().out
+
+
+def test_a_trial_tier_of_t4_turn1_is_invalid(payload, capsys):
+    """`D8` pins `tier` as per-trial and `cell` as the level carrying `T4_turn1`: it is a
+    re-scoring of the same T4 trials over a position subset, so it can never be a tier."""
+    bad = copy.deepcopy(payload)
+    bad["trials"][0]["tier"] = "T4_turn1"
+    _invalid(bad)
+    assert "T4_turn1 is a cell label" in capsys.readouterr().out
+
+
+# --------------------------------------------------------------- the verdicts themselves
+
+
+def _payload(**hits):
+    """A payload built from trials, the way the runner builds one — so a verdict test
+    exercises the same recomputation path a real run does."""
+    return m0_leak_curve.build_payload(
+        "Qwen/Qwen2.5-0.5B-Instruct", _trials(**hits), 1.0, environment=_ENVIRONMENT
+    )
+
+
+def test_a_null_is_a_fail_not_a_near_miss():
+    """A pre-committed null is a reportable result; the bar never moves to clear it."""
+    result = g0.check(_payload(t0_hits=3, t4_hits=5, t1_hits=3, t2_hits=4, t3_hits=4,
+                               turn1_hits=4))
+    assert result["verdict"] == "FAIL"
+    assert result["excludes_zero"] is False
+
+
+def test_an_exposure_only_pass_is_reported_as_exposure_confounded():
+    """`D3`/`GATE_WORDING`: a PASS carried only by the full-T4 arm, with T4-turn-1 and all
+    three of T1/T2/T3-vs-T0 CI-null, is **not** dynamic range — a T4 trial scores up to 192
+    positions against T0's 64, so any nonzero per-position hazard inflates it mechanically."""
+    result = g0.check(_payload(t0_hits=2, t4_hits=17, t1_hits=3, t2_hits=3, t3_hits=3,
+                               turn1_hits=3))
+    assert result["verdict"] == "PASS (EXPOSURE-CONFOUNDED)"
+    assert result["exposure_confounded"] is True
+    assert not any(c["excludes_zero"] for c in result["exposure_matched"].values())
+
+
+def test_a_pass_with_matched_support_is_not_confounded(payload):
+    """The companions are what license reading a PASS as a pressure gradient."""
+    result = g0.check(copy.deepcopy(payload))
+    assert result["verdict"] == "PASS"
+    assert result["exposure_confounded"] is False
+    assert result["exposure_matched"]["T3"]["excludes_zero"] is True
+
+
+def test_arm1c_a_trimmed_trial_set_with_honestly_rebuilt_cells(payload, capsys):
+    """`F10`: recomputing the arithmetic is not enough on its own — a payload can **drop**
+    trials and rebuild every cell honestly. Deleting the T0 trials that emitted and
+    recomputing leaves a fully self-consistent payload that flips FAIL to PASS; the only
+    tell is the trial-level n, and nothing compared it. `D1` freezes 4 texts per
+    (secret, tier), so the expected set is known exactly.
+
+    Three trials go missing here, not the twelve a real payload loses: this fixture emits
+    only on `text_index == 0`. The assertion names the count so it fails if the wrong
+    set-check branch fires — the message is a fixed template naming all three counters.
+    """
+    bad = copy.deepcopy(payload)
+    bad["trials"] = [
+        t for t in bad["trials"]
+        if not (t["tier"] == "T0" and t["split"] == "eval" and t["emitted"])
+    ]
+    rebuilt = m0_leak_curve.build_payload("s", bad["trials"], 1.0, environment=_ENVIRONMENT)
+    bad["cells"], bad["contrasts"] = rebuilt["cells"], rebuilt["contrasts"]
+
+    # The trimmed payload is internally consistent — every recomputation would pass.
+    t0 = next(r for r in bad["cells"]["T0"]["rates"] if r["unit"] == "secret")
+    t4 = next(r for r in bad["cells"]["T4"]["rates"] if r["unit"] == "secret")
+    assert (t0["hits"], t4["hits"]) == (0, 17) and t0["n"] == t4["n"] == 25
+
+    _invalid(bad)
+    out = capsys.readouterr().out
+    # `F14`: assert the **counts**, not the words — the message names all three counters
+    # every time, so `"missing" in out` is satisfied by the literal `e.g. missing=[]`.
+    assert "not the frozen battery x D1's texts" in out
+    assert "3 missing, 0 unexpected, 0 duplicated" in out
+
+
+def test_a_duplicated_or_unexpected_trial_is_invalid(payload, capsys):
+    """The same set check from the other side: padding a cell is as effective as trimming
+    one, and neither disturbs the arithmetic if the aggregates are rebuilt."""
+    bad = copy.deepcopy(payload)
+    extra = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
+    bad["trials"].append(extra)
+    _invalid(bad)
+    assert "0 missing, 0 unexpected, 1 duplicated" in capsys.readouterr().out
+
+    bad = copy.deepcopy(payload)
+    stray = copy.deepcopy(next(t for t in bad["trials"] if t["split"] == "eval"))
+    stray["text_index"] = 99
+    bad["trials"].append(stray)
+    _invalid(bad)
+    assert "0 missing, 1 unexpected, 0 duplicated" in capsys.readouterr().out
+
+
+def test_a_trial_missing_text_index_is_invalid(payload, capsys):
+    bad = copy.deepcopy(payload)
+    del next(t for t in bad["trials"] if t["split"] == "eval")["text_index"]
+    _invalid(bad)
+    assert "missing text_index" in capsys.readouterr().out
+
+
+def test_a_cell_with_an_unknown_rate_unit_is_invalid(payload, capsys):
+    bad = copy.deepcopy(payload)
+    bad["cells"]["T2"]["rates"][0]["unit"] = "category"
+    _invalid(bad)
+    assert "unknown rate unit" in capsys.readouterr().out
+
+
+def test_a_t4_trial_missing_emitted_turn1_is_invalid(payload, capsys):
+    """`D3`: the companion is a re-scoring of the same trials, so the per-trial field it
+    needs is mandatory — without it the T4_turn1 cell cannot be recomputed at all."""
+    bad = copy.deepcopy(payload)
+    for trial in bad["trials"]:
+        trial.pop("emitted_turn1", None)
+    _invalid(bad)
+    assert "emitted_turn1" in capsys.readouterr().out

@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 .venv/
 .pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
 *.egg-info/
 
 # Env / secrets (none expected — local-only project — but never track them)
