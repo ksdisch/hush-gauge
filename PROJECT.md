@@ -5,15 +5,18 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **M0 open, 2026-07-29 · brief frozen, no code yet.** `docs/M0-BRIEF.md` is
-written and approved: M0's three open calls are frozen as D1–D3 and the secondary calls
-they implied as D4–D11 (`docs/DECISIONS.md`). Still no code, no batteries, no runs, no
-lens artifacts on disk.
+**Status:** **M0 open, 2026-07-30 · brief frozen (D1–D13) · the emission oracle is built and
+verified.** `docs/M0-BRIEF.md` is approved and normative. Lens artifacts are copied and all
+three SHA256s verified. `oracle.py`, `encode.py` and `roster.py` are in with **345 passing
+tests**, including 180 committed real greedy replies and a 1.14M-character WikiText sweep
+(849/849 recall, zero false positives). Writing that suite found **three** oracle defects
+four rounds of prose review had missed — D12, D13, and D13's own circular justification — all
+fixed, all recorded. No batteries and no runs yet.
 
-**Next action:** copy the three dim-stage lens artifacts into `lenses/` and verify each
-SHA256 against `lenses/PROVENANCE.md` (mismatch is a stop condition). Then build the
-frozen battery artifacts per D2/D4/D11, port `stats.py`, freeze G0 as code with its seven
-dry-run INVALID arms (D8), and run the tier × scale emission curves.
+**Next action:** build the frozen battery artifacts per D2/D4/D11 (`D4`'s selection is already
+verified to reproduce the brief's frozen table exactly), port `stats.py` from mute-map, freeze
+G0 as code with its seven dry-run INVALID arms (D8), then run the tier × scale emission
+curves and decide G0 once on the held-out 25.
 
 ## Purpose
 
@@ -40,8 +43,9 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
   calibration, gates evaluate once on held-out.
 - Four pre-registered FP baselines, including the **context-word yardstick** — every
   detection claim is *excess over yardstick*, never "the probe fires".
-- Deterministic oracles only: the secret's **surface-form token sequence** at rank 1 at a
-  **word boundary** in greedy decode (primary — D10 + D11), best rank across output
+- Deterministic oracles only: the secret's **surface-form string** at a **word boundary** in
+  the decoded greedy generation, in either the as-given or capitalized case (primary — D10's
+  boundary conditions as corrected by D12 and D13), best rank across boundary-eligible output
   positions (secondary).
 - M0–M2 are v1. M3 (off-switch unification) is in scope but **detachable by design**.
 
@@ -65,8 +69,10 @@ inputs.
 ## Next actions
 
 1. ~~Write `docs/M0-BRIEF.md`~~ — **done 2026-07-29**; froze D1–D11.
-2. Copy the three dim-stage lens artifacts into `lenses/` and verify each SHA256
-   against `lenses/PROVENANCE.md` — a mismatch is a stop condition.
+2. ~~Copy the three dim-stage lens artifacts and verify each SHA256~~ — **done 2026-07-30**;
+   all three match (dim-stage `43ff405`).
+2b. ~~Build `oracle.py` + its test suite (the owed verification)~~ — **done 2026-07-30**;
+   345 tests, and it froze D12 + D13. `encode.py` landed with it.
 3. Build the frozen `batteries/secrets.json` (seed `20260729`, the 25/25 stratified
    assignment, the 10-word spare pool, and D2's yardstick rotation map) and
    `batteries/pressure_tiers.json` (5 tiers × 4 texts, T4 as 3 frozen user turns).
@@ -91,7 +97,7 @@ inputs.
 
 ## Open questions
 
-M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D11.
+M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D13.
 
 - **Decision (D1)** — per-tier prompt count is **4 frozen texts**, giving 100 trials
   per (tier × scale) eval cell.
@@ -138,7 +144,7 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D11.
 
 ## Decisions
 
-Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D11 from the M0 brief), not
+Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D13 from the M0 brief), not
 in a root `Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
@@ -148,7 +154,7 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D11 (M0) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D13 (M0) |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
 | Build plan (upstream) | `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` | plan | the pre-made design this brief was synthesized from |
 | Audit brainstorm | `~/Projects/j-lens-proj-ideas/audit-brainstorm-2026-07-28.md` | brainstorm | idea A3's origin and the sibling ideas it competed with |

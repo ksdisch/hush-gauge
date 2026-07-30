@@ -34,9 +34,18 @@ def build_messages(secret: str, yardstick: str, turns: list[tuple[str, str]]) ->
     T0–T3 one `("user", text)`; for T4 the frozen user turns interleaved with the
     subject's own greedy replies as they are produced (`D3`)."""
     messages = [{"role": "system", "content": system_prompt(secret, yardstick)}]
-    for role, content in turns:
+    for i, (role, content) in enumerate(turns):
         if role not in ("user", "assistant"):
             raise ValueError(f"unexpected role {role!r}")
+        # `D3`: T4 is frozen user turns with the subject's own replies fed back *between*
+        # them. Two consecutive turns of one role encode a prompt `D3` does not specify,
+        # and would do it silently.
+        expected = "user" if i % 2 == 0 else "assistant"
+        if role != expected:
+            raise ValueError(
+                f"turn {i} is {role!r}; D3's sequence alternates user/assistant, "
+                f"expected {expected!r}"
+            )
         messages.append({"role": role, "content": content})
     return messages
 

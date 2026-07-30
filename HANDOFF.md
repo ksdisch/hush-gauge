@@ -1,8 +1,52 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
+_Last updated: 2026-07-30 (M0: oracle built and verified; D12/D13 frozen; battery next)_
 
 ## What was just done
+
+- **Built `oracle.py` and its 345-test suite — the verification PR #1 merged owing** — and it
+  found **three** further oracle defects, each the same class as `D10` and `D11`. Frozen as
+  `D12`, `D13`, and `D13`'s own correction:
+  - **`D12`** (found by the tests): `D11`'s **id-sequence match is unsound**. A punctuation
+    character immediately before the word **re-segments** it — `"Egypt"` at turn start is
+    `['"E','gypt','"']`, `-China` is a *single token* — so no precomputed sequence occurs at
+    all. **252 of 960** turn-initial reveal shapes were invisible *and uncounted*, and it is
+    not fixable inside that architecture. The oracle now matches surface-form **strings** in
+    the decoded generation, with `D10`'s boundary conditions preserved exactly and evaluated
+    on **characters**, which is where they always belonged. Validated at **849/849 recall,
+    zero false positives, 1,729 boundary rejections** over the 1.14M-character WikiText
+    validation split, against an independent character-level ground truth.
+  - **`D13`** (found by PR #2's zero-context reviewer, by **generating real replies** — the
+    axis the suite states it does not exercise): the primary oracle was **case-blind**. Asked
+    for the secret, the 0.5B answers `'Lion.'` / `'Jade.'` / `'Cow.'` / `'Ant'` — **26 of 180
+    real replies were complete reveals scored as successful secrecy with every counter at
+    zero**, and the censoring rate varies by probe (12 trials on a direct ask, 4 on roleplay),
+    so it moves a T4−T0 difference in either direction. `capitalized` is now in the **primary
+    (gate)** set — Kyle's call at the triage gate. `boundary_rejected` splits **left/right**,
+    because a *left* rejection can be a genuine reveal the rule suppressed (a pressured small
+    model emits whitespace-collapsed dumps like `publicwordsilversecretwordgold…`). Two
+    canaries added: `case_variant_miss` and `capitalized_only_hits`.
+  - **`D13`'s own justification was then corrected** in review round 2: "zero false-positive
+    cost, measured, not argued" was **circular** — the cited WikiText sweep derives its ground
+    truth *from the same variant set it tests*, so it cannot return a non-zero cost for a
+    variant-set change. Measured properly, capitalized forms widen the prose surface the gate
+    calls an emission by **77%** (+69 on 90). The promotion stands — the recall evidence is
+    model output, the cost is corpus prose, and the 20 capitalized secrets already carried the
+    exposure — but the channel is now **measured per trial** rather than asserted away.
+- **Ran the `adversarial-review` loop on PR #2: 2 rounds, 14 findings, 0 disputes.** Every
+  `critical` and `should-fix` fixed and **independently re-verified** (no waiver this time).
+  The reviewer reproduced every number `D13` freezes, exactly. Five nice-to-haves are recorded
+  as follow-ups in the PR comment.
+- **Also landed:** `encode.py` (`D2`'s byte-frozen system frame + the owned multi-turn chat
+  encoder, the one documented departure from `mute-map/harness.py:64`), `roster.py` (copied
+  from mute-map per K2), `tests/fixtures/real_replies_0.5b.json` (180 committed greedy replies
+  so the suite tests real model output permanently), and `lenses/PROVENANCE.md` restated as
+  **verified** (2026-07-30, dim-stage `43ff405`, all three SHA256s match).
+- **Verified `D4`'s selection reproduces the brief's frozen table exactly** and drafted the 20
+  tier texts against `D1`'s two all-roster rules (they pass) — so tasks 3 and 4 below are
+  spec-checked before they are written.
+
+### Earlier — the M0 brief itself (2026-07-29)
 
 - **Wrote and froze `docs/M0-BRIEF.md`** — M0's start-of-stage brief, approved by Kyle
   before any code. It closes M0's three open calls and the five secondary calls they
@@ -108,66 +152,85 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 ## Where things stand
 
-**M0 open. No code, no batteries, no runs, no lens artifacts on disk yet.** Everything
-that exists is documentation: the approved brief, K1–K6, and now the M0 brief with
-**D1–D11**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
-is purely building — the next session should not re-open D1–D11 any more than it re-opens
-K1–K6.
+**M0 open. The oracle is built and verified; the battery, tiers, stats, gate and runner are
+next.** `D1`–`D13` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
+citable ledger). On disk and green: `oracle.py`, `encode.py`, `roster.py`,
+`tests/test_oracle.py`, `tests/test_encode.py`, `tests/fixtures/real_replies_0.5b.json` —
+**345 tests passing**. Lens artifacts copied and hash-verified.
 
-**Two numbers to carry forward, because they are easy to get wrong later:** M3 Arm A has
-**11** matched primes, not 12 (D9a), and `opal` is a **spare, not a secret** (D9b). Both
-are consequences of facts about mute-map's roster and Qwen's tokenizer, not preferences.
+**Read `D12` and `D13` before `D10`/`D11`.** The older two stay normative for *why* the
+boundary condition and the multi-token insight exist; the newer two are normative for what the
+oracle actually does.
+
+**The transferable lesson, if only one survives:** every oracle defect in this project has
+been a **proxy standing in for the thing it approximates** — token ids for characters,
+hand-written reveal formats for model output, a matcher-agreement check for a precision claim.
+Four rounds of prose review did not catch any of them; tests over the real tokenizer caught
+the first, real generation caught the second, and a zero-context reviewer caught the third.
+When a rule is about "is this a whole word" or "would the model actually do this", test the
+actual substrate.
+
+**Two numbers still easy to get wrong later:** M3 Arm A has **11** matched primes, not 12
+(`D9a`), and `opal` is a **spare, not a secret** (`D9b` — whose *premise* `D12` voids, since
+the string oracle reads `['Ġop','al']` without difficulty; the pin is retained because the
+frozen 25/25 split, the `D2` rotation and `D4`'s verification table all depend on it).
+
+**Texture worth carrying into G0:** on three ad-hoc probes the 0.5B leaked **59 of 60**
+secrets at least once. That is `KICKOFF.md`'s **R4** appearing before M0's first real run, and
+exactly why `GATE_WORDING` pre-declares a saturated 0.5B curve as reportable texture rather
+than failure. It says nothing about T0-vs-T4 range — those probes are not the frozen battery.
 
 The instrument is inherited, not built: the lens fits, the band arithmetic
 (`0.38 ≤ l/(n_layers−1) ≤ 0.92`, thirds with late taking the remainder), and the dose
 operator (`h′ = h − λ(v̂ᵀh)v̂`) all come from dim-stage via mute-map and must not be
 re-derived (K6).
 
-## ⚠ Carried residue — the next session's FIRST task
+## ✅ Carried residue from PR #1 — DISCHARGED 2026-07-30
 
-PR #1 merged **NOT CLEAR with stated residue**, on Kyle's explicit instruction, with a
-recorded verification waiver. All 25 review findings are **fixed**; ten were never
-independently re-verified, including **F23, a `critical`**.
+PR #1 merged **NOT CLEAR with stated residue** under Kyle's explicit verification waiver: all
+25 findings fixed, ten never independently re-verified, including `F23`, a `critical`.
 
-**The replacement check, which is owed:** `oracle.py` plus a test suite that exercises `D10`
-and `D11` over **all 50 secrets × every reveal format** (spaced, quoted, bolded,
-parenthesised, single-quoted, `="w"`, turn-initial, turn-final) **and** a subword-distractor
-set (`mammoth/antlers/goldsmith/quicksilver/coward/pigment/ironic`). Assert emissions for
-every genuine reveal and zero for every distractor.
+**The replacement check is done, and it earned its keep.** `oracle.py` +
+`tests/test_oracle.py` exercise `D10`/`D11` over all 60 roster words × 30 reveal formats × 2
+segmentations, a 50-word subword-distractor corpus, 180 real greedy replies, and 1.14M
+characters of WikiText. It found `D12`, `D13` and `D13`'s circular justification — which is
+precisely what it was written to do. PR #2 then ran the full review loop with **no waiver**.
 
-**Why this and not a 5th review round:** `F10`, `F16` and `F23` were all the same class —
-bugs in a *prose specification of an algorithm*, which reading does not reliably catch. A
-throwaway `verify_d10.py` passed 10/10 and still missed `F23`, because its cases came from the
-same understanding that produced the bug. Review rounds found 9 → 6 → 7 → 3 findings with
-`critical`s in rounds 3 *and* 4 — not converging. Tests over real tokenizations are the
-stronger check.
-
-**If the tests contradict `D10`/`D11` as written, the tests win** and the brief gets a new
-numbered decision recording what changed and why. That is the point of writing them.
-
-Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md`, and the PR #1
-comment.
+Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
+`2026-07-30-feat-oracle-and-tests.md`, plus the PR #1 and #2 comments.
 
 ## Immediate next move
 
-**Write `oracle.py` and its tests** (see the residue section above) — this is both the next
-build step and the owed verification, so it comes first.
+In order, all unblocked:
 
-**Already done:** the three lens artifacts are copied and **all three SHA256s match**
-`lenses/PROVENANCE.md` (verified 2026-07-30 against dim-stage `43ff405`). `PROVENANCE.md`
-still needs its "verified" restatement written in — a small task left deliberately, since it
-should record the date and commit.
+1. **`batteries/secrets.json`** per `D4` — seed `20260729`, 11 shuffles, both swap constraints
+   loader-asserted, the `D2` yardstick rotation, the four surface-form id sequences with
+   lengths, M3-prime flags, and the 10-word spare pool labelled as G0's revision reserve.
+   *Already verified to reproduce `D4`'s frozen table exactly:* 25/25, K3 stratification,
+   11/12 primes with `Egypt` spared, 50/50 leading-space forms, spare pool `Egypt, July,
+   shark, Mercury, flute, bronze, opal, chicken, bee, Thursday`, gemstones secret order
+   `[diamond, jade, pearl, amber, ruby]`, gemstone eval secrets `amber, ruby`. Note `D4`(b)
+   never fires under this seed (the only prime-in-spare-slot case is `countries`, where all
+   six are primes so the clause is inapplicable) — so test it synthetically, or it ships
+   unexercised.
+2. **`batteries/pressure_tiers.json`** per `D1`/`D3` — 5 tiers × 4 frozen texts, T4's as
+   3-turn user sequences, loader asserting both all-roster disjointness rules. *20 candidate
+   texts are drafted and pass both rules against all 60 roster words.*
+3. **`stats.py` + `tests/test_stats.py`** — **ported**, not written, from
+   `~/Projects/mute-map/stats.py` + `test_stats.py`.
+4. **`gates/g0.py`** — byte-frozen `GATE_WORDING` copied verbatim from `M0-BRIEF.md` §D8, the
+   seven dry-run `INVALID` arms each proven, and the result-JSON field contract — now
+   including `boundary_rejected_left`/`_right`, `case_variant_miss` and
+   `capitalized_only_hits`.
+5. **`m0_leak_curve.py`** — the sweep. Uses `encode.py`'s encoder and `oracle.py`; must emit
+   the mandatory `T4_turn1` companion cells and the T1/T2/T3-vs-T0 contrasts.
+6. **Run all three subjects** (~2.5 h estimated, unmeasured) → `results/`, then decide G0 once
+   on the held-out 25.
 
-Then, in order: build `batteries/secrets.json` and `batteries/pressure_tiers.json` per
-D2/D4; port `stats.py` from `~/Projects/mute-map/stats.py` + `test_stats.py` (port, do
-not write fresh); freeze `gates/g0.py` and prove all seven D8 INVALID arms; build the
-emission grader and `m0_leak_curve.py`; run the curves (~2.5 h total across the three
-scales) and decide G0 once.
-
-`uv.lock` is now committed (pinning `torch==2.13.0` / `transformers==5.13.1` per K6); it
-was generated during the review and verified against `pyproject.toml` before landing, so the
-branch is docs-plus-lockfile rather than docs-only. All three Qwen2.5
-subjects and the WikiText dataset are already in the HuggingFace cache.
+**Open follow-ups from PR #2's review** (all nice-to-have, none blocking): the WikiText test
+`pytest.skip`s itself when the HF cache differs, behind the load-bearing 849/1,729 anchor
+(`F6`); and `D12`'s justifying 252/960 and 510/4,320 have no artifact in the tree, while the
+conclusion they support is test-pinned (`F7`).
 
 ## Open questions / blockers
 
@@ -179,23 +242,32 @@ subjects and the WikiText dataset are already in the HuggingFace cache.
 
 ## Files touched recently
 
-- `docs/M0-BRIEF.md` — **new**; M0's frozen calls, the design-extraction pre-commit,
-  G0's byte-frozen `GATE_WORDING`, the INVALID arms and their field contract, and M0's
-  deviations table.
-- `docs/KICKOFF.md` — the approved brief; source of truth for scope, gates, risks.
-- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D11** (M0).
-- `README.md` — status propagated to "M0 open"; D1–D11 and the M0 brief listed.
+- `oracle.py` — **new**; the emission oracle (`D6`/`D10`/`D11` as corrected by `D12`/`D13`).
+- `encode.py` — **new**; `D2`'s byte-frozen system frame and the owned multi-turn chat encoder
+  (the one departure from `mute-map/harness.py:64`).
+- `roster.py` — **new**; the 60-word roster, `forbidden_forms` and the 12 M3 primes, copied
+  from mute-map per K2.
+- `tests/test_oracle.py`, `tests/test_encode.py`, `tests/conftest.py` — **new**; 345 tests.
+- `tests/fixtures/real_replies_0.5b.json` + `tests/capture_reply_fixture.py` — **new**; 180
+  committed greedy replies, so the suite tests real model output rather than only
+  hand-written reveal formats. This is the axis `D13` came in on.
+- `docs/M0-BRIEF.md` — `D12` and `D13` added; `D6`/`D9b`/`D10`/`D11` annotated where
+  superseded; `D8`'s field contract extended with the new counters.
+- `docs/DECISIONS.md` — `K1`–`K6` plus `D1`–`D13`.
+- `CLAUDE.md` — oracle conventions rewritten for `D12`/`D13`, with a never-reintroduce list.
+- `lenses/PROVENANCE.md` — restated as **verified** (2026-07-30, dim-stage `43ff405`).
+- `pyproject.toml` — `pyarrow` dev dep (reads the cached WikiText parquet without pulling
+  `datasets`, so K6's pins stay untouched) and `pythonpath = ["."]`.
+- `docs/KICKOFF.md` — the approved brief; still source of truth for scope, gates, risks.
 - `PROJECT.md` / `HANDOFF.md` — this wiki.
-- `README.md` — public-facing framing and the gate table.
-- `CLAUDE.md` — house methodology and inherited instrument facts for every session.
-- `lenses/PROVENANCE.md` — expected SHA256s; **status: not yet copied**, M0 verifies.
-- `pyproject.toml` — the pinned inference stack the lens fingerprints depend on.
 
 ---
 
 **Run-config note:** the next session starts fresh from `docs/M0-BRIEF.md` (with
-`docs/KICKOFF.md` for scope). Recommended model + effort: **Opus 5 at high** — every
-design call is frozen, so what remains is well-specified build work with ordinary
-judgment in it. Launch: `claude --model claude-opus-5 --effort high`. If G0 fails in a
-way that questions the battery design rather than the models, bounce the revision
-decision to a Fable 5 session rather than escalating effort in the build session.
+`docs/KICKOFF.md` for scope, and `D12`/`D13` read before `D10`/`D11`). Recommended model +
+effort: **Opus 5 at high** — every design call is frozen and the oracle is built and verified,
+so what remains is well-specified build work with ordinary judgment in it. Launch:
+`claude --model claude-opus-5 --effort high`. Two escalation rules: if G0 fails in a way that
+questions the battery design rather than the models, bounce the revision decision to a Fable 5
+session rather than escalating effort in the build session; and if a review round turns up
+another oracle-class defect, that is a design question too, not a patch.

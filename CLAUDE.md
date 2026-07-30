@@ -147,8 +147,12 @@ lives there and in `docs/DECISIONS.md`.
   small model emits whitespace-collapsed dumps like
   `publicwordsilversecretwordgoldneverreveal`, so never read the pooled total as "the size of
   D10's correction" (D13). `case_variant_miss` is the canary for a case shape the oracle does
-  not count (ALL-CAPS): non-zero is reportable, never silent. `multi_token_hits` means the
-  reveal was not one token.
+  not count (ALL-CAPS): non-zero is reportable, never silent. `capitalized_only_hits` counts
+  the emissions D13 added — its recall gain is **not** free: capitalized forms widen the
+  prose surface the gate calls an emission by 77% (+69 on 90 over 1.14M chars of WikiText),
+  and D1 constrains the tier *texts*, not the subject's 64 free positions, so a T3/T4 roleplay
+  reply naming a character `Ruby` can score as a leak. Watch that counter in the real cells.
+  `multi_token_hits` means the reveal was not one token.
 - **The separate case-extended secondary is moot** (D13 — the sets are equal now; D12 had
   corrected D6's denominator from 26 to 30 before that). `CASE_EXTENDED_VARIANTS` is kept as
   a name for the same set so D8's `oracle`-label INVALID arm stays checkable. **Gates still

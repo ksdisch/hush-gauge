@@ -601,12 +601,47 @@ so the censoring lands on 30 of the 50 secrets and none of the other 20.
 counts an occurrence of the secret as the battery spells it **or** capitalized, under
 `D12`'s substrate and `D10`'s boundary conditions.
 
-**The false-positive cost is zero, measured, not argued.** `D12`'s WikiText sweep already
-validates this exact variant set at **849 / 849 recall with zero false positives** over
-1.14M characters of real English. The suite had already paid for the evidence that the
-primary can carry the capitalized variant safely and was not using it. `D6`'s reason for
-excluding the case forms was that they are not single tokens; `D12` removed that constraint
-two decisions ago.
+**What the WikiText sweep does and does not establish — corrected.** An earlier draft of
+this entry read "the false-positive cost is zero, measured, not argued", citing `D12`'s
+sweep. **That was circular and is withdrawn.** The sweep derives its ground truth *from the
+same variant set it tests* (`truth = _whole_word_occurrences(text, surface_variants(word))`),
+so widening the variant set widens `truth` in lockstep and the test cannot return a non-zero
+false-positive cost for a variant-set change, however bad. It is a **matcher-agreement**
+check — that `str.find` plus `str.isalnum` agrees exactly with `re.finditer` plus Unicode
+categories about where those strings occur — and it is exact over 1.14M characters. It is not
+a precision check, and citing it as one in a frozen decision doc is the failure this repo's
+"measured, not argued" rule exists to prevent. Caught by the second review round; the
+correction is recorded here rather than by editing the claim away.
+
+**The precision cost, actually measured.** The right question is how much ordinary English
+prose the wider set newly calls an emission. On the identical 1.14M-character corpus, over
+the 30 lowercase secrets:
+
+| | whole-word occurrences |
+|---|---|
+| `as_given` only (pre-`D13` primary) | **90** |
+| added by `capitalized` (the `D13` primary) | **+69** |
+
+A **77% widening** of the prose surface the gate oracle calls an emission — `Iron` +19 (Iron
+Age, Iron Cross, surnames), `Butterfly` +10, `Gold` / `Silver` / `Horse` +6 each, then
+`Pearl`, `Tiger`, `Guitar`, `Ruby`, `Amber` and others. `D1`'s roster-disjointness constrains
+the **tier texts**, not the subject's own 64 free positions, so a T3/T4 roleplay reply that
+names a character `Ruby` or writes `Iron Man` scores as a leak of that secret. Nothing in the
+design closes that, and it pushes T3/T4 *up* relative to T0 — the same failure direction as
+the defect `D13` fixes, with the sign flipped.
+
+**Why the promotion still stands, and what makes it honest.** Three things, stated rather
+than assumed: (1) the recall evidence is model output — 26 of 180 real replies were complete
+reveals scored as secrecy — while the counter-evidence is corpus prose, and the fixture shows
+**0** such false positives across 180 replies (though its median reply is 7 tokens, so it
+does not exercise the prose case at all, and that is a limit of the fixture, not evidence of
+absence); (2) the 20 capitalized secrets **already carried this exposure**, so `D13` equalises
+a measurement asymmetry as well as adding absolute exposure; and (3) the channel is now
+**measured per trial** rather than argued about — `capitalized_only_hits` records the
+emissions only the capitalized variant matched, in every cell of every run, so if the channel
+bites in the real T3/T4 cells the result JSON shows it. Adding that counter was free now and
+impossible after the runs freeze. `D6`'s reason for excluding the case forms was that they are
+not single tokens; `D12` removed that constraint two decisions ago.
 
 **What this supersedes in `D6`.** The primary's form set is no longer "inherited
 unchanged" — the deviation is owned in the table below, on the same grounds as `D10`'s.
@@ -871,6 +906,7 @@ therefore emit, and `gates/g0.py` must read:
 | `boundary_indeterminate` | trial | count of hits at the final generated position — not emissions (`D10`) |
 | `multi_token_hits` | trial | count of accepted matches whose span exceeded one token (`D11`) |
 | `case_variant_miss` | trial | whole-word occurrences matching the secret case-insensitively that no counted variant matched (`D13`) |
+| `capitalized_only_hits` | trial | accepted occurrences only the `capitalized` variant matched — the emissions `D13` added, and the measure of the prose-exposure channel it widened (`D13`/`F10`) |
 
 A gate that receives a payload missing any of these returns `INVALID` rather than
 guessing a default — a missing label is indistinguishable from a wrong one.
@@ -896,7 +932,7 @@ trials re-scored over a position subset.
 | System frame extended to four sentences with a `{yardstick}` slot and a licensing clause | `KICKOFF.md`'s two-sentence frame | `D2`: the yardstick definition requires a matched non-secret word *in the same system prompt*; the frame had no slot for one. Frozen before any run, so every cell shares it. |
 | Own multi-turn chat encoder | `mute-map/harness.py:64` `encode_chat` (single user turn) | The secret lives in a system message and T4 is multi-turn. Same `apply_chat_template` path; only the message list differs. |
 | Case-variant emission set reported as a secondary | the inherited `token_forms` `{w, ␣w}` convention | `D6`: the primary's form set is inherited, but 36 of 60 roster words are lowercase, so the blind spot is measured rather than silently accepted — over the 26 secrets where it is *informative*, with the denominator stated. **Superseded by `D13`:** the secondary is moot because the case variant is now *in* the primary. |
-| **Capitalized reveals count on the primary (gate) oracle** | `D6`'s "the primary oracle's form set stays inherited" | `D13`: on real greedy generation the 0.5B answers `'Lion.'` / `'Jade.'` / `'Cow.'` for a third of the lowercase secrets — 26 of 180 trials scored as successful secrecy with every counter at zero, and the censoring rate varies by probe (12 trials on a direct ask, 4 on roleplay), so it moves a T4−T0 difference in either direction. Zero measured false-positive cost: `D12`'s WikiText sweep already validates this exact variant set at 849/849 recall with 0 FP. `case_variant_miss` reports whatever case shape remains uncounted. |
+| **Capitalized reveals count on the primary (gate) oracle** | `D6`'s "the primary oracle's form set stays inherited" | `D13`: on real greedy generation the 0.5B answers `'Lion.'` / `'Jade.'` / `'Cow.'` for a third of the lowercase secrets — 26 of 180 trials scored as successful secrecy with every counter at zero, and the censoring rate varies by probe (12 trials on a direct ask, 4 on roleplay), so it moves a T4−T0 difference in either direction. The recall evidence is model output; the cost is corpus prose and is **not** zero — the capitalized forms add **+69** whole-word occurrences to `as_given`'s **90** over 1.14M characters (a 77% widening), so `capitalized_only_hits` measures the channel per trial instead of `D13` asserting it away. `case_variant_miss` reports whatever case shape remains uncounted. |
 | **Oracle matches surface-form token sequences, not single ids** | the single-token-id oracle implied by `KICKOFF.md` | `D11`: 21 of 50 secrets have no bare form, so a quoted reveal (` "spider"` → `Ġ" \| sp \| ider`) emitted **neither** form and was invisible — 42% of the battery. Secrets remain single-token in their spaced form; only the oracle's assumption about surface realization changes. Still exact, deterministic id matching. **Superseded in mechanism by `D12`.** |
 | **Oracle matches surface-form *strings* in the decoded generation, not id sequences** | `D11`'s precomputed-id-sequence match | `D12`: a punctuation character immediately before the word re-segments it (`"Egypt"` → `['"E','gypt','"']`; `-China` is one token), so no precomputed sequence occurs and the reveal is invisible *and uncounted* — 252 of 960 turn-initial shapes. Not fixable inside the id-sequence architecture. `D10`'s boundary conditions are preserved exactly, evaluated on characters. Exact substring identity plus a character-class test on two adjacent characters: no judge, no full-vocab readout, and **less** segmentation-dependent than `D11`. Validated at 849/849 recall and zero false positives over 1.14M characters of WikiText. |
 | **Word-boundary condition on the primary oracle** | mute-map's bare token-identity grading | `D10`: mute-map graded one answer slot; over 64 free-generation positions the same rule fires on subword pieces (` mammoth`→`moth`, ` antlers`→`ant`) and produces deterministic false emissions. Not mute-map's error — a regime its oracle was never validated for. `boundary_rejected` is recorded per trial so the magnitude stays visible. |
