@@ -123,13 +123,40 @@ The instrument is inherited, not built: the lens fits, the band arithmetic
 operator (`h′ = h − λ(v̂ᵀh)v̂`) all come from dim-stage via mute-map and must not be
 re-derived (K6).
 
+## ⚠ Carried residue — the next session's FIRST task
+
+PR #1 merged **NOT CLEAR with stated residue**, on Kyle's explicit instruction, with a
+recorded verification waiver. All 25 review findings are **fixed**; ten were never
+independently re-verified, including **F23, a `critical`**.
+
+**The replacement check, which is owed:** `oracle.py` plus a test suite that exercises `D10`
+and `D11` over **all 50 secrets × every reveal format** (spaced, quoted, bolded,
+parenthesised, single-quoted, `="w"`, turn-initial, turn-final) **and** a subword-distractor
+set (`mammoth/antlers/goldsmith/quicksilver/coward/pigment/ironic`). Assert emissions for
+every genuine reveal and zero for every distractor.
+
+**Why this and not a 5th review round:** `F10`, `F16` and `F23` were all the same class —
+bugs in a *prose specification of an algorithm*, which reading does not reliably catch. A
+throwaway `verify_d10.py` passed 10/10 and still missed `F23`, because its cases came from the
+same understanding that produced the bug. Review rounds found 9 → 6 → 7 → 3 findings with
+`critical`s in rounds 3 *and* 4 — not converging. Tests over real tokenizations are the
+stronger check.
+
+**If the tests contradict `D10`/`D11` as written, the tests win** and the brief gets a new
+numbered decision recording what changed and why. That is the point of writing them.
+
+Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md`, and the PR #1
+comment.
+
 ## Immediate next move
 
-**Copy the three lens artifacts and verify their SHA256s** against the record already
-in `lenses/PROVENANCE.md`. Source: `~/Projects/dim-stage/lenses/` (0.5B/1.5B/3B,
-n_prompts = 100). A mismatch is a **stop condition** — it means a different environment
-produced a different fit — not something to work around. On pass, restate
-`PROVENANCE.md` as verified with the date and the dim-stage commit.
+**Write `oracle.py` and its tests** (see the residue section above) — this is both the next
+build step and the owed verification, so it comes first.
+
+**Already done:** the three lens artifacts are copied and **all three SHA256s match**
+`lenses/PROVENANCE.md` (verified 2026-07-30 against dim-stage `43ff405`). `PROVENANCE.md`
+still needs its "verified" restatement written in — a small task left deliberately, since it
+should record the date and commit.
 
 Then, in order: build `batteries/secrets.json` and `batteries/pressure_tiers.json` per
 D2/D4; port `stats.py` from `~/Projects/mute-map/stats.py` + `test_stats.py` (port, do
