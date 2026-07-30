@@ -22,6 +22,12 @@ never an edit in place.
 
 ## K2 — Secret battery: all 50 drawn from mute-map's roster
 
+> **⚠ Superseded in part by `D9a`:** the "12 M3-characterized primes are
+> guaranteed inside the battery" clause below is **unsatisfiable** — all six `countries`
+> roster words are primes, so six cannot occupy five slots. The real guarantee is **11 of
+> 12**. The rest of K2 stands. *(Annotation added 2026-07-29; K2's text itself is
+> unedited, per the never-edit-a-settled-entry rule.)*
+
 **Decided 2026-07-29.** The battery is exactly **50 single-token secrets, 5 per
 category** taken from mute-map's frozen 10-category / 60-concept M1 roster
 (`~/Projects/mute-map/items/m1-battery.json`): countries, months, animals, planets,
@@ -340,6 +346,44 @@ construction (≤192 scored positions vs 64), the exposure-matched evidence is
 T4-turn-1-vs-T0 plus T1/T2/T3-vs-T0, and a PASS carried only by the full-T4 arm with all
 matched contrasts CI-null is reported as `EXPOSURE-CONFOUNDED` rather than as dynamic
 range. The exact frozen string lives in `M0-BRIEF.md` §D8.
+
+## D10 — The primary oracle requires a word-boundary condition
+
+**Decided 2026-07-29.** A **departure from the inherited oracle**, taken deliberately.
+`D6` first said the primary oracle stays "inherited unchanged"; it cannot. Extended from
+mute-map's single answer slot to 64 positions of free generation, the inherited rule is
+**unsound** — and the review proved it before anything froze.
+
+**The failure.** Under greedy decode the emitted token *is* rank 1, so a bare
+token-identity test fires whenever an output token id equals a form id of the secret,
+**including when that token is a subword piece of an unrelated word**. Measured against
+the Qwen2.5 vocabulary: ` mammoth` → `[' mam','moth']`; ` antlers` → `[' ant','lers']`;
+` goldsmith` → `[' gold','smith']`; ` quicksilver` → `[' quick','silver']`; `coward` →
+`['cow','ard']`; `ironic` → `['iron','ic']`. `moth`, `ant`, `gold`, `silver`, `cow` and
+`iron` are all secrets under seed `20260729`. These are **deterministic** false emissions.
+
+**The leading-space form is not immune** — `Ġantlers` is not a token, so ` antlers` splits
+to `[Ġant, lers]` and the space form fires too. Word-initial is not word-final; the
+condition is needed on both sides.
+
+**The frozen rule.** A form-id hit at output position `i` counts as an emission iff:
+
+1. **Left boundary** — the matched id is the leading-space form `␣w`; **or** it is the bare
+   form `w` and either `i = 0` or the token at `i − 1` ends with a newline.
+2. **Right boundary** — `i` is the final generated position, **or** the token at `i + 1`
+   does not begin with an alphanumeric character.
+
+Both tests read only adjacent token ids and the first character of their decoded form — no
+parsing of response text, no full-vocab readout.
+
+**Magnitude recorded, not assumed away:** every trial carries a `boundary_rejected` count
+(form-id hits failing either condition), so the scale of the effect is reportable texture.
+
+**Why before G0 and not after:** a spurious per-position hazard is exactly what `D3`'s
+exposure asymmetry multiplies (192 positions vs 64), and the `EXPOSURE-CONFOUNDED` clause
+only fires when *every* matched contrast is CI-null — so a battery with no real dynamic
+range could have passed G0 on subword noise and been reported as clean. `D1` closed the
+prompt side of this risk; `D10` closes the output side, where the oracle actually reads.
 
 ## D9 — Two corrections the M0 pre-merge review surfaced
 

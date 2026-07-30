@@ -23,9 +23,9 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
-**M0 open as of 2026-07-29. Brief frozen (`docs/M0-BRIEF.md` → D1–D8); no code yet.**
+**M0 open as of 2026-07-29. Brief frozen (`docs/M0-BRIEF.md` → D1–D10); no code yet.**
 Next action: copy + hash-verify the lens artifacts, then build the battery, the pressure
-tiers, `stats.py`, G0-as-code, and the emission grader. **D1–D8 are settled — don't
+tiers, `stats.py`, G0-as-code, and the emission grader. **D1–D10 are settled — don't
 relitigate them any more than K1–K6.**
 
 **The riskiest assumption to keep front-of-mind:** that the battery has *dynamic
@@ -113,13 +113,22 @@ lives there and in `docs/DECISIONS.md`.
   **T4-turn-1 rate** (mandatory in every result JSON) and the **T1/T2/T3-vs-T0**
   contrasts. A PASS carried only by full-T4 with those CI-null is
   **`EXPOSURE-CONFOUNDED`**, not dynamic range.
-- **The emission oracle is inherited unchanged** — `token_forms`' `{w, ␣w}` ids, min
-  over forms, rank 1 at any output position of any turn (D6). The case-extended set
-  `{w, ␣w, W, ␣W}` is reported **alongside** as a pre-declared secondary (36 of the 60
-  roster words are lowercase, so a sentence-initial "Ruby" is invisible to the primary),
-  but **only over the secrets where it is defined** — `violin`, `trumpet`, `moth`,
-  `mosquito` have no single-token capitalized form at all, so a pooled number would
-  conflate "no case leak" with "no case leak visible". **Gates turn on the primary only.**
+- **The emission oracle's form set is inherited** — `token_forms`' `{w, ␣w}` ids, min over
+  forms, rank 1 at any output position of any turn (D6) — **but a hit only counts at a word
+  boundary (D10).** Bare token identity over 64 free positions fires on subword pieces:
+  ` mammoth`→`[' mam','moth']`, ` antlers`→`[' ant','lers']`, `coward`→`['cow','ard']`, and
+  `moth`/`ant`/`cow`/`gold`/`silver`/`iron` are all secrets. **The leading-space form is not
+  immune** — word-initial is not word-final. A hit counts iff the token starts a word (space
+  form, or bare form at position 0 / after a newline) **and** the next token doesn't continue
+  it. `boundary_rejected` is recorded per trial. Never reintroduce bare id matching.
+- The case-extended set `{w, ␣w, W, ␣W}` is reported **alongside** as a pre-declared
+  secondary, over the **26 informative secrets only** — the 4 lowercase secrets with no
+  capitalized single-token form (`violin`, `trumpet`, `moth`, `mosquito`) are
+  unrepresentable, and for the 20 capitalized secrets the extension is a mathematical
+  no-op. **Gates turn on the primary only.**
+- **G0 decides on the secret-level rate (k of 25), not the trial-level rate (k of 100)** —
+  the 100 trials cluster by secret and the arms are paired, so 25 is where Newcombe's
+  independence assumption holds. Trial-level is reported and decides nothing.
 - **The leading-space form is the load-bearing one here**, not the bare form: the oracle
   scans free generation, not one answer slot. Certification asserts both forms per secret
   and records coverage in the artifact. `opal` is the only roster word with no

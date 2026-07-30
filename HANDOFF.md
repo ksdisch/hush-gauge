@@ -6,7 +6,7 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 - **Wrote and froze `docs/M0-BRIEF.md`** — M0's start-of-stage brief, approved by Kyle
   before any code. It closes M0's three open calls and the five secondary calls they
-  implied, mirrored into `docs/DECISIONS.md` as **D1–D8**:
+  implied, mirrored into `docs/DECISIONS.md` as **D1–D10**:
   - **D1** — 4 frozen prompt texts per tier → 100 trials per (tier × scale) eval cell.
   - **D2** — the context-word yardstick is a **same-category rotation inside the
     battery** (`yardstick(i) = secret((i+1) mod 5)`). This dissolves the tradeoff
@@ -21,11 +21,12 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
     greedy decode with frozen user turns that is false, and the scripted form adds a
     fabricated-assistant-turn confound.
   - **D4–D8** — seed `20260729` and the exact shuffle/split rule; greedy,
-    `max_new_tokens=64` per turn; the emission oracle (inherited primary + a
-    pre-declared **case-variant secondary**, because ~half the roster is lowercase and
-    `token_forms` cannot see a sentence-initial "Ruby"); sweep all 50 but decide G0 on
+    `max_new_tokens=64` per turn; the emission oracle (inherited form set + a
+    pre-declared **case-variant secondary**, because 36 of 60 roster words are lowercase
+    and `token_forms` cannot see a sentence-initial "Ruby"); sweep all 50 but decide G0 on
     the held-out 25 with the gate enforcing it; G0's byte-frozen `GATE_WORDING` and its
-    five dry-run INVALID arms.
+    seven dry-run INVALID arms.
+  - **D9–D10** — the two corrections the review forced (below).
 - **Did the design-extraction pre-commit** — recorded the seven inherited items with
   file:line sources (`proportional_band`, `token_forms`, `fail_invalid`, the
   Wilson/Newcombe trio, `rate_cell`, the roster + derivative test, thirds, the dose
@@ -61,6 +62,31 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
     cell reports both trial- and secret-level rates; `D8` names the result-JSON field
     contract (`split`, `tier`, `oracle`, `unit`, `battery_sha256`) its INVALID arms need
     to be checkable against real output; `README.md` status propagated.
+- **Round 2 verified all nine and found six more — one of them the most important finding
+  of the review.** All 15 are fixed.
+  - **D10 (from F10) — the primary oracle needed a word-boundary condition.** Bare token
+    identity over 64 free-generation positions fires on **subword pieces of unrelated
+    words**: ` mammoth` → `[' mam','moth']`, ` antlers` → `[' ant','lers']`, ` goldsmith` →
+    `[' gold','smith']`, `coward` → `['cow','ard']`, `ironic` → `['iron','ic']` — and
+    `moth`, `ant`, `gold`, `silver`, `cow`, `iron` are **all secrets** under the frozen
+    seed. These are deterministic false emissions, and `D3`'s 192-vs-64 exposure asymmetry
+    would have multiplied them into a G0 PASS on a battery with no real dynamic range.
+    **The leading-space form is not immune either** (`Ġantlers` is not a token) — my
+    earlier "space form is word-initial so it's safe" reasoning was half right and the
+    wrong half was load-bearing. A hit now counts only at a word boundary on **both**
+    sides, with `boundary_rejected` recorded per trial.
+  - **F11 — `GATE_WORDING` did not say which unit decides G0.** The F7 fix added a second
+    reported unit and left the gate silent; the two are different estimands (secret-level
+    is any-of-4, saturating, CI ~2× wider), so the verdict could flip on the choice. Now
+    frozen: **the secret-level rate (k of 25) decides**, trial-level is reported only.
+  - **F12–F15** — added the two missing INVALID arms (the properties `D3`/`D1` made
+    mandatory were the only two with no arm, so those controls were prose-only); pinned
+    `tier` as per-trial and `cell` as the level carrying `T4_turn1`; narrowed the
+    case-extended denominator to the **26 informative** secrets (a 46-secret pool would be
+    20/46ths primary-by-definition); disambiguated `D4`(a) to **swap** — the remove-and-shift
+    reading put different gemstones in G0's eval half, an ambiguity the verification table
+    could not catch; and finished the `D9` propagation, including annotations on the frozen
+    `K2` and `KICKOFF.md` claims (annotations, not rewrites).
 - **Kicked off** via `/kickoff` consuming
   `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
   J-lens audit brainstorm), picked at the 2026-07-29 backlog-hygiene pass once
@@ -84,8 +110,8 @@ _Last updated: 2026-07-29 (M0 opened; brief frozen, no code yet)_
 
 **M0 open. No code, no batteries, no runs, no lens artifacts on disk yet.** Everything
 that exists is documentation: the approved brief, K1–K6, and now the M0 brief with
-**D1–D9**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
-is purely building — the next session should not re-open D1–D9 any more than it re-opens
+**D1–D10**, adversarially reviewed. Every design call M0 needs is frozen, so the next step
+is purely building — the next session should not re-open D1–D10 any more than it re-opens
 K1–K6.
 
 **Two numbers to carry forward, because they are easy to get wrong later:** M3 Arm A has
@@ -107,7 +133,7 @@ produced a different fit — not something to work around. On pass, restate
 
 Then, in order: build `batteries/secrets.json` and `batteries/pressure_tiers.json` per
 D2/D4; port `stats.py` from `~/Projects/mute-map/stats.py` + `test_stats.py` (port, do
-not write fresh); freeze `gates/g0.py` and prove all five D8 INVALID arms; build the
+not write fresh); freeze `gates/g0.py` and prove all seven D8 INVALID arms; build the
 emission grader and `m0_leak_curve.py`; run the curves (~2.5 h total across the three
 scales) and decide G0 once.
 
@@ -128,8 +154,8 @@ subjects and the WikiText dataset are already in the HuggingFace cache.
   G0's byte-frozen `GATE_WORDING`, the INVALID arms and their field contract, and M0's
   deviations table.
 - `docs/KICKOFF.md` — the approved brief; source of truth for scope, gates, risks.
-- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D9** (M0).
-- `README.md` — status propagated to "M0 open"; D1–D9 and the M0 brief listed.
+- `docs/DECISIONS.md` — K1–K6 (kickoff) plus **D1–D10** (M0).
+- `README.md` — status propagated to "M0 open"; D1–D10 and the M0 brief listed.
 - `PROJECT.md` / `HANDOFF.md` — this wiki.
 - `README.md` — public-facing framing and the gate table.
 - `CLAUDE.md` — house methodology and inherited instrument facts for every session.
