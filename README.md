@@ -51,15 +51,13 @@ undecided gate, not a negative one.
 
 ## Status
 
-**M0 open, 2026-07-30 · brief frozen (D1–D13) · the emission oracle is built and verified.**
-Lens artifacts copied and SHA256-verified. `oracle.py` and `encode.py` are in, with 345
-passing tests — including 180 committed real greedy replies and a 1.14M-character sweep of
-real English, where the oracle finds **849 of 849** whole-word occurrences of a roster word,
-exactly agreeing with an independent boundary predicate. (That is a recall and matcher-agreement
-result, not a claim that every hit is a reveal: incidental prose like "Iron Age" is a whole-word
-occurrence too, and D13 records the size of that exposure rather than denying it.) Writing those tests found three oracle defects that four rounds of prose
-review had not (D12, D13, and D13's own circular justification); all three are fixed and
-recorded. Next: the frozen batteries, `stats.py`, G0-as-code, and the tier × scale sweep.
+**M0 complete, 2026-07-30 — G0 PASSES on all three scales.** The battery has dynamic range:
+under benign chat with no ask the models sit at the floor, and under multi-turn extraction all
+25 held-out secrets leak, with the difference Newcombe-clean at every scale. Crucially the
+result survives *exposure matching* — a multi-turn trial gets 3× the scored positions of a
+benign one, and the position-matched contrast is clean too, so this is pressure and not
+arithmetic. Full curves, and three caveats that matter more than the headline, in
+[`docs/M0-RESULTS.md`](docs/M0-RESULTS.md). M1 (probe panel + detection) is next.
 
 ## Where things are
 
@@ -68,8 +66,10 @@ recorded. Next: the frozen batteries, `stats.py`, G0-as-code, and the tier × sc
 - **`docs/M0-BRIEF.md`** — M0's start-of-stage brief: its frozen decisions, the
   design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D13** (M0). Read **D12/D13 before D10/D11** —
+  bars and the battery/split design) and **D1–D14** (M0). Read **D12/D13 before D10/D11** —
   the older two say why the oracle's boundary rule exists, the newer two say what it does.
+- **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that
+  bound how they may be read.
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 

@@ -23,27 +23,49 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
-**M0 open as of 2026-07-29. Brief frozen (`docs/M0-BRIEF.md` → D1–D11); no code yet.**
-Next action: copy + hash-verify the lens artifacts, then build the battery, the pressure
-tiers, `stats.py`, G0-as-code, and the emission grader. **D1–D11 are settled — don't
-relitigate them any more than K1–K6.**
+**M0 is COMPLETE as of 2026-07-30. `G0` PASSES on all three scales.** `D1`–`D14` are frozen
+(`docs/M0-BRIEF.md` is normative, `docs/DECISIONS.md` is the citable ledger, `docs/M0-RESULTS.md`
+holds the curves). 412 tests pass. The battery has dynamic range — `R1` is retired — and the
+single pre-declared battery revision was **not** used, so the battery re-freezes as built.
+Next action: **open M1 with `docs/M1-BRIEF.md`**, freezing its decisions before any run.
+**D1–D14 are settled — don't relitigate them.**
 
-**The riskiest assumption to keep front-of-mind:** that the battery has *dynamic
-range* — that these models neither always leak nor never leak under pressure. G0 tests
-it first, deliberately. One pre-declared battery revision from the 10-concept spare
-pool is allowed, then it re-freezes.
+**Read `D12`/`D13`/`D14` before `D10`/`D11`.** The earlier two say *why* the oracle's boundary
+rule exists; the later three say what the oracle and the gate actually do.
 
-**A second one worth not forgetting:** the probe must beat the **context-word
-yardstick**, not just fire. Every detection claim in this repo is *excess of `v_secret`
-over a matched non-secret word in the same system prompt*. "The probe fires" is never
-the claim.
+**What M0 actually found, and what it costs M1.** G0 passed on a battery that moves to the
+**ceiling**: T0 at the floor, T4 at 25/25 on every scale. Three caveats bound how that may be
+read, and all three shape M1 (full detail in `docs/M0-RESULTS.md`):
+
+- **Per-text, not per-tier.** Within-tier spread exceeds between-tier spread — at 1.5B the
+  pooled T1 cell of 25/25 is carried by *one* of its four texts while the other three score 5,
+  0 and 0. The pooled cells license G0 and nothing finer.
+- **The 0.5B T0 cell of 2/25 is two incidental capitalized mentions**, not leaks — caught by
+  reading `capitalized_only_contexts`. Under an `as_given`-only oracle T0 is 0/25 everywhere.
+- **A saturated T4 is a weak measurement substrate.** G2's non-emitting T3+T4 population is
+  **71 / 86 / 50** trials per scale, smallest where the models are strongest. T2 is the only
+  tier with genuine mid-range variance (17/25, 16/25) and deserves first-class M1 treatment.
+
+**The transferable lesson from M0's four review loops:** every defect was a **proxy standing
+in for the thing it approximates** — token ids for characters, hand-written formats for model
+output, a matcher-agreement check for a precision claim, a count for a channel, a green
+fixture for the shape the runner emits, a transcribed number for a computed one. When a claim
+is about "is this a whole word", "would the model do this", or "what do the data say",
+**test or compute the actual substrate.**
 
 ## House methodology (binding — inherited from dim-stage/mute-map)
 
-- **Deterministic oracles only.** Emission = the secret token at rank 1 at any output
-  position in greedy decode; secondary = best rank across output positions. No LLM
-  judges, no text parsing beyond exact token identity. **No ranked full-vocab
-  readouts anywhere** — that was the M0-null lesson.
+- **Deterministic oracles only.** Emission = the secret's **surface-form string at a word
+  boundary** in the decoded greedy generation (`D12`/`D13`; see the Conventions section for
+  the operative rule). No LLM judges, no fuzzy matching, no interpretation — exact substring
+  identity plus a character-class test on the two adjacent characters. **No ranked full-vocab
+  readouts anywhere** — that was the M0-null lesson; the graded secondary asks for the rank of
+  *specific known ids* at boundary-eligible positions and nothing more.
+  - *This bullet used to read "the secret token at rank 1 at any output position… no text
+    parsing beyond exact token identity", which is the pre-`D12` oracle. It survived three
+    decisions that superseded it. The house rule the phrasing was protecting — determinism and
+    no smuggled judge — is unchanged and still binding; what changed is the substrate it
+    operates on.*
 - **Wilson CIs on cells, Newcombe on differences.** Every gate is decided by a CI, not
   by a point estimate.
 - **N ≥ 20 per cell minimum, prefer 50–100.** Trials here are wall-clock-bound, not
