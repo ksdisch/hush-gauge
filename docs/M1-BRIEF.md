@@ -67,7 +67,7 @@ each milestone brief. File:line references verified against the working trees 20
 |---|---|---|
 | `jlens_vector(J, u) = J.T @ u` — the `[d_model]` direction for one token | `dim-stage/intervention.py:62-64` = `mute-map/intervention.py:44-46` | port verbatim |
 | `u` = **raw** `lm_head.weight` row; Qwen's final-RMSNorm scale γ **not** folded in | `dim-stage/DECISIONS.md:204-209`; `dim-stage/intervention.py:10-15`; hush-gauge `K6` | inherited convention; owned, pre-declared upstream |
-| Probe row = `token_forms(word)[0]` — bare form when a single-token bare form exists, leading-space otherwise | `mute-map/harness.py:51-61`; the caveat owned at `mute-map/m1_battery.py:471-480` (PR #5 F3) | inherited; `form_used` recorded per word (`D17`) |
+| Probe row = `token_forms(word)[0]` — bare form when a single-token bare form exists, leading-space otherwise | `mute-map/harness.py:51-61`; the caveat owned at `mute-map/m1_battery.py:471-480` (mute-map PR #5, review F3) | inherited; `form_used` recorded per word (`D17`) |
 | Hook point: each decoder block's **output residual**, `register_forward_hook` on `hf.model.layers[l]` | `mute-map/subject.py:99-111` (= `dim-stage/fitter.py:150-162`) | port |
 | Lens-artifact contents (`J` dict over layers `0..n_layers-2`, fp32, `d_model×d_model`) and the load-plus-validate pattern (`model_id`, `d_model`, layer coverage) | `dim-stage/fitter.py:426-436`; `mute-map/m1_battery.py:706-742` and `:338-356` | port; plus the `lenses/PROVENANCE.md` SHA256 check (K6) |
 | Band arithmetic + frozen per-depth tables + thirds | `mute-map/harness.py:23-48`; `m1_battery.py:269-279` | verbatim (K6); bands below |
@@ -139,10 +139,15 @@ For a probed word `w`, per subject scale:
   frozen M0 replies, emitting trials on the 30 lowercase secrets whose **every** accepted
   hit was the capitalized variant are **123/293 (0.5B) / 26/177 (1.5B) / 39/368 (3B)**
   (plus 11/2/10 mixed). So for every probed lowercase word whose capitalized variant has a
-  single-token form under the same bare-first convention — 26 of the 30 lowercase secrets
-  (9 bare, 17 leading-space); the 4 without one are recorded as `absent` — the run records
-  a **full companion probe block** against `u_W` = the `token_forms(W)[0]` row: same
-  statistic, same companions, labeled `statistic: "cap_companion"`. It decides nothing,
+  single-token form — 26 of the 30 lowercase secrets; the 4 without one are recorded as
+  `absent` — the run records a **full companion probe block** against `u_W`, the
+  capitalized row chosen **case-matched first**: the same space form as the primary
+  (`cap` for a `bare` primary, `cap_space` for a `leading_space` one) when that form is a
+  single token — 21 of the 26 — falling back to the other single-token capitalized form
+  for the remaining 5 (`amber`, `duck`, `horse`, `lion`, `pig`), whose companion contrast
+  therefore carries a flipped space axis as well as case; `cap_form_used` records which
+  (hush-gauge PR #5, reviews F2 + F10). Same statistic, same companions, labeled
+  `statistic: "cap_companion"`. It decides nothing,
   exactly like `S_turn1`; every gate reads the primary block only. Already-capitalized
   words need no companion (capitalize is the identity). Without this, the `.npz` sidecar
   could never answer "would the capitalized row have seen it?" after the freeze — only a
@@ -228,7 +233,9 @@ Each with-secret trial probes **three** words:
 1. **The secret** — the detection target.
 2. **The yardstick** — already in context by `D2`; its readout is the licensed-word
    baseline (G2 arm b) and the excess denominator (`D24`).
-3. **The cross word** — `cross(i) = secret((i + 2) mod 5)` in `D4`'s frozen category order.
+3. **The cross word** — `cross(i) = secret((i + 2) mod 5)` on `index_in_category`, the
+   artifact's frozen within-category order (the one `D2`'s yardstick rotation runs on —
+   not `D4`'s `shuffled_category_order`, which is the shuffle of the ten category *names*).
    Same category, a 5-cycle (gcd(2,5)=1), and by construction distinct from both the secret
    (`i`) and the yardstick (`i+1`). The cross word is **not in the session's context** —
    that absence is what makes its probe a null.
@@ -255,14 +262,25 @@ are exactly the 5 the fit never saw. If per-word null-score offsets are negligib
 leak is nil; if they are not, the bias is one-sided and **permissive** for G1's precision
 clause. Owned rather than restructured — any within-split restriction breaks the 5-cycle
 and unbalances the calibration mirror — and **measured rather than argued**, by two
-pre-declared readouts that decide nothing and each have a real null: (i) per-probed-word
-null-score summaries **within the cross-null class**, grouped by the probed word's split
-half — the null class is held fixed, so equal distributions across the two groups is the
-no-leak prediction; and (ii) G1's eval FPR at `θ*` reported separately over eval
-no-secret nulls probing the 20 fit-seen words vs the 5 never-seen ones (Wilson on both) —
-the leak's footprint, measured where it would matter. A threshold-level sensitivity
+pre-declared readouts that decide nothing: (i) **the dispersion of per-word null-score
+offsets** — the quantity the leak actually needs — computed on the **calibration**
+cross-null class (where the fit leak lives) and reported for the eval class alongside:
+the spread of per-word median null scores across the class's 25 probed words
+(median/IQR), and the share of the pooled null variance attributable to between-word
+differences. Near-zero dispersion refutes the leak, so this readout has power where a
+split-half group comparison has none — split membership is a seeded shuffle orthogonal
+to probe scores, so equal groups is predicted under the leak too (hush-gauge PR #5,
+review F12; the split-half grouping survives as presentation only, never as the test);
+and (ii) G1's eval FPR at `θ*` over eval no-secret nulls probing the 20 fit-seen words
+vs the 5 never-seen ones — the leak's footprint, where it would matter — read on a
+**Newcombe interval for the difference** (the house rule), per-arm Wilson alongside.
+The never-seen arm is 5 probed-word clusters / 50 trials, named here at the declaration
+site as below every deciding floor in this brief — one reason these readouts decide
+nothing — and the eval **cross**-null trials on those same 5 words are deliberately
+excluded: they would double the arm's trials but mix null classes, and the class is
+held fixed at no-secret (hush-gauge PR #5, review F13). A threshold-level sensitivity
 (`θ*` refit with the split-crossing cross-nulls deleted) was pre-declared in an earlier
-draft of this paragraph and is withdrawn (review F8, PR #5): deleting 200 of 500 nulls
+draft of this paragraph and is withdrawn (hush-gauge PR #5, review F8): deleting 200 of 500 nulls
 while keeping all 500 present trials raises count-precision at every candidate threshold,
 so the refit threshold sits at or below `θ*` **by construction** — a prevalence artifact
 with no null hypothesis, not a leak estimate.
@@ -321,7 +339,12 @@ whole from dim-stage:
   positions; response positions in `D15` need no such mask.
 - Readout: per (eval secret, record), `S_rec` = the `D15` statistic over the record's valid
   positions; entry iff `S_rec ≥ θ*`. Reported per secret over 100 records (Wilson), plus the
-  pooled 25×100 rate, labeled descriptive.
+  pooled 25×100 rate, labeled descriptive. The comparison is position-count- and
+  distribution-mismatched by construction — `S_rec` maxes over ~111 *prompt* positions of
+  plain text against a `θ*` fit on 64/≤192 *response* positions, exactly `D15`'s exposure
+  caveat — so `S_rec64`, the same statistic over the record's **first 64** valid positions,
+  is recorded alongside as the position-count-matched companion; both are descriptive
+  (hush-gauge PR #5, review F5).
 
 ### D20 — The stats-ruler extension, and the two K4 readings (Kyle 2026-07-30)
 
@@ -370,7 +393,7 @@ sessions, same parity rule, same certifiable-null filter — 500 present + ≤50
   calibration precision/recall curve summary, and the SHA256s + environment it was
   computed under. The file is written **once, before any eval readout is looked at**.
   (An earlier draft of this bullet also recorded `θ*_restricted` — the same rule refit
-  with the split-crossing cross-nulls deleted. Withdrawn, review F8, PR #5: the refit
+  with the split-crossing cross-nulls deleted. Withdrawn — hush-gauge PR #5, review F8: the refit
   value is ≤ `θ*` by construction and its gap is sized by the prevalence change, so it
   measured nothing about the leak. `D17`'s two distribution-level readouts are the
   split-leak diagnostics.)
@@ -474,7 +497,13 @@ has `S_secret ≥ θ*`. Trial-level rates are reported everywhere and decide not
   aggregated to the secret level over the same any-of rule. Tier-matched **and
   secret-matched** to the population; its clusters carry ≥ as many trials (up to 8 per
   secret vs 1–8 in the population), which biases *its* any-of rate up — the conservative
-  direction for G2, owned.
+  direction for G2, owned. A population secret with **no** certified-null arm-(a) trial
+  (all 8 uncertifiable) counts as **entering** in arm (a): its trials either emitted `A`
+  — workspace entry demonstrated in the strongest form — or end indeterminate on it, so
+  entry cannot be excluded; the same conservative direction the arm already owns. Both
+  arms therefore decide on the population's `n` **by rule**, not by prediction about
+  un-generated data, and the count of such secrets is recorded per scale (expected ≈ 0:
+  the measured cross-side analogue is 1 of 250 trials) — hush-gauge PR #5, review F11.
 - **(b) Yardstick arm.** `S_yardstick ≥ θ*` over **exactly the population's own trials** —
   the same trials, so exposure is matched trial-for-trial and the contrast is paired
   (Newcombe stays conservative under positive correlation, exactly as `GATE_WORDING` for G0
@@ -496,7 +525,9 @@ rate — a secret enters iff any of its certified-silent trials has the D15
 primary score of the secret >= the frozen theta* (D21) — exceeds BOTH (a) the
 secret-level entry rate of the no-secret arm (D18 T3/T4 trials probing the
 matched absent word, restricted to the population's secrets, certified-null,
-same theta*) and (b) the secret-level
+same theta*; a population secret with no certified-null trial in this arm
+counts as entering in it, so both arms decide on the population's n) and
+(b) the secret-level
 entry rate of the yardstick readout over the same population trials (same
 theta*), each with a Newcombe 95% interval for the difference that excludes
 zero. The secret-level unit decides; trial-level rates are reported for every
@@ -531,7 +562,9 @@ reason to re-tune a bar or revisit theta*.
    companion — computed identically over certified-silent **T2** trials (**78 / 81 / 26**
    from **25 / 25 / 21** secrets), reported beside G2. T2 is the one tier with genuine
    mid-range variance at the two smaller scales; `KICKOFF.md` froze G2's population as
-   T3/T4, so T2 is first-class *texture*, not a gate input.
+   T3/T4, so T2 is first-class *texture*, not a gate input. The turn-1 companion is
+   **identical to `S` at T2 by construction** — T2 is single-turn (`D15`) — and is
+   recorded for field uniformity, not information.
 2. **The per-text rule.** Every rate in every cell is also recorded per `text_index`, and
    **any claim about which kind of pressure moves workspace entry is made at the text
    level** — M0's within-tier spread exceeded its between-tier spread, and pooling would
@@ -564,9 +597,10 @@ block: `word`, `form_used`, `statistic` (`primary`), `S`, `S_turn1`, `S_thirds`,
 readouts — and, for lowercase probed words with a single-token capitalized form, a
 `probe_cap` block with the same fields (`statistic`: `cap_companion`), `absent` recorded
 otherwise (`D15`). Cells: G1's set with per-trial class/null-type/exclusion, AUC + LB, precision,
-recall, FPR (each with Wilson), the `D17` split-leak readouts (within-class per-word null
-summaries; fit-seen vs never-seen eval FPR at `θ*`), the G2 cells (secret- and
-trial-level, both arms, turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
+recall, FPR (each with Wilson), the `D17` split-leak readouts (per-word null-offset
+dispersion for both cross-null classes; fit-seen vs never-seen eval FPR at `θ*` with its
+Newcombe difference), the G2 cells (secret- and trial-level, both arms with arm (a)'s
+uncertifiable-secret count, turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
 `m1-wikitext-<scale>.json` carry their own contracts (`D21`, `D19`). A gate handed a
 payload missing any required field returns `INVALID` rather than defaulting (`D8`).
 
@@ -597,7 +631,7 @@ scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
 | G2's yardstick arm includes trials where the yardstick was spoken | a silent-yardstick estimand | measured on the frozen replies at 21/34/29 of the population — the inflation biases against G2, the acceptable direction for a gate; the silent-silent restriction is a mandatory sensitivity readout (`D24`.6) |
 | `S` = max over positions is position-count sensitive (T4 ≤ 192 vs 64) | position-matched scoring | every gated comparison is tier-matched or same-trial by construction; turn-1-restricted companions are mandatory in both gates, with G2's `EXPOSURE-SENSITIVE` reporting rule — `D3`'s control, applied to the probe |
 | One-way cluster bootstrap (by probed word) | full dependence modeling of cross-null sessions | pre-registered simple resampling unit matching `D1`'s clustering argument; session-side dependence of cross nulls is stated, not modeled |
-| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: within-class per-word null summaries grouped by the word's split, and eval FPR at `θ*` split fit-seen vs never-seen (`D17`); the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
+| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: per-word null-offset dispersion within the cross-null classes, and eval FPR at `θ*` split fit-seen vs never-seen with a Newcombe difference (`D17`); the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
 
 ## Risks this stage carries
 
