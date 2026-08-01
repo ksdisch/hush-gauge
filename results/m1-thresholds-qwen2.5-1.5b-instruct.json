@@ -1,0 +1,128 @@
+{
+ "theta": 0.07458509504795074,
+ "fallback_used": false,
+ "rule": "D21: smallest candidate with calibration precision >= 0.8 (max recall subject to K4's precision bar)",
+ "at_theta": {
+  "theta": 0.07458509504795074,
+  "tp": 117,
+  "fp": 29,
+  "fn": 383,
+  "tn": 471,
+  "precision": 0.8013698630136986,
+  "recall": 0.234,
+  "fpr": 0.058,
+  "f1": 0.3622291021671826
+ },
+ "n_candidates": 1000,
+ "precision_bar": 0.8,
+ "calibration": {
+  "n_present": 500,
+  "n_null": 500,
+  "excluded_nulls": 0,
+  "null_mix": {
+   "cross": 250,
+   "no_secret": 250
+  }
+ },
+ "curve_summary": {
+  "n_candidates": 1000,
+  "max_precision": 1.0,
+  "max_f1": 0.669811320754717,
+  "deciles": [
+   {
+    "theta": -0.029774721711874008,
+    "precision": 0.5,
+    "recall": 1.0,
+    "fpr": 1.0,
+    "f1": 0.6666666666666666
+   },
+   {
+    "theta": 0.017385827377438545,
+    "precision": 0.5083240843507214,
+    "recall": 0.916,
+    "fpr": 0.886,
+    "f1": 0.6538187009279086
+   },
+   {
+    "theta": 0.025299279019236565,
+    "precision": 0.5205992509363296,
+    "recall": 0.834,
+    "fpr": 0.768,
+    "f1": 0.6410453497309762
+   },
+   {
+    "theta": 0.03191117197275162,
+    "precision": 0.5263908701854494,
+    "recall": 0.738,
+    "fpr": 0.664,
+    "f1": 0.6144879267277269
+   },
+   {
+    "theta": 0.03698519244790077,
+    "precision": 0.5440931780366056,
+    "recall": 0.654,
+    "fpr": 0.548,
+    "f1": 0.5940054495912808
+   },
+   {
+    "theta": 0.04112064093351364,
+    "precision": 0.564870259481038,
+    "recall": 0.566,
+    "fpr": 0.436,
+    "f1": 0.5654345654345655
+   },
+   {
+    "theta": 0.047160450369119644,
+    "precision": 0.5935162094763092,
+    "recall": 0.476,
+    "fpr": 0.326,
+    "f1": 0.5283018867924528
+   },
+   {
+    "theta": 0.05482063069939613,
+    "precision": 0.6312292358803987,
+    "recall": 0.38,
+    "fpr": 0.222,
+    "f1": 0.4744069912609239
+   },
+   {
+    "theta": 0.06698951125144958,
+    "precision": 0.7263681592039801,
+    "recall": 0.292,
+    "fpr": 0.11,
+    "f1": 0.41654778887303845
+   },
+   {
+    "theta": 0.08249957859516144,
+    "precision": 0.8712871287128713,
+    "recall": 0.176,
+    "fpr": 0.026,
+    "f1": 0.29284525790349414
+   },
+   {
+    "theta": 0.17347078025341034,
+    "precision": 1.0,
+    "recall": 0.002,
+    "fpr": 0.0,
+    "f1": 0.003992015968063872
+   }
+  ]
+ },
+ "subject": "Qwen/Qwen2.5-1.5B-Instruct",
+ "result_ref": {
+  "path": "results/m1-probe-panel-qwen2.5-1.5b-instruct.json",
+  "sha256_at_freeze": "01ffba1b2dce4dd85e0dacf7b0b1edb8764deca83c0133d90baeb1253085cf2b",
+  "note": "pre-stamp digest; m1_cells.py amends this file with the eval cells"
+ },
+ "battery_sha256": "f839ebcbcd93b11c2881caf272618582de685e10180a9b93b2bb7084af19a241",
+ "tiers_sha256": "d9220481ead39cee1ea93d8be331f7a885f5ad08bcf67313148639f3651d1cbc",
+ "probe_panel_sha256": "4d730bead714d49d648a92ce9e6fe9f9e591cbd2368eae4035f408d737166296",
+ "lens_sha256": "05143b6438743123d51e11c78d3fbc6aece74c1783b0bb1f2ae050413e60080f",
+ "environment": {
+  "device": "mps",
+  "dtype": "torch.float32",
+  "torch": "2.13.0",
+  "transformers": "5.13.1"
+ },
+ "note": "D21: theta* is the smallest calibration score whose calibration precision clears K4's 0.80 bar (max recall subject to it), fit on the CALIBRATION half only. It is the study's one threshold \u2014 G1 decides at it, G2's workspace entry is S >= it, D19's neutral-corpus rate uses it. Both gates recompute it from the payload's calibration trials and refuse a record that does not reproduce."
+}
