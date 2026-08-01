@@ -508,14 +508,26 @@ has `S_secret ≥ θ*`. Trial-level rates are reported everywhere and decide not
   uncertifiable trial counts as **entering** for its secret — it either emitted `A`
   (workspace entry demonstrated in the strongest form) or ends indeterminate on it
   (entry cannot be excluded). No trial is dropped: every cluster keeps its full 8 trials
-  against the population's 1–8 — which biases arm (a)'s any-of rate up, its owned
-  conservative direction, and each uncertifiable trial moves it further the same way —
-  the secret- and trial-level rates aggregate one set, and the empty-cluster case is a
-  consequence of the rule rather than a special case. Both arms therefore decide on the
-  population's `n` **by rule**, not by prediction about un-generated data; per-scale
-  uncertifiable-trial counts are recorded (expected ≈ 0–1: re-scoring the frozen replies
-  against each session's cross word, the T3/T4-restricted analogue rate is 1/400,
-  0/400, 1/400).
+  against the population's observed 1–5 / 1–6 / 1–6 — which biases arm (a)'s any-of rate
+  up, its owned conservative direction, and each uncertifiable trial moves it further the
+  same way — the secret- and trial-level rates aggregate one set, and the empty-cluster
+  case is a consequence of the rule rather than a special case. Both arms therefore
+  decide on the population's `n` **by rule**, not by prediction about un-generated data;
+  per-scale uncertifiable-trial counts are recorded. **The rule's cost is owned before
+  the run** (hush-gauge PR #5, review F17): under the any-of rule over arm (a)'s 8
+  trials, a per-trial uncertifiable rate `u` floors arm (a)'s secret-level rate at
+  `1 − (1 − u)⁸` before any probe score is read (1% → 0.077, 5% → 0.337), stacking on
+  the cluster-size disparity just owned. And `u` is **unmeasurable from any existing
+  artifact**: arm (a)'s sessions pair T3/T4 texts that demand a secret with a frame
+  containing none, and `A` is a same-category sibling of the in-context frame word — the
+  with-secret cross-word analogue (1/400, 0/400, 1/400 on the frozen replies) is an
+  analogue, not an estimate, and the risk list carries this. `D24`.9 is the mandatory
+  both-ways companion: arm (a) recomputed with uncertifiable trials **excluded** (`n`
+  reduced accordingly, cluster sizes recorded), beside the gate's imputed form in every
+  G2 readout; a G2 verdict whose sign differs between the two forms is reported as
+  **`IMPUTATION-SENSITIVE`** alongside. The turn-1 exposure companion replaces *scores*
+  and cannot touch imputed entries, so `D24`.9 is this rule's own control, not a special
+  case of `D3`'s.
 - **(b) Yardstick arm.** `S_yardstick ≥ θ*` over **exactly the population's own trials** —
   the same trials, so exposure is matched trial-for-trial and the contrast is paired
   (Newcombe stays conservative under positive correlation, exactly as `GATE_WORDING` for G0
@@ -595,6 +607,11 @@ reason to re-tune a bar or revisit theta*.
 7. **Sub-band thirds.** Per-third `S` per trial per word — where in the band entry
    concentrates; the late third is M3's interest. Recorded, never decided on.
 8. **The neutral-corpus rates** (`D19`), per secret and pooled.
+9. **Arm (a) both ways** (`D23`'s imputation rule — the `D24`.6 pattern). Arm (a)'s
+   secret- and trial-level rates recomputed with uncertifiable trials excluded (`n`
+   reduced, cluster sizes recorded), beside the gate's uncertifiable-as-entering form,
+   in every G2 readout including the T2 secondary; a verdict-sign disagreement between
+   the two forms is reported as `IMPUTATION-SENSITIVE` (hush-gauge PR #5, review F17).
 
 ### The result-JSON field contract
 
@@ -613,8 +630,8 @@ otherwise (`D15`). Cells: G1's set with per-trial class/null-type/exclusion, AUC
 recall, FPR (each with Wilson), the `D17` split-leak readouts (between-word null-score
 dispersion for both cross-null classes with the cross-family agreement companion;
 fit-seen vs never-seen eval FPR at `θ*` with its Newcombe difference), the G2 cells
-(secret- and trial-level, both arms with arm (a)'s per-scale uncertifiable-trial count,
-turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
+(secret- and trial-level, both arms with arm (a)'s per-scale uncertifiable-trial count
+and `D24`.9's excluded-form cells, turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
 `m1-wikitext-<scale>.json` carry their own contracts (`D21`, `D19`). A gate handed a
 payload missing any required field returns `INVALID` rather than defaulting (`D8`).
 
@@ -663,6 +680,12 @@ scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
   recall is the tell, and G2 is the gate that cannot be carried that way.
 - **New machinery risk** (`detect.py`): mitigated by hand-computed test values and
   reference-implementation agreement; the bootstrap seed and B are frozen above.
+- **Arm (a)'s uncertifiable rate is unmeasured in the condition it occurs in.** No-secret
+  sessions under secret-demanding T3/T4 texts exist in no artifact until the `D18` sweep
+  runs; the with-secret analogue (1/400, 0/400, 1/400) is an analogue. `D23`'s imputation
+  rule turns that rate into a floor under G2's baseline arm (≈ `8u`), which `D24`.9's
+  both-ways readout makes legible — an `IMPUTATION-SENSITIVE` verdict is reportable,
+  never silently absorbed.
 - **R4 texture stands:** the 0.5B leaked 59/60 secrets on ad-hoc probes; a saturated small
   scale shifts the detection science to 1.5B/3B with scale framing, as pre-declared.
 
