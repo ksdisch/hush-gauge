@@ -177,7 +177,7 @@ def check_contrasts(reported: dict, rebuilt: dict, where: str) -> None:
 
 def check(payload: dict) -> dict:
     m0 = check_artifacts(payload)
-    rows = check_trial_set(payload)
+    check_trial_set(payload)
     check_reply_identity(payload, m0)
     check_oracle_label(payload)
     thresholds = check_thresholds(payload)
@@ -185,7 +185,7 @@ def check(payload: dict) -> dict:
 
     cells = require(payload, "cells", "run")
     reported = require(cells, "g2", "cells")
-    rebuilt = m1_cells.g2_arms(payload, theta, m1_cells.G2_TIERS, rows)
+    rebuilt = m1_cells.g2_arms(payload, theta, m1_cells.G2_TIERS)
     rebuilt_parts = m1_cells.g2_verdict_parts(rebuilt)
 
     check_population(reported, rebuilt, "cells.g2")
@@ -196,7 +196,7 @@ def check(payload: dict) -> dict:
     # input. Presence-checked and recomputed on the same terms as G2's own cells, so a
     # payload cannot ship a T2 block that disagrees with its own trials.
     secondary = require(cells, "d24_1_t2_secondary", "cells")
-    rebuilt_secondary = m1_cells.g2_arms(payload, theta, (m1_cells.SECONDARY_TIER,), rows)
+    rebuilt_secondary = m1_cells.g2_arms(payload, theta, (m1_cells.SECONDARY_TIER,))
     check_population(secondary, rebuilt_secondary, "cells.d24_1_t2_secondary")
     check_arms(secondary, rebuilt_secondary, "cells.d24_1_t2_secondary")
 

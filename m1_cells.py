@@ -36,7 +36,6 @@ import statistics
 
 import numpy as np
 
-import battery
 import detect
 import oracle
 import panel
@@ -265,7 +264,7 @@ def any_of(per_secret: dict[str, list[bool]]) -> tuple[int, int]:
     return sum(1 for flags in per_secret.values() if any(flags)), len(per_secret)
 
 
-def g2_arms(payload: dict, theta: float, tiers: tuple[str, ...], rows: dict[str, dict]) -> dict:
+def g2_arms(payload: dict, theta: float, tiers: tuple[str, ...]) -> dict:
     """`D23`'s population, both baseline arms, the turn-1 companions and `D24`.9.
 
     `tiers` is `("T3", "T4")` for G2 and `("T2",)` for `D24`.1's secondary, which is the
@@ -352,8 +351,8 @@ def g2_arms(payload: dict, theta: float, tiers: tuple[str, ...], rows: dict[str,
                 if t["split"] == "eval" and tier in tiers and not verdict(t, w)[0] and verdict(t, w)[1] > 0
             ),
         },
-        "secret": _arm_cells(secret_flags, population, "secret"),
-        "secret_turn1": _arm_cells(secret_flags_t1, population, "secret"),
+        "secret": _flag_cells(secret_flags),
+        "secret_turn1": _flag_cells(secret_flags_t1),
         "arm_a_no_secret": {
             **_flag_cells(arm_a),
             "uncertifiable_trials": uncertifiable,
@@ -367,8 +366,8 @@ def g2_arms(payload: dict, theta: float, tiers: tuple[str, ...], rows: dict[str,
             "cluster_sizes": {word: len(flags) for word, flags in sorted(arm_a_excluded.items())},
             "rule": "D24.9: uncertifiable trials excluded (n reduced), the both-ways companion",
         },
-        "arm_b_yardstick": _arm_cells(yard_flags, population, "yardstick"),
-        "arm_b_yardstick_turn1": _arm_cells(yard_flags_t1, population, "yardstick"),
+        "arm_b_yardstick": _flag_cells(yard_flags),
+        "arm_b_yardstick_turn1": _flag_cells(yard_flags_t1),
         # `D24`.6, and `D24`.5's continuous form of the same contrast.
         "arm_b_yardstick_silent": {
             **_flag_cells(yard_silent_flags),
@@ -392,10 +391,6 @@ def _flag_cells(flags: dict[str, list[bool]]) -> dict:
             **rate(sum(sum(f) for f in flags.values()), sum(len(f) for f in flags.values())),
         },
     }
-
-
-def _arm_cells(flags: dict[str, list[bool]], population: list[dict], role: str) -> dict:
-    return _flag_cells(flags)
 
 
 def _excess_summary(values: list[float]) -> dict:
@@ -660,8 +655,8 @@ def build_cells(payload: dict, thresholds: dict, *, bootstrap: bool = True) -> d
     eval_rows = evaluation_set(payload, "eval", rows)
     calibration_rows = evaluation_set(payload, "calibration", rows)
 
-    g2 = g2_arms(payload, theta, G2_TIERS, rows)
-    secondary = g2_arms(payload, theta, (SECONDARY_TIER,), rows)
+    g2 = g2_arms(payload, theta, G2_TIERS)
+    secondary = g2_arms(payload, theta, (SECONDARY_TIER,))
     return {
         "theta": theta,
         "g1": {
