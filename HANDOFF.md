@@ -1,8 +1,41 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-07-30 (**M0 complete — G0 PASSES on all three scales**; M1 next)_
+_Last updated: 2026-08-01 (**M1 brief frozen — `D15`–`D24`**; the M1 build session is next)_
 
 ## What was just done
+
+- **Wrote, adversarially reviewed, and froze `docs/M1-BRIEF.md`** — M1's start-of-stage
+  brief, approved by Kyle 2026-08-01. `D15`–`D24` are frozen and mirrored into
+  `docs/DECISIONS.md`; the brief is now never edited (annotations only). Landed as **PR #5**,
+  merged after a **six-round adversarial review**: 21 findings (F1–F21), zero disputes (the
+  judge was never needed), zero critical, **seven should-fixes all fixed and verified
+  in-loop**. Rounds 4–6 ran past the 3-dispatch cap on Kyle's explicit per-decision
+  authorizations ("fix it re-review"; "Round 6, then stop"), recorded verbatim in the
+  mailbox: `~/.claude/reviews/hush-gauge/2026-07-30-docs-m1-brief.md` — **the authority per
+  finding**; no totals are hand-carried here beyond this bullet's, per the F7/F13 lesson
+  below.
+- **The review changed the design, not just the prose.** The load-bearing catches: **F1**
+  (the probe's scored-position set was self-contradictory under capture — pinned to the
+  produced-from alignment, `oracle.py`'s F9 contract applied to residuals); **F2+F10** (the
+  probe row was case-blind against a two-case oracle — capitalized companion block,
+  case-matched first); **F3+F8+F12+F16+F18** (the cross rotation's calibration→eval split
+  leak — owned and instrumented, after the first two diagnostics offered in its place were
+  themselves refuted in later rounds: `θ*_restricted` was signed by construction, the
+  split-half grouping was orthogonal to the leak); **F4+F11+F15+F17** (G2 arm (a)'s
+  denominator, the empty-cluster rule, and the imputation floor — one per-trial rule plus
+  `D24`.9's both-ways companion with `IMPUTATION-SENSITIVE` reporting).
+- **Three follow-ups remain open — F19–F21, all nice-to-have, none blocking, frozen-brief
+  annotation material** (full text in the mailbox and the PR #5 comment): **F19** — the F18
+  fix's "certified-null per `D17`, as everywhere" is falsified by arm (a)'s own one-rule
+  form, and the two cross-family companion families read 20 vs 10 cells; **F20** — `D24`.9
+  names *rates* but triggers on a *verdict-sign* disagreement (the Newcombe on the excluded
+  form is implied, not stated), and `IMPUTATION-SENSITIVE` has no home in G2's byte-frozen
+  wording, unlike `EXPOSURE-SENSITIVE`; **F21** — the `1−(1−u)⁸` floor is an i.i.d.
+  expectation and Jensen makes it an **upper** bound under per-word heterogeneity (measured:
+  spontaneous events concentrate in 2/2/1 words). All three err in the self-critical
+  direction; both `D24`.9 forms recompute post hoc from required fields.
+
+### Earlier — M0 execution (2026-07-30)
 
 - **Ran the M0 sweep on all three subjects and decided G0 once. It PASSES on all three
   scales, and none is `EXPOSURE-CONFOUNDED`.**
@@ -183,7 +216,14 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
-**M0 is complete. G0 PASSES; M1 is next.** `D1`–`D14` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
+**M1's brief is frozen (2026-08-01); nothing in M1 has run.** `docs/M1-BRIEF.md` is
+normative for M1 — the probe statistic (`D15`), the byte-for-byte re-generation contract
+(`D16`), the probe panel and its split-leak instrumentation (`D17`), the no-secret frame
+(`D18`), the threshold protocol (`D21`), and G1/G2's byte-frozen `GATE_WORDING` with their
+INVALID arms (`D22`/`D23`) — with `docs/DECISIONS.md` carrying the citable `D15`–`D24`
+mirror. The next session **builds**; every M0-certified module is read-only for it.
+
+**M0 is complete. G0 PASSES.** `D1`–`D14` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
 citable ledger). On disk and green: `oracle.py`, `encode.py`, `roster.py`,
 `tests/test_oracle.py`, `tests/test_encode.py`, `tests/fixtures/real_replies_0.5b.json`,
 `battery.py`, `stats.py`, `gates/g0.py`, `m0_leak_curve.py`, `build_batteries.py` —
@@ -234,30 +274,22 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**M0 is done. M1 opens with its own start-of-stage brief** (`docs/M1-BRIEF.md`), which freezes
-M1's decisions before any run, per the house methodology. What M1 has to settle, with what M0
-now knows:
+**The M1 build session** — fresh, from the brief, never from this session's transcript, per
+the brief's own run-config note: `claude --model claude-opus-5 --effort high`. It builds, in
+order: `probe.py` → `batteries/probe_panel.json` → `m1_probe_panel.py` (cut from
+`m0_leak_curve.py`) → `m1_wikitext_rate.py` + the verified fit-corpus copy → `detect.py` →
+`m1_freeze_thresholds.py` → `gates/g1.py` + `gates/g2.py` (`GATE_WORDING` byte-identical to
+the brief, dry-run `INVALID` arms proven against the runner's real output) → the ≈6–7 h
+overnight sweep → thresholds → each gate decided once → `docs/M1-RESULTS.md`. The brief's
+two standing rules: a gate failure that questions the *design* bounces to a Fable session,
+and an oracle-class defect found in review is a design question, not a patch.
 
-1. **Which cells carry the signal.** T4 is saturated at 25/25 on all three scales, so the
-   T4-vs-T0 contrast is spent as a measurement substrate. The live populations are the
-   **non-emitting T3/T4 trials** (71 / 86 / 50 per scale) for `G2`, and **T2**, the only tier
-   with genuine mid-range variance (17/25, 16/25 at the two smaller scales).
-2. **Per-text, not per-tier.** See caveat 1 above. Any M1 claim about *kinds* of pressure has
-   to be made at the text level or it is an artifact of pooling.
-3. **The four FP baselines**, including the context-word yardstick — and note `D2`'s
-   constraint: M1's cross-secret pairing must **exclude that session's yardstick**, because
-   the yardstick word is in context.
-4. **Threshold freezing on the calibration half**, evaluated once on held-out (`K3`).
-5. `G1`'s bars are already frozen at kickoff (`K4`): AUC 95% LB ≥ 0.75, precision ≥ 0.80,
-   recall ≥ 0.50, at a frozen 1:1 eval class balance, FPR reported alongside.
-
-**Design-extraction is a free pre-commit step in M1's brief** — the probe methodology and band
-conventions come from dim-stage via mute-map and must not be re-derived (`K6`).
-
-**Open follow-ups from PR #2's review** — **two**, both nice-to-have and neither blocking:
-`F6` (the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
-load-bearing 849/1,729 anchor) and `F7` (`D12`'s justifying 252/960 and 510/4,320 have no
-artifact in the tree, while the conclusion they support is test-pinned).
+**Open follow-ups** — five, all nice-to-have, none blocking:
+- From PR #2: `F6` (the WikiText test `pytest.skip`s itself when the HF cache differs,
+  behind the load-bearing 849/1,729 anchor) and `F7` (`D12`'s justifying 252/960 and
+  510/4,320 have no artifact in the tree, while the conclusion they support is test-pinned).
+- From PR #5: `F19`–`F21` (see "What was just done" — frozen-brief annotation material; the
+  build session should read all three in the mailbox before cutting `gates/g2.py`).
 
 ## Open questions / blockers
 
@@ -293,21 +325,21 @@ artifact in the tree, while the conclusion they support is test-pinned).
 
 ---
 
-**Run-config note:** **M0 is closed. The next session opens M1** by writing
-`docs/M1-BRIEF.md`, freezing M1's decisions before any run. Read `docs/KICKOFF.md` for scope
-and gates, `docs/M0-RESULTS.md` for what M0 measured and the three caveats that bound it, and
-`docs/DECISIONS.md` for `K1`–`K6` + `D1`–`D14` — with `D12`/`D13`/`D14` read **before**
-`D10`/`D11`, since the later three say what the oracle and gate actually do.
+**Run-config note:** **The M1 brief is frozen. The next session builds M1** from
+`docs/M1-BRIEF.md` — a fresh session, started from the brief, never from the planning
+session's transcript. Read the brief top to bottom first (it is normative and carries the
+byte-frozen `GATE_WORDING` blocks), then `docs/DECISIONS.md` `D15`–`D24` for the citable
+mirror, with the M0 reading order (`D12`/`D13`/`D14` before `D10`/`D11`) still in force.
+The three PR #5 follow-ups (`F19`–`F21`, in
+`~/.claude/reviews/hush-gauge/2026-07-30-docs-m1-brief.md`) should be read before cutting
+`gates/g2.py`.
 
-Recommended model + effort: **Fable 5 at xhigh** — writing a start-of-stage brief is
-judgment-first work with real tradeoffs (which cells carry signal on a saturated battery, how
-to size G2's population against 71/86/50 non-emitting trials, the four FP baselines), not
-well-specified build work. Launch: `claude --model claude-fable-5 --effort xhigh`.
+Recommended model + effort: **Opus 5 at high** — the design calls are frozen, so what
+remains is well-specified build work. Launch: `claude --model claude-opus-5 --effort high`.
 
-The **build** that follows M1's brief is a separate, fresh session at **Opus 5 at high** —
-`claude --model claude-opus-5 --effort high`.
-
-Two standing rules, both earned in M0: if a gate fails in a way that questions the battery
-design rather than the models, bounce the revision decision to a Fable session rather than
-escalating effort in the build session; and if a review round turns up another oracle-class
-defect, that is a design question too, not a patch.
+Two standing rules, both earned in M0 and restated in the brief: if a gate fails in a way
+that questions the design (the probe statistic, the threshold protocol, the set
+construction) rather than the models, bounce that decision to a Fable session rather than
+escalating effort in the build session; and if review turns up an oracle-class defect — a
+proxy standing in for the thing it approximates — that is a design question too, not a
+patch.
