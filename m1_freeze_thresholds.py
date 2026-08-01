@@ -112,7 +112,15 @@ def main() -> int:
             "subject": payload["subject"],
             "result_ref": {
                 "path": str(result_path.relative_to(RESULTS.parent)),
-                "sha256": probe.sha256(result_path),
+                # The digest of the result JSON **as theta* saw it** — before m1_cells.py
+                # stamps the eval cells in. Named `sha256_at_freeze` rather than `sha256`
+                # because it is guaranteed not to match the file afterwards, and a recorded
+                # hash that can never match is worse than none: it invites a check that
+                # would fail for the wrong reason. What it pins is what theta* was fit on.
+                # The gates do something stronger anyway — they recompute theta* from the
+                # payload's own calibration trials and refuse a record that disagrees.
+                "sha256_at_freeze": probe.sha256(result_path),
+                "note": "pre-stamp digest; m1_cells.py amends this file with the eval cells",
             },
             "battery_sha256": payload["battery_sha256"],
             "tiers_sha256": payload["tiers_sha256"],
