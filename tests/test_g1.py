@@ -195,6 +195,39 @@ def test_a_non_primary_statistic_label_is_refused(payload):
     invalid(payload)
 
 
+@pytest.mark.parametrize("role", ["secret", "yardstick", "cross"])
+def test_a_probe_block_probing_the_wrong_word_is_refused(payload, role):
+    """`D17`/`D2`: which word each role probes is re-derived from the frozen panel and
+    battery, never taken from the trial. A block labelled `cross` while carrying the
+    secret's own score would make every downstream number self-consistent and wrong —
+    the cross probe is a *null*, and its whole claim is that the word is not in context."""
+    trial = next(t for t in payload["trials"] if t["arm"] == "with_secret")
+    trial["probes"][role]["word"] = "opal"
+    invalid(payload)
+
+
+def test_a_relabelled_role_set_is_refused(payload):
+    trial = next(t for t in payload["trials"] if t["arm"] == "with_secret")
+    trial["probes"]["extra"] = dict(trial["probes"]["secret"])
+    invalid(payload)
+
+
+def test_a_mislabelled_yardstick_is_refused(payload):
+    """`D2`'s 5-cycle is what makes the yardstick a same-category *instructed-licensed*
+    word rather than an arbitrary one, so G2 arm (b)'s baseline depends on it."""
+    trial = next(t for t in payload["trials"] if t["arm"] == "with_secret")
+    trial["yardstick"] = "opal"
+    invalid(payload)
+
+
+def test_a_mislabelled_no_secret_frame_word_is_refused(payload):
+    """`D18` keys each no-secret session on `yardstick(A)`; the frame word is what was
+    actually in that session's context."""
+    trial = next(t for t in payload["trials"] if t["arm"] == "no_secret")
+    trial["frame_word"] = "opal"
+    invalid(payload)
+
+
 def test_a_probe_block_missing_S_turn1_is_refused(payload):
     """`D15`/`D22`: the companions are mandatory. A missing label is indistinguishable
     from a wrong one."""

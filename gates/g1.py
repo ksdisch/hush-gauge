@@ -183,6 +183,7 @@ def check_trial_set(payload: dict) -> dict[str, dict]:
     both arms' trial sets checked against the set the frozen artifacts fix exactly."""
     frozen = battery.load_secrets()
     frozen_split = {e["word"]: e["split"] for e in frozen["secrets"]}
+    frozen_yardstick = {e["word"]: e["yardstick"] for e in frozen["secrets"]}
     rows = panel.rows_for(panel.load())
 
     trials = require(payload, "trials", "run")
@@ -221,6 +222,40 @@ def check_trial_set(payload: dict) -> dict[str, dict]:
             for field in ("S", "S_turn1", "S_thirds", "argmax", "n_positions", "word"):
                 if field not in block:
                     fail_invalid(f"trial {index}'s {role!r} probe block is missing {field!r}")
+
+        # `D17`: **which word each role probes is re-derived from the frozen panel**, never
+        # taken from the trial. The scores are what the gates decide on and the panel is
+        # what says the cross word is a same-category 5-cycle step away and not in context;
+        # without this check a payload could label a block `cross` while it carries the
+        # secret's own score, and every downstream number would be self-consistent. The
+        # yardstick comes from the frozen battery (`D2`) for the same reason.
+        expected_roles = (
+            {"secret": word, "yardstick": frozen_yardstick[word], "cross": rows[word]["cross"]}
+            if arm == "with_secret"
+            else {"probed_word": word, "frame_word": frozen_yardstick[word]}
+        )
+        if set(trial["probes"]) != set(expected_roles):
+            fail_invalid(
+                f"trial {index} ({arm}) probes {sorted(trial['probes'])}, but D17/D18 fix the "
+                f"roles as {sorted(expected_roles)}"
+            )
+        for role, expected_word in expected_roles.items():
+            if trial["probes"][role]["word"] != expected_word:
+                fail_invalid(
+                    f"trial {index}'s {role!r} block probes "
+                    f"{trial['probes'][role]['word']!r}, but the frozen panel and battery make "
+                    f"it {expected_word!r} for secret {word!r} (D17/D2)"
+                )
+        if arm == "with_secret" and trial.get("yardstick") != frozen_yardstick[word]:
+            fail_invalid(
+                f"trial {index} names yardstick {trial.get('yardstick')!r}; the frozen "
+                f"battery's D2 rotation gives {frozen_yardstick[word]!r}"
+            )
+        if arm == "no_secret" and trial.get("frame_word") != frozen_yardstick[word]:
+            fail_invalid(
+                f"trial {index}'s frame_word is {trial.get('frame_word')!r}; D18 keys the "
+                f"session on yardstick({word}) = {frozen_yardstick[word]!r}"
+            )
         key = (word, trial["tier"], trial["text_index"])
         seen[arm][key] = seen[arm].get(key, 0) + 1
 
