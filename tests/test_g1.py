@@ -71,6 +71,24 @@ def test_the_unmutated_payload_reaches_a_verdict(payload):
     assert set(result["clauses"]) == {"auc_lb", "precision", "recall"}
 
 
+def test_the_null_class_reproduces_the_briefs_pre_run_figures(payload):
+    """`D22`'s set and `D17`'s measured contamination, recomputed.
+
+    Both were computed from the frozen M0 JSONs while the brief was being written, before
+    any M1 code existed, so agreement here checks the parity rule and the certifiable-null
+    filter against numbers that could not have been fitted to the implementation:
+
+    * the parity rule splits 250 cross / 250 no-secret nulls over the eval half;
+    * `D17`'s cross-side filter excludes **1 of 250** parity-half eval sessions at 0.5B —
+      "principled, not load-bearing", in the brief's words.
+    """
+    result = g1.check(payload)
+    assert result["excluded_nulls"]["cross"] == 1
+    assert result["null_mix"]["cross"] == 250 - 1
+    assert sum(result["null_mix"].values()) == result["n_null"]
+    assert result["n_null"] == 500 - result["excluded_nulls"]["total"]
+
+
 # ------------------------- arm 1: calibration decisions, and a set that does not reproduce
 
 

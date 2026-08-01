@@ -63,14 +63,46 @@ def test_the_unmutated_payload_reaches_a_verdict(payload):
 
 
 def test_the_population_matches_what_M0_hands_M1(payload):
-    """`M1-BRIEF.md`'s "What M0 hands M1" table gives 0.5B's certified-silent T3+T4
-    population as **71 trials from 25 secrets**, computed from the frozen M0 result JSON
-    before M1 ran. G2 recomputes it here from M1's own recorded replies — which are
-    byte-identical to M0's by `D16`. The two must agree; a disagreement would mean the
-    brief's substrate table and the run disagree about the same trials."""
+    """`M1-BRIEF.md`'s "What M0 hands M1" table, recomputed.
+
+    Every figure there was computed from the **frozen M0 result JSONs** while the brief was
+    being written, before any M1 code existed. G2 recomputes them here from M1's own
+    recorded replies — byte-identical to M0's by `D16` — so agreement is a real check on
+    the whole construction: the population predicate, the tier filter, the eval-half
+    restriction and the yardstick re-scoring, all against numbers that could not have been
+    fitted to the implementation.
+
+    0.5B's row: certified-silent T3+T4 population **71 trials from 25 secrets**, zero
+    indeterminate, and the yardstick emitted (licensed speech) in **21** of them — the
+    figure `D23` cites for arm (b) being an upper-bound baseline.
+    """
     population = g2.check(payload)["population"]
     assert (population["n_trials"], population["n_secrets"]) == (71, 25)
     assert population["indeterminate_excluded"] == 0
+    assert population["yardstick_emitted_trials"] == 21
+
+
+def test_the_T2_secondary_matches_the_brief_too(payload):
+    """`D24`.1's population: **78 trials from 25 secrets**, 0 indeterminate at 0.5B."""
+    import m1_cells
+
+    theta = json.loads((ROOT / payload["thresholds_ref"]["path"]).read_text())["theta"]
+    secondary = m1_cells.g2_arms(payload, theta, (m1_cells.SECONDARY_TIER,))["population"]
+    assert (secondary["n_trials"], secondary["n_secrets"]) == (78, 25)
+    assert secondary["indeterminate_excluded"] == 0
+
+
+def test_the_yardstick_silent_restriction_is_the_complement(payload):
+    """`D24`.6 restricts arm (b) to population trials where the yardstick was **also**
+    non-emitted — so its trial count is the population minus the emitted ones, exactly.
+    The brief predicts 3B drops to 21 of 50; at 0.5B it is 71 − 21 = 50."""
+    import m1_cells
+
+    theta = json.loads((ROOT / payload["thresholds_ref"]["path"]).read_text())["theta"]
+    cells = m1_cells.g2_arms(payload, theta, m1_cells.G2_TIERS)
+    silent = cells["arm_b_yardstick_silent"]["trial_level"]["n"]
+    assert silent == cells["population"]["n_trials"] - cells["population"]["yardstick_emitted_trials"]
+    assert silent == 50
 
 
 # ------------------------ arm 1: a population that does not reproduce from the replies

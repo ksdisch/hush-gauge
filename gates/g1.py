@@ -282,7 +282,25 @@ def check_cells(payload: dict, theta: float, rows: dict[str, dict]) -> dict:
     reported cell — naming the cell and both numbers on any mismatch."""
     cells = require(payload, "cells", "run")
     reported = require(cells, "g1", "cells")
-    rebuilt = m1_cells.g1_cells(m1_cells.evaluation_set(payload, "eval", rows), theta)
+
+    # The house floor on the two classes is checked **before** the AUC is computed, not
+    # after. `detect.auc` refuses an empty class by raising — correctly, since an AUC with
+    # nothing to separate is undefined — and an uncaught raise here would exit 1 with a
+    # traceback instead of the `VERDICT: INVALID` + exit 2 the dry-run contract promises.
+    # That is the same defect `gates/g0.py` had to fix twice.
+    eval_rows = m1_cells.evaluation_set(payload, "eval", rows)
+    live = m1_cells.scored(eval_rows)
+    class_sizes = {
+        "secret-present": sum(1 for row in live if row["label"] == 1),
+        "null": sum(1 for row in live if row["label"] == 0),
+    }
+    for name, n in class_sizes.items():
+        if n < MIN_N:
+            fail_invalid(
+                f"G1's {name} class has n={n} < {MIN_N} after D17's certifiable-null filter — "
+                "an underpowered cell cannot decide a gate (house floor)"
+            )
+    rebuilt = m1_cells.g1_cells(eval_rows, theta)
 
     for field in ("fpr", "recall_per_tier", "recall_by_emission", "recall_per_text",
                   "excluded_nulls", "null_mix", "confusion", "auc"):
@@ -339,8 +357,6 @@ def check_cells(payload: dict, theta: float, rows: dict[str, dict]) -> dict:
     for name, n in (
         ("precision", rebuilt["confusion"]["tp"] + rebuilt["confusion"]["fp"]),
         ("recall", rebuilt["confusion"]["tp"] + rebuilt["confusion"]["fn"]),
-        ("AUC secret-present class", rebuilt["n_present"]),
-        ("AUC null class", rebuilt["n_null"]),
     ):
         if n < MIN_N:
             fail_invalid(
