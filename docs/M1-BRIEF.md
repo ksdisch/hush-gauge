@@ -271,9 +271,15 @@ Computed on the **calibration** cross-null class (where the fit leak lives) and 
 for the eval class alongside: the spread of per-word median null scores across the
 class's 25 probed words (median/IQR), the share of the pooled null variance attributable
 to between-word differences, and the identifying companion — the same word's median null
-score in the cross-null class vs in its **own `D18` no-secret sessions**, a disjoint
-session family, correlated across the 25 words: an offset that reproduces across
-families is a word effect, one that does not is session content. Near-zero dispersion
+score in the cross-null class vs in **all 20 of its own `D18` no-secret sessions** (the
+full 5 × 4 grid, not `D22`'s parity-odd half; certified-null per `D17`, as everywhere), a
+disjoint session family, correlated across the 25 words: an offset that reproduces
+across families is a **word-or-category** effect — category is the axis both families
+hold constant, every in-context word in either family being a same-category function of
+the probed word — and one that does not reproduce is session content. The category
+residual cannot drive the split leak in any case: all 10 categories have ≥ 2 words on
+each side of the 25/25 split, so the fit already sees every category's offset from its
+own half (hush-gauge PR #5, review F18). Near-zero dispersion
 still refutes the leak — it bounds the word component at near-zero — and the readout has
 power where a split-half group comparison has none: split membership is a seeded shuffle
 orthogonal to probe scores, so equal groups is predicted under the leak too (hush-gauge
