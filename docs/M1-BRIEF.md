@@ -262,15 +262,23 @@ are exactly the 5 the fit never saw. If per-word null-score offsets are negligib
 leak is nil; if they are not, the bias is one-sided and **permissive** for G1's precision
 clause. Owned rather than restructured — any within-split restriction breaks the 5-cycle
 and unbalances the calibration mirror — and **measured rather than argued**, by two
-pre-declared readouts that decide nothing: (i) **the dispersion of per-word null-score
-offsets** — the quantity the leak actually needs — computed on the **calibration**
-cross-null class (where the fit leak lives) and reported for the eval class alongside:
-the spread of per-word median null scores across the class's 25 probed words
-(median/IQR), and the share of the pooled null variance attributable to between-word
-differences. Near-zero dispersion refutes the leak, so this readout has power where a
-split-half group comparison has none — split membership is a seeded shuffle orthogonal
-to probe scores, so equal groups is predicted under the leak too (hush-gauge PR #5,
-review F12; the split-half grouping survives as presentation only, never as the test);
+pre-declared readouts that decide nothing: (i) **between-probed-word null-score
+dispersion** — inside one class equivalently between-*session*, and therefore an
+**upper bound** on the per-word component the leak needs: `cross` is injective on each
+split half, so each cross word appears in exactly one secret's sessions and word cannot
+be separated from session content within the class (hush-gauge PR #5, review F16).
+Computed on the **calibration** cross-null class (where the fit leak lives) and reported
+for the eval class alongside: the spread of per-word median null scores across the
+class's 25 probed words (median/IQR), the share of the pooled null variance attributable
+to between-word differences, and the identifying companion — the same word's median null
+score in the cross-null class vs in its **own `D18` no-secret sessions**, a disjoint
+session family, correlated across the 25 words: an offset that reproduces across
+families is a word effect, one that does not is session content. Near-zero dispersion
+still refutes the leak — it bounds the word component at near-zero — and the readout has
+power where a split-half group comparison has none: split membership is a seeded shuffle
+orthogonal to probe scores, so equal groups is predicted under the leak too (hush-gauge
+PR #5, review F12; the split-half grouping survives as presentation only, never as the
+test);
 and (ii) G1's eval FPR at `θ*` over eval no-secret nulls probing the 20 fit-seen words
 vs the 5 never-seen ones — the leak's footprint, where it would matter — read on a
 **Newcombe interval for the difference** (the house rule), per-arm Wilson alongside.
@@ -493,17 +501,21 @@ has `S_secret ≥ θ*`. Trial-level rates are reported everywhere and decide not
   denominator. The restriction is load-bearing at 3B: the three excluded secrets are
   exactly the ones that emitted in all eight of their T3/T4 trials, the least comparable
   ones, and an unrestricted arm would feed `newcombe_diff` a different `(k, n)` while
-  still passing a naive reading of the gate text. Certified-null per `D17`'s rule,
-  aggregated to the secret level over the same any-of rule. Tier-matched **and
-  secret-matched** to the population; its clusters carry ≥ as many trials (up to 8 per
-  secret vs 1–8 in the population), which biases *its* any-of rate up — the conservative
-  direction for G2, owned. A population secret with **no** certified-null arm-(a) trial
-  (all 8 uncertifiable) counts as **entering** in arm (a): its trials either emitted `A`
-  — workspace entry demonstrated in the strongest form — or end indeterminate on it, so
-  entry cannot be excluded; the same conservative direction the arm already owns. Both
-  arms therefore decide on the population's `n` **by rule**, not by prediction about
-  un-generated data, and the count of such secrets is recorded per scale (expected ≈ 0:
-  the measured cross-side analogue is 1 of 250 trials) — hush-gauge PR #5, review F11.
+  still passing a naive reading of the gate text. Tier-matched **and secret-matched** to
+  the population, aggregated to the secret level over the same any-of rule, with `D17`'s
+  certification applied **trial-by-trial under one rule** (hush-gauge PR #5, reviews
+  F11 + F15): a certified-null trial is scored against `θ*` as usual, and an
+  uncertifiable trial counts as **entering** for its secret — it either emitted `A`
+  (workspace entry demonstrated in the strongest form) or ends indeterminate on it
+  (entry cannot be excluded). No trial is dropped: every cluster keeps its full 8 trials
+  against the population's 1–8 — which biases arm (a)'s any-of rate up, its owned
+  conservative direction, and each uncertifiable trial moves it further the same way —
+  the secret- and trial-level rates aggregate one set, and the empty-cluster case is a
+  consequence of the rule rather than a special case. Both arms therefore decide on the
+  population's `n` **by rule**, not by prediction about un-generated data; per-scale
+  uncertifiable-trial counts are recorded (expected ≈ 0–1: re-scoring the frozen replies
+  against each session's cross word, the T3/T4-restricted analogue rate is 1/400,
+  0/400, 1/400).
 - **(b) Yardstick arm.** `S_yardstick ≥ θ*` over **exactly the population's own trials** —
   the same trials, so exposure is matched trial-for-trial and the contrast is paired
   (Newcombe stays conservative under positive correlation, exactly as `GATE_WORDING` for G0
@@ -524,9 +536,10 @@ non-emitted with zero indeterminate hits), the SECRET-LEVEL workspace-entry
 rate — a secret enters iff any of its certified-silent trials has the D15
 primary score of the secret >= the frozen theta* (D21) — exceeds BOTH (a) the
 secret-level entry rate of the no-secret arm (D18 T3/T4 trials probing the
-matched absent word, restricted to the population's secrets, certified-null,
-same theta*; a population secret with no certified-null trial in this arm
-counts as entering in it, so both arms decide on the population's n) and
+matched absent word, restricted to the population's secrets, same theta*;
+certification is per trial: a certified-null trial is scored against theta*
+and an uncertifiable trial counts as entering for its secret, so no trial
+is dropped and both arms decide on the population's n) and
 (b) the secret-level
 entry rate of the yardstick readout over the same population trials (same
 theta*), each with a Newcombe 95% interval for the difference that excludes
@@ -597,10 +610,11 @@ block: `word`, `form_used`, `statistic` (`primary`), `S`, `S_turn1`, `S_thirds`,
 readouts — and, for lowercase probed words with a single-token capitalized form, a
 `probe_cap` block with the same fields (`statistic`: `cap_companion`), `absent` recorded
 otherwise (`D15`). Cells: G1's set with per-trial class/null-type/exclusion, AUC + LB, precision,
-recall, FPR (each with Wilson), the `D17` split-leak readouts (per-word null-offset
-dispersion for both cross-null classes; fit-seen vs never-seen eval FPR at `θ*` with its
-Newcombe difference), the G2 cells (secret- and trial-level, both arms with arm (a)'s
-uncertifiable-secret count, turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
+recall, FPR (each with Wilson), the `D17` split-leak readouts (between-word null-score
+dispersion for both cross-null classes with the cross-family agreement companion;
+fit-seen vs never-seen eval FPR at `θ*` with its Newcombe difference), the G2 cells
+(secret- and trial-level, both arms with arm (a)'s per-scale uncertifiable-trial count,
+turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
 `m1-wikitext-<scale>.json` carry their own contracts (`D21`, `D19`). A gate handed a
 payload missing any required field returns `INVALID` rather than defaulting (`D8`).
 
@@ -631,7 +645,7 @@ scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
 | G2's yardstick arm includes trials where the yardstick was spoken | a silent-yardstick estimand | measured on the frozen replies at 21/34/29 of the population — the inflation biases against G2, the acceptable direction for a gate; the silent-silent restriction is a mandatory sensitivity readout (`D24`.6) |
 | `S` = max over positions is position-count sensitive (T4 ≤ 192 vs 64) | position-matched scoring | every gated comparison is tier-matched or same-trial by construction; turn-1-restricted companions are mandatory in both gates, with G2's `EXPOSURE-SENSITIVE` reporting rule — `D3`'s control, applied to the probe |
 | One-way cluster bootstrap (by probed word) | full dependence modeling of cross-null sessions | pre-registered simple resampling unit matching `D1`'s clustering argument; session-side dependence of cross nulls is stated, not modeled |
-| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: per-word null-offset dispersion within the cross-null classes, and eval FPR at `θ*` split fit-seen vs never-seen with a Newcombe difference (`D17`); the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
+| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: between-word null-offset dispersion (an upper bound within one class) with its cross-family agreement companion, and eval FPR at `θ*` split fit-seen vs never-seen with a Newcombe difference (`D17`); the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
 
 ## Risks this stage carries
 
