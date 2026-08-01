@@ -283,21 +283,53 @@ def jlens_vector(jacobian: torch.Tensor, unembed_row: torch.Tensor) -> torch.Ten
 
 
 @contextmanager
+def capture_producing_rows(layers: Sequence[nn.Module], at: Sequence[int], transform):
+    """`D15`'s **produced-from alignment**, and nothing else — the one line M1 depends on.
+
+    Hook shape ported from `mute-map/subject.py:99-111` (= `dim-stage/fitter.py:150-162`):
+    a `register_forward_hook` on each listed layer, reading the block's **output**
+    residual — the same hook point the lens reads and the ablation operator will write
+    (`K6`). `transform(index, h)` is applied to the selected row and the result appended.
+
+    **`residual[0, -1]` is the alignment, and it is one expression because the two cases
+    coincide.** During prefill the tensor is `[1, P, d]` and the last row is the prompt
+    position whose readout emitted generated token 0; during each decode step it is
+    `[1, 1, d]` and the only row is the step fed the previous token. That is exactly one
+    scored residual per generated token, each at the step that *produced* it — the same
+    alignment `oracle.py:431-434` already froze for this repo's other per-position
+    readout, and the reason `D15` pins it rather than leaving it to the build.
+
+    The alignment is factored out here precisely so it can be tested against the
+    substrate rather than argued: `tests/test_capture_alignment.py` runs a real greedy
+    generation through **this** context manager, unembeds each captured final-layer row,
+    and requires its argmax to be the token that step actually produced. A one-position
+    shift is invisible in the output, so nothing downstream would ever report it.
+    """
+    captured: dict[int, list] = {index: [] for index in at}
+    handles = []
+
+    def make_hook(index: int):
+        def hook(module, inputs, output):
+            residual = output if torch.is_tensor(output) else output[0]
+            captured[index].append(transform(index, residual[0, -1].detach().float()))
+
+        return hook
+
+    try:
+        for index in at:
+            handles.append(layers[index].register_forward_hook(make_hook(index)))
+        yield captured
+    finally:
+        for handle in handles:
+            handle.remove()
+
+
 def capture_band_cosines(layers: Sequence[nn.Module], directions: dict[int, torch.Tensor]):
     """Capture `D15`'s per-(layer, position) cosines during generation.
 
-    Hook shape ported from `mute-map/subject.py:99-111` (= `dim-stage/fitter.py:150-162`):
-    a `register_forward_hook` on each band layer, reading the block's **output** residual
-    — the same hook point the lens reads and the ablation operator will write (`K6`).
-
-    **`residual[0, -1]` is `D15`'s produced-from alignment, and it is one expression
-    because the two cases coincide.** During prefill the tensor is `[1, P, d]` and the
-    last row is the prompt position whose readout emitted generated token 0; during each
-    decode step it is `[1, 1, d]` and the only row is the step fed the previous token.
-    That is exactly one scored residual per generated token, each at the step that
-    *produced* it — the same alignment `oracle.py:431-434` already froze for this repo's
-    other per-position readout, and the reason `D15` pins it rather than leaving it to
-    the build (a one-position shift is invisible in the output).
+    `capture_producing_rows` with `D15`'s per-(layer, position) score as the transform:
+    the **full cosine** `⟨ĥ_l(t), v̂_l(w)⟩`, `h` normalized too, matching the lineage's
+    only recorded probe scalar (`dim-stage/s2_generalization.py:259-292`).
 
     Yields `{layer: list[Tensor[n_words]]}`, one entry per forward pass per layer, filled
     as generation runs. The caller stacks them and **asserts** the count equals the number
@@ -311,24 +343,11 @@ def capture_band_cosines(layers: Sequence[nn.Module], directions: dict[int, torc
     ~4× the uncaptured generation time, against the brief's ≤50% estimate. The cost was in
     the synchronizations, not the arithmetic, which is a matmul against ≤76 unit vectors.
     """
-    captured: dict[int, list[torch.Tensor]] = {layer: [] for layer in directions}
-    handles = []
 
-    def make_hook(index: int):
-        def hook(module, inputs, output):
-            residual = output if torch.is_tensor(output) else output[0]
-            h = residual[0, -1].detach().float()
-            captured[index].append(directions[index] @ (h / h.norm()))
+    def project(index: int, h: torch.Tensor) -> torch.Tensor:
+        return directions[index] @ (h / h.norm())
 
-        return hook
-
-    try:
-        for index in directions:
-            handles.append(layers[index].register_forward_hook(make_hook(index)))
-        yield captured
-    finally:
-        for handle in handles:
-            handle.remove()
+    return capture_producing_rows(layers, list(directions), project)
 
 
 @contextmanager
