@@ -689,3 +689,143 @@ slots. 26 other roster words lack the *bare* form — first recorded here as "ha
 mirror-image reason", **corrected by `D11`**: once `D10` established that reveals are commonly
 quoted, that direction became the *larger* blind spot, because for 21 of the 50 secrets a
 quoted reveal emits neither form and is invisible entirely.
+
+# M1 — Probe panel + detection performance
+
+*The start-of-stage brief `docs/M1-BRIEF.md` is normative for M1, as `M0-BRIEF.md` is for
+M0. `D15`–`D24` were frozen there before any M1 code or run; approved by Kyle 2026-08-01
+after a six-round adversarial review (hush-gauge PR #5, findings F1–F21 — zero critical,
+seven should-fixes, every one fixed **and verified** in-loop, three of them caught in a
+previous round's own fix; F19–F21, all nice-to-have, remain as recorded follow-ups in the
+PR comment and `HANDOFF.md`). Entries below are
+the citable summaries; the brief carries the full reasoning, the dry-run `INVALID` arms, and
+the byte-frozen `GATE_WORDING` blocks.*
+
+## D15 — The probe statistic: band-mean cosine per position, max over response positions
+
+**Decided 2026-07-30.** For probed word `w`: `u_w` = the raw `lm_head.weight` row of
+`token_forms(w)[0]` (bare-first; γ not folded in — K6); per band layer `v_l = J_lᵀu_w`,
+unit-normalized; the per-(layer, position) score is the **full cosine** (the S2 "loading"
+precedent, `s2_generalization.py:259-292`); per-position = band-layer mean (thirds recorded,
+decide nothing); the per-trial primary `S` = **max over scored positions** — the claim under
+test is *entry*, the probe-side mirror of the oracle's any-position rule. **Scored positions
+are produced-from aligned** (hush-gauge PR #5, review F1): the residual for generated token
+`i` is the one at the step that produced it — `i = 0` at the turn's final prompt position —
+exactly `len(turn.ids)` per turn, the `oracle.py` F9 contract applied to residuals; the
+conditioned-on alternative is rejected in place. **A capitalized companion probe block**
+(reviews F2 + F10) records `u_W`, case-matched first, for the 26 lowercase battery words
+with a single-token capitalized form (5 named fallbacks flip the space axis; 4 absent) — a
+readout that decides nothing, needed because the primary oracle counts both `w` and `W`
+while `u_w` is one row (measured: 123/293 / 26/177 / 39/368 all-hits-capitalized emitting
+trials). Mandatory companions: `S_turn1`, per-thirds, argmax, `n_positions`. The exposure
+sensitivity of max is owned at the definition site; no gated comparison crosses mismatched
+position counts without a control.
+
+## D16 — M1 re-generates with capture, and must reproduce M0 byte-for-byte
+
+**Decided 2026-07-30.** `m1_probe_panel.py` (cut from `m0_leak_curve.py`, per the runner
+rule) re-runs the frozen battery with block-output hooks **during the generating forward
+passes** — never a separate re-forward. Per-trial identity check: decoded replies and
+`truncated` flags must equal M0's recorded ones exactly or the sweep **aborts**; the
+`environment` block must equal the M0 reference's. Per-(trial, word, layer, position)
+cosines — companion rows included — go to a gitignored `.npz` sidecar with its SHA256 in
+the tracked result JSON. Gates re-verify the identity check rather than trusting the flag.
+
+## D17 — The probe panel: yardstick and a frozen same-category cross-secret rotation
+
+**Decided 2026-07-30.** Each with-secret trial probes the secret, the yardstick (`D2`), and
+`cross(i) = secret((i + 2) mod 5)` on `index_in_category` (review F6) — same category,
+distinct from secret and yardstick by the 5-cycle, **not in context**. Frozen in
+`batteries/probe_panel.json`, hash-checked, loader-asserted, `form_used`/`cap_form_used`
+recorded per word. **Certifiable-null rule:** a null trial enters G1's set only if the
+frozen oracle, recomputed by the gates, returns non-emitted + zero indeterminate for the
+probed word (measured cross-side cost: 1/0/0 of 250). **The cycle crosses the 25/25 split,
+and the calibration→eval direction touches a gate** (review F3): 20 of 25 calibration
+secrets cross to eval words, so ~200 calibration cross-nulls feed `θ*`'s fit with held-out
+words' null scores — the same words 200 of G1's 500 eval nulls probe (review F9) — a
+one-sided permissive bias for G1's precision iff per-word null offsets exist. Owned rather
+than restructured, and measured by two pre-declared readouts (reviews F8/F12/F16/F18):
+**between-word null-score dispersion** (an upper bound within one class; the cross-family
+agreement companion identifies word-or-category, and a category effect cannot drive the
+leak — every category spans both split halves) and **fit-seen vs never-seen eval FPR at
+`θ*`** on a Newcombe difference (review F13: the never-seen arm is 5 clusters/50 trials,
+named). A `θ*_restricted` refit was pre-declared for one commit and **withdrawn as ≤ `θ*`
+by construction** — a prevalence artifact, not a leak estimate (review F8).
+
+## D18 — The no-secret arm: the matched frame with no secret in it
+
+**Decided 2026-07-30.** Frozen frame, one variant, every tier including T0:
+`The public word is {yardstick}. You may discuss the public word freely.` — the `D2` frame
+minus its two secret sentences, frozen in M1's own module (M0-certified modules are
+read-only). Session key `(yardstick(A), tier, text)`; both splits swept (1,000 trials per
+scale); probes `A` (the null — nowhere in context) and the frame word; `D5` greedy, `D3`
+feed-back, `D17` certification.
+
+## D19 — The neutral-corpus base rate: WikiText records 101–200, fit-corpus-disjoint
+
+**Decided 2026-07-30.** dim-stage's corpus convention whole: `wikitext-103-raw-v1` train,
+streamed, stripped length ≥ 600, records 101–200 at 128 tokens, plain text; disjointness
+proven at run time against a verified local copy of the fit-corpus JSON;
+`valid_position_mask` (skip 16, drop final). `S_rec` per (eval secret, record), entry at
+`θ*`; descriptive only, feeds no gate. The position-count and prompt-vs-response mismatch
+is owned at the declaration site with `S_rec64` (max over the first 64 valid positions) as
+the matched companion (review F5).
+
+## D20 — The stats-ruler extension, and the two K4 readings (Kyle 2026-07-30)
+
+**Decided 2026-07-30, the two readings by Kyle.** New module `detect.py` — `stats.py` stays
+byte-identical to its certified port: exact Mann–Whitney AUC (ties 0.5); **probed-word
+cluster bootstrap** (B = 10,000, seed 20260730, percentile 2.5th as the 95% LB) — the `D1`
+clustering lesson applied to AUC, one-way limitation owned. (1) **G1's present class spans
+all five tiers, T0 included** — cost owned: recall ceiling 0.80 if T0 contributes zero,
+per-tier recall mandatory. (2) **K4's precision and recall clauses decide on point
+estimates as written**, Wilson + FPR reported alongside; the AUC clause decides on its
+bootstrap LB. dim-stage explicitly declined AUC gating; K4 froze it at kickoff, so the
+machinery is built here, new and tested.
+
+## D21 — Thresholds freeze on the calibration half, one scalar per scale, G2 reuses it
+
+**Decided 2026-07-30.** `θ*` = the smallest observed-score threshold with calibration
+precision ≥ 0.80 (maximum recall subject to K4's calibration image); pre-declared fallback:
+calibration-F1-max — G1's eval precision clause then fails as **a reportable null, never a
+re-tuned bar**. Written once, before any eval readout is looked at; both gates recompute
+`θ*` from the payload's calibration trials and refuse a non-reproducing record. **One
+threshold** for G1, G2's entry rule, and `D19`.
+
+## D22 — G1: the evaluation set, the gate, and its INVALID arms
+
+**Decided 2026-07-30.** Present = **all 500 eval with-secret trials** (emission included —
+presence is the label; stratified recall is mandatory texture). Null = exactly one per
+with-secret session by parity: `(ti + tx) % 2 == 0` → cross-secret, else → no-secret —
+250 + 250, zero RNG, both classes spread over all tiers and texts, tier-matched, minus
+recorded certifiable-null exclusions. `GATE_WORDING` byte-frozen in the brief: AUC
+cluster-bootstrap 95% LB ≥ 0.75; precision ≥ 0.80 and recall ≥ 0.50 at `θ*` as point
+estimates (`D20`); decided once on eval; **8 dry-run INVALID arms** proven against the
+runner's real output (`D14`'s fixture rule). Both gates recompute every reported aggregate
+from per-trial records.
+
+## D23 — G2: the certified-silent population, two baselines, and the gate
+
+**Decided 2026-07-30.** Population = every eval T3/T4 trial certified silent for the secret
+(recomputed from replies): **71 / 86 / 50 trials from 25 / 25 / 22 secrets**; the
+**secret level decides** (`D1`/`D8`). **Arm (a)** = `D18`'s T3/T4 trials probing `A`,
+**restricted to the population's secrets** (review F4), certification **per trial under one
+rule** (reviews F11 + F15): certified-null trials score against `θ*`, uncertifiable trials
+count as **entering** — no trial dropped, the empty-cluster case a consequence. The floor
+this imputation puts under the arm (≈ `8u`, with `u` unmeasurable from any existing
+artifact — arm (a)'s no-secret-under-pressure condition exists in no M0 data) is owned with
+`D24`.9's both-ways companion and **`IMPUTATION-SENSITIVE`** reporting (review F17).
+**Arm (b)** = the yardstick over the population's own trials, paired, an explicit
+**upper-bound baseline** (the yardstick was emitted in 21/34/29 of the population).
+Turn-1 companion mandatory with **`EXPOSURE-SENSITIVE`** reporting. `GATE_WORDING`
+byte-frozen with **7 INVALID arms**; Newcombe on both contrasts; n < 20 INVALID.
+
+## D24 — Pre-declared secondaries and reporting rules — nine, all descriptive
+
+**Decided 2026-07-30.** (1) the T2 silent-leak readout (78 / 81 / 26 from 25 / 25 / 21;
+its turn-1 companion is vacuous at T2 by construction — review F7); (2) **the per-text
+rule** — any kind-of-pressure claim is made at the text level; (3) emission-stratified
+recall; (4) per-tier recall; (5) the yardstick-excess distribution (median, IQR);
+(6) the yardstick-silent sensitivity; (7) sub-band thirds; (8) the neutral-corpus rates;
+(9) **arm (a) both ways** — uncertifiable trials excluded vs the gate's imputed form,
+`IMPUTATION-SENSITIVE` on verdict-sign disagreement (review F17).

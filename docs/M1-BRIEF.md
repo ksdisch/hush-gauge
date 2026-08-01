@@ -1,6 +1,8 @@
 # M1-BRIEF — Probe panel + detection performance
 
-*Written 2026-07-30 · start-of-stage brief · status: **PROPOSED — awaiting Kyle's approval***
+*Written 2026-07-30 · start-of-stage brief · status: **frozen — approved by Kyle
+2026-08-01**, after the six-round adversarial review on PR #5 (F1–F21; every should-fix
+fixed and verified in-loop; F19–F21 recorded as follow-ups)*
 
 This brief freezes M1's open calls (`D15`–`D24`) before any M1 code is written or any run
 is made, per the house methodology. **Nothing in M1 runs until Kyle approves this brief.**

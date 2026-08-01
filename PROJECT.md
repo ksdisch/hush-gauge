@@ -5,18 +5,19 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **M0 COMPLETE, 2026-07-30 — G0 PASSES on all three scales.** The battery has
-dynamic range (`R1` retired): T0 sits at the floor while T4 saturates at 25/25, with
-`T4 − T0` Newcombe-clean at every scale and none `EXPOSURE-CONFOUNDED` — all four
-exposure-matched contrasts exclude zero everywhere. The single pre-declared battery revision
-is **not** used; the battery re-freezes as built. `D1`–`D14` frozen, 412 tests passing, three
-result JSONs in `results/`, full curves and caveats in `docs/M0-RESULTS.md`.
+**Status:** **M1 BRIEF FROZEN, 2026-08-01** — `docs/M1-BRIEF.md` approved by Kyle and
+merged (PR #5) after a six-round adversarial review (F1–F21; zero critical, seven
+should-fixes all fixed and verified in-loop; F19–F21 recorded as nice-to-have follow-ups).
+`D15`–`D24` are frozen and mirrored into `docs/DECISIONS.md`; nothing in M1 has run.
+**M0 COMPLETE, 2026-07-30 — G0 PASSES on all three scales**: the battery has dynamic range
+(`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, 412 tests
+passing, full curves and caveats in `docs/M0-RESULTS.md`.
 
-**Next action:** open **M1** with `docs/M1-BRIEF.md`, freezing its decisions before any run.
-M0's three caveats shape it: within-tier spread exceeds between-tier spread (so M1 claims
-about *kinds* of pressure must be per-text, not per-tier); the 0.5B T0 cell is two incidental
-capitalized mentions rather than leaks; and a saturated T4 leaves the **non-emitting T3/T4
-trials** (71 / 86 / 50 per scale) and **T2** as the live measurement substrate.
+**Next action:** the **M1 build session** — fresh, from the brief
+(`claude --model claude-opus-5 --effort high`): `probe.py`, the frozen panel artifact, the
+capture runner cut from `m0_leak_curve.py`, `detect.py`, thresholds frozen on calibration,
+G1/G2 as code with dry-run INVALID arms, the ≈6–7 h overnight sweep, each gate decided
+once, `docs/M1-RESULTS.md`.
 
 ## Purpose
 
@@ -81,10 +82,15 @@ inputs.
 5. ~~Freeze G0 as code with its dry-run INVALID arms, then run the emission-rate curves~~ —
    **done 2026-07-30**; `gates/g0.py` frozen, all three subjects swept, **G0 PASSES on all
    three scales** (`docs/M0-RESULTS.md`).
-6. **Open M1** with `docs/M1-BRIEF.md`, freezing its decisions before any run. M0's three
-   caveats shape it: per-text not per-tier; the 0.5B T0 cell is incidental capitalized
-   mentions; and a saturated T4 leaves the non-emitting T3/T4 trials (71 / 86 / 50 per scale)
-   and T2 as the live measurement substrate.
+6. ~~Open M1 with `docs/M1-BRIEF.md`, freezing its decisions before any run~~ — **done
+   2026-08-01**; `D15`–`D24` frozen, PR #5 merged after a six-round adversarial review
+   (21 findings, all should-fixes fixed and verified; `F19`–`F21` are open nice-to-have
+   follow-ups).
+7. **Build M1** per the brief's deliverables list and run-config note (Opus 5 at high,
+   fresh session from the brief): `probe.py` → `batteries/probe_panel.json` →
+   `m1_probe_panel.py` → `m1_wikitext_rate.py` → `detect.py` → `m1_freeze_thresholds.py` →
+   `gates/g1.py`+`g2.py` → overnight sweep → thresholds → gates once →
+   `docs/M1-RESULTS.md`.
 
 ## Boundaries
 
@@ -150,8 +156,8 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
 
 ## Decisions
 
-Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D14 from the M0 brief), not
-in a root `Decisions.md` — this
+Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D14 from the M0 brief,
+D15–D24 from the M1 brief), not in a root `Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
 
@@ -160,9 +166,10 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0), D15–D24 (M1) |
 | M0 results | `docs/M0-RESULTS.md` | measurement | the three emission curves, G0 decided, and the caveats that bound how they may be read |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
+| M1 start-of-stage brief | `docs/M1-BRIEF.md` | brief | M1's frozen decisions D15–D24: the probe statistic, the re-generation contract, the probe panel, the threshold protocol, G1/G2's byte-frozen `GATE_WORDING` and INVALID arms |
 | Build plan (upstream) | `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` | plan | the pre-made design this brief was synthesized from |
 | Audit brainstorm | `~/Projects/j-lens-proj-ideas/audit-brainstorm-2026-07-28.md` | brainstorm | idea A3's origin and the sibling ideas it competed with |
 | Instrument anchor | `~/Projects/dim-stage` | repo | lens fits, band conventions, ablation operator, S3/S4b anchors |
