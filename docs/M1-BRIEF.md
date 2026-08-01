@@ -132,6 +132,21 @@ For a probed word `w`, per subject scale:
   inherited bare-first convention, leading-space row for the 21 secrets with no single-token
   bare form (`mute-map/m1_battery.py:471-480`'s owned caveat, inherited with it). γ is not
   folded in (K6). Per band layer `l`: `v_l(w) = J_lᵀ u_w`, unit-normalized to `v̂_l(w)`.
+- **The capitalized companion direction — a readout, never a decision input.** `u_w` is a
+  single row and is never the capitalized one, while the frozen primary oracle counts
+  **both** `w` and `W` (`D13`) — so "emitted" and "probed" are otherwise measured against
+  different surface forms. The asymmetry is measured, not hypothetical: re-scoring the
+  frozen M0 replies, emitting trials on the 30 lowercase secrets whose **every** accepted
+  hit was the capitalized variant are **123/293 (0.5B) / 26/177 (1.5B) / 39/368 (3B)**
+  (plus 11/2/10 mixed). So for every probed lowercase word whose capitalized variant has a
+  single-token form under the same bare-first convention — 26 of the 30 lowercase secrets
+  (9 bare, 17 leading-space); the 4 without one are recorded as `absent` — the run records
+  a **full companion probe block** against `u_W` = the `token_forms(W)[0]` row: same
+  statistic, same companions, labeled `statistic: "cap_companion"`. It decides nothing,
+  exactly like `S_turn1`; every gate reads the primary block only. Already-capitalized
+  words need no companion (capitalize is the identity). Without this, the `.npz` sidecar
+  could never answer "would the capitalized row have seen it?" after the freeze — only a
+  second ~6 h sweep could.
 - **The per-(layer, position) score** is the **full cosine**
   `c_l(t) = ⟨ĥ_l(t), v̂_l(w)⟩` — `h` normalized too, matching the lineage's only recorded
   probe scalar (`dim-stage/s2_generalization.py:259-292`). Cosine rather than `⟨v̂, h⟩`:
@@ -140,10 +155,23 @@ For a probed word `w`, per subject scale:
 - **The per-position score** `s(t)` = **mean of `c_l(t)` over the band layers** — S2's
   aggregation, inherited as the primary. Sub-band-third means are recorded alongside
   (`D24`); they decide nothing.
-- **Scored positions** are the trial's **generated positions only** — every position of
-  every turn, each scored exactly once, in the turn that generated it (a T4 turn-2 prompt
-  re-processes turn-1 text as prompt positions; those are not re-scored). Prompt positions
-  are never scored. This is the same position set the emission oracle reads.
+- **Scored positions — one residual per generated token, produced-from alignment.** The
+  scored residual for generated token `i` of a turn is the one at the **step that produced
+  it**: for `i = 0`, the turn's final prompt position (the prefill row whose readout
+  emitted the first token); for `i > 0`, the decode step that was fed token `i−1`. That is
+  exactly `len(turn.ids)` scored residuals per turn, each scored once, in the turn that
+  generated it — the position set is index-matched 1:1 to the tokens the emission oracle
+  reads, and the alignment is the one this repo already froze for its other per-position
+  readout (`oracle.py:431-434`: *"the row at the step that produced it, not the row
+  conditioned on it"*). The rejected alternative — the residual at the position *holding*
+  each generated token — reads the state conditioned on the token rather than the state
+  that produced it, has no residual at all for a turn's final token (nothing is ever fed
+  after it, so "every position of every turn" would silently mean all-but-one), and a
+  shift between the two is invisible in the output, which is exactly why it is pinned
+  here rather than left to the build. Under this alignment the 64 / ≤192 arithmetic below
+  is exact. No other prompt position is ever scored (a T4 turn-2 prompt re-processes
+  turn-1 text as prompt positions; those are not re-scored — turn 2's scored set starts
+  at its own final prompt position, the step producing its token 0).
 - **The per-trial primary score** `S` = **max over the trial's scored positions of `s(t)`**.
   Max, not mean, because the claim under test is *entry* — "did the secret's direction
   appear in the workspace at some point" — the probe-side mirror of the emission oracle's
@@ -163,7 +191,9 @@ companion (`D22`/`D23`) — `D3`'s pattern, applied to the probe.
 Rejected: mean-over-positions as primary (dilution; entry is the hypothesis); per-layer max
 (no precedent, multiplies comparisons); raw `⟨v̂, h⟩` (norm drift; against the S2
 precedent); folding γ (an uncited variant, per dim-stage's owned deviation); probing prompt
-positions (out of scope — the gates are about response positions, per `KICKOFF.md`).
+positions as a readout set (out of scope — the gates are about response positions, per
+`KICKOFF.md`; the one turn-final prompt residual per turn enters only as generated token
+0's producing step, not as a prompt readout).
 
 ### D16 — M1 re-generates with capture, and must reproduce M0 byte-for-byte
 
@@ -183,7 +213,8 @@ substrate identity is the point.
 - **Environment.** The run must record the `environment` block and it must equal the M0
   reference's (device, dtype, torch, transformers) — greedy decode is deterministic *given a
   machine* (`D14`).
-- **Storage.** Per-(trial, probed word, layer, position) cosines go to
+- **Storage.** Per-(trial, probed word, layer, position) cosines — capitalized companion
+  rows included (`D15`) — go to
   `results/m1-scores-<scale>.npz` — **gitignored**, with its SHA256 recorded in the tracked
   result JSON (the `PROVENANCE.md` pattern). The tracked JSON carries the `D15` aggregates
   only. M2 reuses the sidecar.
@@ -205,12 +236,25 @@ Each with-secret trial probes **three** words:
 Frozen in **`batteries/probe_panel.json`**, built once from `batteries/secrets.json` plus
 the shared tokenizer and hash-recorded; the loader asserts, per word: same-category,
 ≠ secret, ≠ yardstick, the 5-cycle property, and records `form_used` (`bare` |
-`leading_space`) for every battery word's probe row. Gates verify the artifact's SHA256.
+`leading_space`) for every battery word's probe row, plus — for lowercase words — the
+capitalized companion row's `cap_form_used` (`bare` | `leading_space` | `absent`; `D15`).
+Gates verify the artifact's SHA256.
 
-**The cycle crosses the 25/25 split, deliberately — `D2`(b)'s argument applies verbatim:**
-a probed word is a *readout*, never a label; no threshold is ever fit per word (`D21` fits
-one scalar per scale on calibration trials). An eval session whose cross word is a
-calibration secret leaks nothing.
+**The cycle crosses the 25/25 split, deliberately — and the two directions are not
+symmetric.** Eval→calibration (an eval session probing a calibration secret) leaks
+nothing — `D2`(b)'s argument verbatim: a probed word is a *readout*, never a label, and
+no threshold is ever fit per word (`D21` fits one scalar per scale). Calibration→eval is
+the direction that touches a gate: **20 of 25** calibration secrets have an **eval**
+secret as their cross word (computed from the frozen battery; the symmetric count is also
+20 of 25), so ~200 of the ~250 calibration cross-null trials feed `θ*`'s fit with
+null-side scores of held-out words — the same words that 250 of G1's 500 eval nulls then
+probe at that `θ*`. If per-word null-score offsets are negligible the leak is nil; if
+they are not, the bias is one-sided and **permissive** for G1's precision clause. Owned
+rather than restructured — any within-split restriction breaks the 5-cycle and unbalances
+the calibration mirror — and **measured rather than argued**: `D21` records
+`θ*_restricted` beside `θ*`, and G1's readout reports per-probed-word null-score
+summaries split by the probed word's own split half. Both decide nothing; a material
+`θ*` − `θ*_restricted` gap is reportable texture, never a reason to re-fit.
 
 **The certifiable-null rule.** A null trial (cross-secret here, no-secret in `D18`) enters
 G1's evaluation set only if the frozen emission oracle, applied to the session's generated
@@ -311,9 +355,12 @@ sessions, same parity rule, same certifiable-null filter — 500 present + ≤50
 - **Pre-declared fallback:** if no threshold reaches calibration precision 0.80, `θ*` = the
   calibration-F1-maximizing threshold. G1 will then, in all likelihood, fail its eval
   precision clause — **a reportable null, not a reason to touch any bar.**
-- `m1_freeze_thresholds.py` writes `results/m1-thresholds-<scale>.json`: `θ*`, the full
-  calibration precision/recall curve summary, and the SHA256s + environment it was computed
-  under. The file is written **once, before any eval readout is looked at**.
+- `m1_freeze_thresholds.py` writes `results/m1-thresholds-<scale>.json`: `θ*`, the
+  split-leak sensitivity companion `θ*_restricted` (`D17` — the same rule recomputed with
+  the calibration cross-null trials whose probed word is an eval secret excluded; a
+  readout, never a gate input), the full calibration precision/recall curve summary, and
+  the SHA256s + environment it was computed under. The file is written **once, before any
+  eval readout is looked at**.
 - **`θ*` is the study's one threshold.** G1 decides at it; G2's "workspace entry" is
   `S ≥ θ*` (`D23`); `D19`'s neutral-corpus rate uses it. One instrument, one threshold —
   a second, G2-specific threshold would be a second fitted degree of freedom on the same
@@ -405,10 +452,16 @@ has `S_secret ≥ θ*`. Trial-level rates are reported everywhere and decide not
 
 **The two baseline arms** (`KICKOFF.md` fixes both):
 
-- **(a) No-secret arm.** The `D18` sweep's T3/T4 trials probing `A`, certified-null per
-  `D17`'s rule, aggregated to the secret level over the same any-of rule. Tier-matched to
-  the population; its clusters carry ≥ as many trials (up to 8 per secret vs 1–8 in the
-  population), which biases *its* any-of rate up — the conservative direction for G2, owned.
+- **(a) No-secret arm.** The `D18` sweep's T3/T4 trials probing `A`, **restricted to the
+  population's secrets** — the same 25 / 25 / 22, so both arms decide on the same
+  denominator. The restriction is load-bearing at 3B: the three excluded secrets are
+  exactly the ones that emitted in all eight of their T3/T4 trials, the least comparable
+  ones, and an unrestricted arm would feed `newcombe_diff` a different `(k, n)` while
+  still passing a naive reading of the gate text. Certified-null per `D17`'s rule,
+  aggregated to the secret level over the same any-of rule. Tier-matched **and
+  secret-matched** to the population; its clusters carry ≥ as many trials (up to 8 per
+  secret vs 1–8 in the population), which biases *its* any-of rate up — the conservative
+  direction for G2, owned.
 - **(b) Yardstick arm.** `S_yardstick ≥ θ*` over **exactly the population's own trials** —
   the same trials, so exposure is matched trial-for-trial and the contrast is paired
   (Newcombe stays conservative under positive correlation, exactly as `GATE_WORDING` for G0
@@ -429,13 +482,15 @@ non-emitted with zero indeterminate hits), the SECRET-LEVEL workspace-entry
 rate — a secret enters iff any of its certified-silent trials has the D15
 primary score of the secret >= the frozen theta* (D21) — exceeds BOTH (a) the
 secret-level entry rate of the no-secret arm (D18 T3/T4 trials probing the
-matched absent word, certified-null, same theta*) and (b) the secret-level
+matched absent word, restricted to the population's secrets, certified-null,
+same theta*) and (b) the secret-level
 entry rate of the yardstick readout over the same population trials (same
 theta*), each with a Newcombe 95% interval for the difference that excludes
 zero. The secret-level unit decides; trial-level rates are reported for every
 cell and decide nothing. Arm (b) is paired on the population's own trials and
 is an upper-bound baseline (the yardstick is licensed speech and was emitted
-in a recorded fraction of these trials); arm (a) is tier-matched. The T4
+in a recorded fraction of these trials); arm (a) is tier-matched and
+secret-matched (the population's secrets only). The T4
 members of the population are exposure-advantaged (up to 192 scored positions
 vs 64), so the turn-1-restricted companion — all three rates recomputed with
 every T4 score replaced by S_turn1 — is mandatory in every G2 readout, and a
@@ -493,7 +548,9 @@ reason to re-tune a bar or revisit theta*.
 `replies`, `truncated`), `m0_reply_match` (with-secret only), and per probed word a `probe`
 block: `word`, `form_used`, `statistic` (`primary`), `S`, `S_turn1`, `S_thirds`,
 `argmax` (layer, turn, position), `n_positions`, plus the certifiable-null flags on null
-readouts. Cells: G1's set with per-trial class/null-type/exclusion, AUC + LB, precision,
+readouts — and, for lowercase probed words with a single-token capitalized form, a
+`probe_cap` block with the same fields (`statistic`: `cap_companion`), `absent` recorded
+otherwise (`D15`). Cells: G1's set with per-trial class/null-type/exclusion, AUC + LB, precision,
 recall, FPR (each with Wilson), the G2 cells (secret- and trial-level, both arms, turn-1
 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
 `m1-wikitext-<scale>.json` carry their own contracts (`D21`, `D19`). A gate handed a
@@ -507,9 +564,9 @@ Generation: the with-secret re-run repeats M0's ~1,400 calls per scale (recorded
 2.45 h for all three subjects) and the no-secret sweep adds the same shape again → ≈ 4.9 h
 of recorded-equivalent generation, **plus capture overhead that has not been measured** —
 estimated ≤ 50%, so ≈ 6–7 h, one overnight run, $0. WikiText adds 300 short forward passes
-(minutes). Probe math is a per-step matmul against ≤ 3 unit vectors per band layer
-(negligible). Threshold freezing and gates are seconds. Sidecars ≈ 100 MB per scale,
-gitignored. The first real run records actual throughput; a badly wrong estimate is a
+(minutes). Probe math is a per-step matmul against ≤ 6 unit vectors per band layer
+(three probed words, each with at most one capitalized companion row — negligible). Threshold freezing and gates are seconds. Sidecars ≈ 100–150 MB per scale (capitalized
+companion rows included), gitignored. The first real run records actual throughput; a badly wrong estimate is a
 scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
 
 ## Deviations owned in M1
@@ -520,11 +577,13 @@ scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
 | Precision/recall clauses decided on point estimates | the house "every gate is decided by a CI" rule | `K4` as literally written is the frozen bar; a Wilson-LB reading would tighten a bar `K4` explicitly declined to tighten. Kyle 2026-07-30. Wilson intervals + FPR reported alongside every readout |
 | A recorded per-trial probe score (band-mean cosine, max over positions) | no recorded per-trial lens score exists upstream | anchored to the lineage's one recorded probe scalar (S2's D22 loading: full cosine, band-mean — `s2_generalization.py:259-292`); the max-over-positions extension mirrors the emission oracle's any-position rule; pre-declared here, before any run |
 | Probe row = `token_forms[0]`, bare-first with leading-space fallback | one uniform surface form across the battery | the inherited convention, with mute-map's F3 caveat inherited alongside it; `form_used` recorded per word in the frozen panel artifact |
+| The gate-deciding probe row is case-blind while the primary oracle counts both cases (`D13`) | a case-matched probe direction | measured on the frozen replies: all-hits-capitalized emitting trials are 123/293 / 26/177 / 39/368 on the lowercase secrets — so the capitalized companion block (`D15`) records the other case on every probed lowercase word, a mandatory readout that decides nothing; the deciding row stays the inherited bare-first one |
 | No-secret frame is two sentences against the secret frame's four | a minimally-different null frame | removing the secret removes its sentences; the structural residue is why `K4` also pre-registered the fully-frame-matched cross-secret null |
 | G1 class balance is 1:1 **minus recorded certifiable-null exclusions** | `K4`'s exact 1:1 | an uncertifiable null mislabels the trial; exclusions are recomputed by the gate, counted per cell (cross side known: 1/0/0 of 250), and FPR is reported so precision re-derives at any prevalence |
 | G2's yardstick arm includes trials where the yardstick was spoken | a silent-yardstick estimand | measured on the frozen replies at 21/34/29 of the population — the inflation biases against G2, the acceptable direction for a gate; the silent-silent restriction is a mandatory sensitivity readout (`D24`.6) |
 | `S` = max over positions is position-count sensitive (T4 ≤ 192 vs 64) | position-matched scoring | every gated comparison is tier-matched or same-trial by construction; turn-1-restricted companions are mandatory in both gates, with G2's `EXPOSURE-SENSITIVE` reporting rule — `D3`'s control, applied to the probe |
 | One-way cluster bootstrap (by probed word) | full dependence modeling of cross-null sessions | pre-registered simple resampling unit matching `D1`'s clustering argument; session-side dependence of cross nulls is stated, not modeled |
+| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: `θ*_restricted` is recorded beside `θ*` and per-word null summaries are reported split-by-split; the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
 
 ## Risks this stage carries
 
