@@ -247,14 +247,25 @@ no threshold is ever fit per word (`D21` fits one scalar per scale). Calibration
 the direction that touches a gate: **20 of 25** calibration secrets have an **eval**
 secret as their cross word (computed from the frozen battery; the symmetric count is also
 20 of 25), so ~200 of the ~250 calibration cross-null trials feed `θ*`'s fit with
-null-side scores of held-out words — the same words that 250 of G1's 500 eval nulls then
-probe at that `θ*`. If per-word null-score offsets are negligible the leak is nil; if
-they are not, the bias is one-sided and **permissive** for G1's precision clause. Owned
-rather than restructured — any within-split restriction breaks the 5-cycle and unbalances
-the calibration mirror — and **measured rather than argued**: `D21` records
-`θ*_restricted` beside `θ*`, and G1's readout reports per-probed-word null-score
-summaries split by the probed word's own split half. Both decide nothing; a material
-`θ*` − `θ*_restricted` gap is reportable texture, never a reason to re-fit.
+null-side scores of held-out words — the same words that **200** of G1's 500 eval nulls
+then probe at that `θ*`: the no-secret trials of the 20 fit-seen eval secrets. The cross
+side contributes none — `cross` is a bijection, so an eval secret's cross-target is never
+also a calibration secret's cross-target, and the 5 eval words the eval cross-nulls probe
+are exactly the 5 the fit never saw. If per-word null-score offsets are negligible the
+leak is nil; if they are not, the bias is one-sided and **permissive** for G1's precision
+clause. Owned rather than restructured — any within-split restriction breaks the 5-cycle
+and unbalances the calibration mirror — and **measured rather than argued**, by two
+pre-declared readouts that decide nothing and each have a real null: (i) per-probed-word
+null-score summaries **within the cross-null class**, grouped by the probed word's split
+half — the null class is held fixed, so equal distributions across the two groups is the
+no-leak prediction; and (ii) G1's eval FPR at `θ*` reported separately over eval
+no-secret nulls probing the 20 fit-seen words vs the 5 never-seen ones (Wilson on both) —
+the leak's footprint, measured where it would matter. A threshold-level sensitivity
+(`θ*` refit with the split-crossing cross-nulls deleted) was pre-declared in an earlier
+draft of this paragraph and is withdrawn (review F8, PR #5): deleting 200 of 500 nulls
+while keeping all 500 present trials raises count-precision at every candidate threshold,
+so the refit threshold sits at or below `θ*` **by construction** — a prevalence artifact
+with no null hypothesis, not a leak estimate.
 
 **The certifiable-null rule.** A null trial (cross-secret here, no-secret in `D18`) enters
 G1's evaluation set only if the frozen emission oracle, applied to the session's generated
@@ -355,12 +366,14 @@ sessions, same parity rule, same certifiable-null filter — 500 present + ≤50
 - **Pre-declared fallback:** if no threshold reaches calibration precision 0.80, `θ*` = the
   calibration-F1-maximizing threshold. G1 will then, in all likelihood, fail its eval
   precision clause — **a reportable null, not a reason to touch any bar.**
-- `m1_freeze_thresholds.py` writes `results/m1-thresholds-<scale>.json`: `θ*`, the
-  split-leak sensitivity companion `θ*_restricted` (`D17` — the same rule recomputed with
-  the calibration cross-null trials whose probed word is an eval secret excluded; a
-  readout, never a gate input), the full calibration precision/recall curve summary, and
-  the SHA256s + environment it was computed under. The file is written **once, before any
-  eval readout is looked at**.
+- `m1_freeze_thresholds.py` writes `results/m1-thresholds-<scale>.json`: `θ*`, the full
+  calibration precision/recall curve summary, and the SHA256s + environment it was
+  computed under. The file is written **once, before any eval readout is looked at**.
+  (An earlier draft of this bullet also recorded `θ*_restricted` — the same rule refit
+  with the split-crossing cross-nulls deleted. Withdrawn, review F8, PR #5: the refit
+  value is ≤ `θ*` by construction and its gap is sized by the prevalence change, so it
+  measured nothing about the leak. `D17`'s two distribution-level readouts are the
+  split-leak diagnostics.)
 - **`θ*` is the study's one threshold.** G1 decides at it; G2's "workspace entry" is
   `S ≥ θ*` (`D23`); `D19`'s neutral-corpus rate uses it. One instrument, one threshold —
   a second, G2-specific threshold would be a second fitted degree of freedom on the same
@@ -551,8 +564,9 @@ block: `word`, `form_used`, `statistic` (`primary`), `S`, `S_turn1`, `S_thirds`,
 readouts — and, for lowercase probed words with a single-token capitalized form, a
 `probe_cap` block with the same fields (`statistic`: `cap_companion`), `absent` recorded
 otherwise (`D15`). Cells: G1's set with per-trial class/null-type/exclusion, AUC + LB, precision,
-recall, FPR (each with Wilson), the G2 cells (secret- and trial-level, both arms, turn-1
-companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
+recall, FPR (each with Wilson), the `D17` split-leak readouts (within-class per-word null
+summaries; fit-seen vs never-seen eval FPR at `θ*`), the G2 cells (secret- and
+trial-level, both arms, turn-1 companions), and every `D24` readout. `m1-thresholds-<scale>.json` and
 `m1-wikitext-<scale>.json` carry their own contracts (`D21`, `D19`). A gate handed a
 payload missing any required field returns `INVALID` rather than defaulting (`D8`).
 
@@ -583,7 +597,7 @@ scheduling fact, not a reason to touch `D5`, `D15`, or `D16`.
 | G2's yardstick arm includes trials where the yardstick was spoken | a silent-yardstick estimand | measured on the frozen replies at 21/34/29 of the population — the inflation biases against G2, the acceptable direction for a gate; the silent-silent restriction is a mandatory sensitivity readout (`D24`.6) |
 | `S` = max over positions is position-count sensitive (T4 ≤ 192 vs 64) | position-matched scoring | every gated comparison is tier-matched or same-trial by construction; turn-1-restricted companions are mandatory in both gates, with G2's `EXPOSURE-SENSITIVE` reporting rule — `D3`'s control, applied to the probe |
 | One-way cluster bootstrap (by probed word) | full dependence modeling of cross-null sessions | pre-registered simple resampling unit matching `D1`'s clustering argument; session-side dependence of cross nulls is stated, not modeled |
-| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: `θ*_restricted` is recorded beside `θ*` and per-word null summaries are reported split-by-split; the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
+| `θ*` is fit on a calibration null set ~40% of which probes held-out (eval) words — `D17`'s cycle crosses the split | `K3`'s strict no-eval-information-in-calibration reading | the direction is named (permissive for G1 precision iff per-word null offsets exist) and measured, not argued: within-class per-word null summaries grouped by the word's split, and eval FPR at `θ*` split fit-seen vs never-seen (`D17`); the construction is kept because a within-split rotation breaks the 5-cycle and the calibration mirror |
 
 ## Risks this stage carries
 
