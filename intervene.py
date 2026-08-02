@@ -468,15 +468,20 @@ def _probe_residual(
 
 
 def preflight_precision(
-    hidden: torch.Tensor, directions: dict[int, torch.Tensor], *, requested: str = "auto"
+    blocks: dict[int, torch.Tensor],
+    directions: dict[int, torch.Tensor],
+    *,
+    requested: str = "auto",
 ) -> Precision:
-    """Pick the edit arithmetic before the sweep starts, on a real residual block.
+    """Pick the edit arithmetic before the sweep starts, on **real residual blocks**.
 
-    `hidden` is a `[seq, d_model]` block of genuine activations (the runner takes one
-    prefill from the first trial's prompt); `directions` is that trial's per-layer unit
-    directions. Every band layer is checked at the **worst** dose for relative
-    cancellation, λ = 1, where the surviving projection must reach zero rather than a
-    fraction of itself.
+    `blocks[layer]` is that layer's `[seq, d_model]` block-output residual from one genuine
+    prefill (the runner takes the first trial's prompt); `directions[layer]` is the unit
+    direction the sweep will remove there. Every band layer is checked against its own
+    activations at the **worst** dose for relative cancellation, λ = 1, where the surviving
+    projection must reach zero rather than a fraction of itself. Synthetic tensors would
+    not do: the failure mode this guards against is cancellation at the activation scales
+    the real model produces.
 
     `requested` is `auto` (fp32, falling back to CPU float64 if the read-back cannot hold),
     `fp32`, or `float64`. The forced modes exist so a re-run can pin the arithmetic
@@ -486,15 +491,18 @@ def preflight_precision(
         raise ValueError(f"unknown edit precision {requested!r}")
     if requested != "auto":
         return Precision(float64=requested == "float64", chosen_by=f"forced:{requested}")
+    layers = sorted(set(blocks) & set(directions))
+    if not layers:
+        raise ValueError("the preflight has no (block, direction) pair to check")
     worst = max(
-        _probe_residual(hidden, directions[layer], DECIDING_DOSE, float64=False)
-        for layer in directions
+        _probe_residual(blocks[layer], directions[layer], DECIDING_DOSE, float64=False)
+        for layer in layers
     )
     if worst <= READBACK_TOL:
         return Precision(float64=False, chosen_by="preflight", probe_worst_residual=worst)
     worst64 = max(
-        _probe_residual(hidden, directions[layer], DECIDING_DOSE, float64=True)
-        for layer in directions
+        _probe_residual(blocks[layer], directions[layer], DECIDING_DOSE, float64=True)
+        for layer in layers
     )
     if worst64 > READBACK_TOL:
         probe.fail(
