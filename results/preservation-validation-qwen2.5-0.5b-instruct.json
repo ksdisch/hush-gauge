@@ -1,7 +1,7 @@
 {
  "subject": "Qwen/Qwen2.5-0.5B-Instruct",
  "slug": "qwen2.5-0.5b-instruct",
- "candidate_digest": "11835d0ee26154aafd07d60e13d2a1da64c4f352536ddbaf4bb0c7ad0090be33",
+ "candidate_digest": "b33c543be5a833f5a020e1d2942a88427a7dfb7157f4404103322a38ea355082",
  "battery_sha256": "f839ebcbcd93b11c2881caf272618582de685e10180a9b93b2bb7084af19a241",
  "n_frames": 25,
  "frames": [
@@ -93,8 +93,12 @@
   "4": 25,
   "5": 2,
   "6": 25,
-  "7": 25
+  "7": 25,
+  "8": 25,
+  "9": 22,
+  "10": 25,
+  "11": 25
  },
- "elapsed_seconds": 99.4,
+ "elapsed_seconds": 106.3,
  "note": "D30 construction-time validation on the 25 CALIBRATION frames only (K3 hygiene). Feeds no cell; its counts freeze into batteries/preservation_qa.json."
 }

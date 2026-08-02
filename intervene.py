@@ -100,6 +100,16 @@ class EditAttestation:
     that is exactly the brief's `(v̂ᵀh)²`, which is where `D31`'s real-vs-random asymmetry
     is read; at λ = 0 it is 0, which is the value the exact-return path makes true by
     construction rather than a placeholder standing in for an uncomputed quantity.
+
+    **Accumulated on the accelerator, resolved once per trial.** The check is unchanged —
+    still the max over **every** position of **every** edited layer of **every** forward
+    pass — but reading it with `float()` inside the closure would force one device
+    synchronization per band layer per generated token. M1 measured exactly that pattern
+    at ~4× the uncaptured generation time against an estimate of ≤50%
+    (`probe.capture_band_cosines`), so the running maxima stay as device tensors and
+    `resolve()` syncs them once, at the trial boundary. What changes is when the abort
+    fires (at the end of the offending trial rather than mid-generation), not what it
+    fires on.
     """
 
     tol: float = READBACK_TOL
@@ -109,17 +119,48 @@ class EditAttestation:
     #: The span arm removes a span rather than one direction, so its read-back is the
     #: λ = 1 "surviving projection is zero" form on **every** basis direction.
     checks: int = 0
+    #: Per-layer running maxima / sums, still on the accelerator. Kept per layer so a
+    #: failure can name the layer without a sync on the happy path.
+    pending_residual: dict[int, torch.Tensor] = field(default_factory=dict)
+    pending_removed: dict[int, torch.Tensor] = field(default_factory=dict)
 
-    def note_residual(self, worst: float) -> None:
-        self.worst_residual = max(self.worst_residual, float(worst))
+    def note(self, layer: int, worst: torch.Tensor, removed_sq: torch.Tensor, count: int) -> None:
+        previous = self.pending_residual.get(layer)
+        self.pending_residual[layer] = (
+            worst if previous is None else torch.maximum(previous, worst)
+        )
+        carried = self.pending_removed.get(layer)
+        self.pending_removed[layer] = (
+            removed_sq if carried is None else carried + removed_sq
+        )
+        self.removed_sq_count += int(count)
         self.checks += 1
 
-    def note_removed(self, total_sq: float, count: int) -> None:
-        self.removed_sq_sum += float(total_sq)
-        self.removed_sq_count += int(count)
+    def resolve(self) -> None:
+        """Sync the accumulated maxima and enforce `READBACK_TOL`. Idempotent."""
+        if not self.pending_residual:
+            return
+        layers = sorted(self.pending_residual)
+        worst = float(torch.stack([self.pending_residual[l] for l in layers]).max())
+        if worst > READBACK_TOL:
+            offender = max(layers, key=lambda l: float(self.pending_residual[l]))
+            probe.fail(
+                f"M2 read-back failed at layer {offender}: the surviving projection is off "
+                f"by {worst:.2e} > {READBACK_TOL:.0e} relative — expected (1-lambda) of the "
+                "original. An edit the runner cannot certify was applied is not D27's "
+                "frozen operator; re-run with --edit-precision float64 for the exact ported "
+                "CPU path."
+            )
+        self.worst_residual = max(self.worst_residual, worst)
+        self.removed_sq_sum += float(
+            torch.stack([self.pending_removed[l] for l in layers]).sum()
+        )
+        self.pending_residual.clear()
+        self.pending_removed.clear()
 
     @property
     def removed_mass_mean(self) -> float:
+        self.resolve()
         return self.removed_sq_sum / self.removed_sq_count if self.removed_sq_count else 0.0
 
     def reset(self) -> None:
@@ -127,8 +168,11 @@ class EditAttestation:
         self.removed_sq_sum = 0.0
         self.removed_sq_count = 0
         self.checks = 0
+        self.pending_residual.clear()
+        self.pending_removed.clear()
 
     def snapshot(self) -> dict:
+        self.resolve()
         return {
             "worst_residual": self.worst_residual,
             "removed_mass_mean": self.removed_mass_mean,
@@ -141,7 +185,12 @@ class EditAttestation:
 class ArmReadback:
     """The per-arm worst residual the payload records (`D27`), rolled up from per-trial
     attestations. Kept separate from `EditAttestation` because the attestation is reset
-    per trial and this is not."""
+    per trial and this is not.
+
+    `absorb` **resolves** the attestation first, so the tolerance is enforced at the trial
+    boundary by the same call that records it — a caller cannot roll up an unchecked
+    residual by forgetting a step.
+    """
 
     tol: float = READBACK_TOL
     worst_residual: float = 0.0
@@ -149,6 +198,7 @@ class ArmReadback:
     exact_return: bool = False
 
     def absorb(self, attestation: EditAttestation) -> None:
+        attestation.resolve()
         self.worst_residual = max(self.worst_residual, attestation.worst_residual)
         self.checks += attestation.checks
 
@@ -261,18 +311,11 @@ def dose_edits(
             after = out.float() @ unit
             norms = hs.float().norm(dim=-1).clamp_min(1e-30)
             residual = (after - (1.0 - lam) * before).abs()
-            worst = float((residual / norms).max())
-            if worst > READBACK_TOL:
-                probe.fail(
-                    f"M2 read-back failed at layer {layer} (lambda={lam:g}): the surviving "
-                    f"projection is off by {worst:.2e} > {READBACK_TOL:.0e} relative — "
-                    "expected (1-lambda) of the original. An edit the runner cannot certify "
-                    "was applied is not D27's frozen operator; re-run with "
-                    "--edit-precision float64 for the exact ported CPU path."
-                )
-            attestation.note_residual(worst)
             # `D31`: the removed vector is λ(v̂ᵀh)v̂, whose squared norm is λ²(v̂ᵀh)².
-            attestation.note_removed(float((lam * before).pow(2).sum()), before.numel())
+            # Both stay on the accelerator; `EditAttestation.resolve` syncs once per trial.
+            attestation.note(
+                layer, (residual / norms).max(), (lam * before).pow(2).sum(), before.numel()
+            )
             return out.unsqueeze(0)
 
         edits[layer] = edit
@@ -300,21 +343,14 @@ def span_edits(
             out = ablate(hs.float(), basis).to(hs.dtype)
             units = basis / basis.norm(dim=-1, keepdim=True).clamp_min(1e-30)
             norms = hs.float().norm(dim=-1).clamp_min(1e-30)  # [seq]
-            before = hs.float() @ units.T  # [seq, k]
             leftover = (out.float() @ units.T).abs()  # [seq, k]
-            worst = float((leftover / norms.unsqueeze(-1)).max())
-            if worst > READBACK_TOL:
-                probe.fail(
-                    f"M2 span read-back failed at layer {layer}: surviving projection "
-                    f"{worst:.2e} > {READBACK_TOL:.0e} relative — D33.3's span arm is the "
-                    "ported MGS operator at lambda = 1, whose surviving projection is zero"
-                )
-            attestation.note_residual(worst)
             # The removed vector is `h`'s component in the span; its squared norm is
             # `‖h‖² − ‖h'‖²`, which for an orthogonal projection is exact. Reported on the
             # same per-position footing as the dose arms' `λ²(v̂ᵀh)²`.
             removed = (hs.float().pow(2).sum(-1) - out.float().pow(2).sum(-1)).clamp_min(0.0)
-            attestation.note_removed(float(removed.sum()), before.shape[0])
+            attestation.note(
+                layer, (leftover / norms.unsqueeze(-1)).max(), removed.sum(), hs.shape[0]
+            )
             return out.unsqueeze(0)
 
         edits[layer] = edit

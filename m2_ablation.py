@@ -114,8 +114,11 @@ def sample_residuals(model, prompt_ids, layers) -> dict[int, torch.Tensor]:
 
     def make_hook(index: int):
         def hook(module, inputs, output):
+            # Kept **on the model's device**: the preflight's whole point is to check
+            # `D27`'s read-back against the arithmetic the sweep will actually run, and an
+            # fp32 projection silently moved to CPU is not that arithmetic.
             residual = output if torch.is_tensor(output) else output[0]
-            blocks[index] = residual[0].detach().float().cpu()
+            blocks[index] = residual[0].detach().float()
 
         return hook
 
@@ -378,7 +381,7 @@ def main() -> int:
     if unknown:
         abort(f"unknown arms {unknown}; D33 freezes {list(m2_cells.ABLATION_ARMS)}")
 
-    slug = probe.lens_path_for(args.subject).name.removesuffix("-n100.pt")
+    slug = m2_cells.slug_for(args.subject)
     secrets_payload = battery.load_secrets()
     tiers = battery.load_tiers()["tiers"]
     probe_panel = panel.load()

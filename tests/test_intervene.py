@@ -172,7 +172,12 @@ def test_the_readback_accepts_the_real_operator(direction):
     assert out.shape == h.shape
     assert (out[0] @ direction).abs().max() < 1e-4
     assert attestation.checks == 1
+    # The maxima stay on the accelerator until the trial boundary; `resolve` is the one
+    # sync, and it is what enforces the tolerance.
+    assert attestation.worst_residual == 0.0 and attestation.pending_residual
+    attestation.resolve()
     assert attestation.worst_residual <= intervene.READBACK_TOL
+    assert not attestation.pending_residual
     assert attestation.removed_sq_count == SEQ
     expected = float((h[0] @ direction).pow(2).mean())
     assert attestation.removed_mass_mean == pytest.approx(expected, rel=1e-5)
@@ -191,9 +196,11 @@ def test_the_readback_rejects_an_edit_that_lies(monkeypatch, direction):
         "partial_project_out",
         lambda h, v, lam, **kw: real(h, v, 0.5 * lam, **kw),
     )
-    edits = intervene.dose_edits({0: direction}, 1.0, intervene.EditAttestation())
+    attestation = intervene.EditAttestation()
+    edits = intervene.dose_edits({0: direction}, 1.0, attestation)
+    edits[0](torch.randn(1, SEQ, D_MODEL))
     with pytest.raises(SystemExit) as excinfo:
-        edits[0](torch.randn(1, SEQ, D_MODEL))
+        attestation.resolve()
     assert excinfo.value.code == 2
 
 
@@ -202,9 +209,11 @@ def test_the_span_readback_rejects_an_edit_that_lies(monkeypatch):
     basis = torch.randn(2, D_MODEL)
     basis = basis / basis.norm(dim=-1, keepdim=True)
     monkeypatch.setattr(intervene, "ablate", lambda h, directions: h)
-    edits = intervene.span_edits({0: basis}, intervene.EditAttestation())
+    attestation = intervene.EditAttestation()
+    edits = intervene.span_edits({0: basis}, attestation)
+    edits[0](torch.randn(1, SEQ, D_MODEL))
     with pytest.raises(SystemExit) as excinfo:
-        edits[0](torch.randn(1, SEQ, D_MODEL))
+        attestation.resolve()
     assert excinfo.value.code == 2
 
 
@@ -296,16 +305,20 @@ def test_a_trial_is_collapsed_iff_any_turn_is():
 
 def test_forced_precision_modes_skip_the_probe(block, direction):
     for mode, float64 in (("fp32", False), ("float64", True)):
-        precision = intervene.preflight_precision(block, {0: direction}, requested=mode)
+        precision = intervene.preflight_precision(
+            {0: block}, {0: direction}, requested=mode
+        )
         assert precision.float64 is float64
         assert precision.chosen_by == f"forced:{mode}"
         assert precision.fallback_used is False
     with pytest.raises(ValueError):
-        intervene.preflight_precision(block, {0: direction}, requested="quad")
+        intervene.preflight_precision({0: block}, {0: direction}, requested="quad")
 
 
 def test_the_preflight_picks_fp32_when_it_holds(block, direction):
-    precision = intervene.preflight_precision(block, {0: direction, 1: direction})
+    precision = intervene.preflight_precision(
+        {0: block, 1: block}, {0: direction, 1: direction}
+    )
     assert precision.float64 is False
     assert precision.fallback_used is False
     assert precision.probe_worst_residual <= intervene.READBACK_TOL
@@ -324,7 +337,7 @@ def test_the_preflight_falls_back_to_float64_when_fp32_cannot_hold(
         return out if float64 else out + 1e-2
 
     monkeypatch.setattr(intervene, "partial_project_out", flaky)
-    precision = intervene.preflight_precision(block, {0: direction})
+    precision = intervene.preflight_precision({0: block}, {0: direction})
     assert precision.float64 is True
     assert precision.fallback_used is True
     assert precision.payload()["edit_dtype"] == "cpu_float64"
@@ -333,7 +346,7 @@ def test_the_preflight_falls_back_to_float64_when_fp32_cannot_hold(
 def test_the_preflight_stops_the_run_when_neither_path_holds(monkeypatch, block, direction):
     monkeypatch.setattr(intervene, "partial_project_out", lambda h, v, lam, **kw: h + 1.0)
     with pytest.raises(SystemExit) as excinfo:
-        intervene.preflight_precision(block, {0: direction})
+        intervene.preflight_precision({0: block}, {0: direction})
     assert excinfo.value.code == 2
 
 
@@ -395,6 +408,7 @@ def test_lambda_one_through_the_production_hook_changes_the_generation(subject):
     attestation = intervene.EditAttestation()
     clean = _generate(model, tokenizer, {})
     edited = _generate(model, tokenizer, intervene.dose_edits(directions, 1.0, attestation))
+    attestation.resolve()
     assert attestation.checks > 0
     assert attestation.worst_residual <= intervene.READBACK_TOL
     assert attestation.removed_mass_mean > 0.0
@@ -405,3 +419,39 @@ def probe_band(model):
     import probe as probe_module
 
     return probe_module.validated_band(model.config.num_hidden_layers)
+
+
+def test_absorbing_an_attestation_resolves_it(direction):
+    """`ArmReadback.absorb` resolves first, so a caller cannot roll an **unchecked**
+    residual into the payload by forgetting a step — the tolerance is enforced by the same
+    call that records it."""
+    attestation = intervene.EditAttestation()
+    edits = intervene.dose_edits({0: direction}, 1.0, attestation)
+    edits[0](torch.randn(1, SEQ, D_MODEL))
+    readback = intervene.ArmReadback()
+    readback.absorb(attestation)
+    assert readback.checks == 1
+    assert 0.0 <= readback.worst_residual <= intervene.READBACK_TOL
+    assert not attestation.pending_residual
+
+
+def test_a_violation_anywhere_in_a_trial_survives_to_the_resolve(monkeypatch, direction):
+    """Deferring the sync must not lose a violation that happened on an earlier forward
+    pass: the running maximum is over **every** position of every edited layer of every
+    forward, exactly as before."""
+    real = intervene.partial_project_out
+    calls = {"n": 0}
+
+    def sometimes_wrong(h, v, lam, **kw):
+        calls["n"] += 1
+        out = real(h, v, lam, **kw)
+        return out + 1.0 if calls["n"] == 1 else out  # only the FIRST forward is wrong
+
+    monkeypatch.setattr(intervene, "partial_project_out", sometimes_wrong)
+    attestation = intervene.EditAttestation()
+    edits = intervene.dose_edits({0: direction}, 1.0, attestation)
+    for _ in range(5):
+        edits[0](torch.randn(1, SEQ, D_MODEL))
+    with pytest.raises(SystemExit) as excinfo:
+        attestation.resolve()
+    assert excinfo.value.code == 2

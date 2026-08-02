@@ -266,7 +266,7 @@ def main() -> int:
     parser.add_argument("--out-suffix", default="", help="smoke-test only")
     args = parser.parse_args()
 
-    slug = probe.lens_path_for(args.subject).name.removesuffix("-n100.pt")
+    slug = m2_cells.slug_for(args.subject)
     secrets_payload = battery.load_secrets()
     probe_panel = panel.load()
     rows = panel.rows_for(probe_panel)

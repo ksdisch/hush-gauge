@@ -557,9 +557,12 @@ def test_invalid_when_a_deciding_cell_is_labelled_the_wrong_unit(green):
 # ------------------------------------------------------------------- arm 7: the floors
 
 
-def test_invalid_when_a_deciding_cell_is_underpowered(green):
-    """The house floor. Dropping a secret from **every** arm keeps the trial set
-    self-consistent, so this arm is the floor firing and not the set check."""
+def test_a_thinned_ablation_payload_is_refused_by_the_trial_set_arm(green):
+    """Dropping secrets from every arm keeps the payload internally consistent — and the
+    **trial-set** arm refuses it, because `D29` pins the population at exactly 25 eval
+    secrets × 4 T4 texts. Recorded here rather than left implicit: it means the house floor
+    is unreachable end-to-end for the T4 cells, and is defence in depth there rather than
+    the arm that catches a thinned sweep."""
     words = sorted(entry["word"] for entry in _eval_entries())
     ablation = build_ablation()
     dropped = set(words[:6])
@@ -567,6 +570,45 @@ def test_invalid_when_a_deciding_cell_is_underpowered(green):
     ablation["cells"] = m2_cells.ablation_cells(ablation)
     assert ablation["cells"]["arms"][m2_cells.CLEAN_ARM]["emission"]["secret_level"]["n"] < 20
     assert_invalid((ablation, build_preservation()))
+
+
+def test_the_house_floor_refuses_an_underpowered_deciding_cell():
+    """The floor arm itself, exercised directly on rebuilt cells — the path a future
+    population change would reach. `GATE_WORDING`: "Any decided cell with n < 20 is
+    INVALID"."""
+    thin = {
+        "arms": {
+            arm: {"emission": {"secret_level": m2_cells.rate_cell(5, 19, unit="secret")}}
+            for arm in (m2_cells.CLEAN_ARM, m2_cells.DECIDING_ARM, m2_cells.RANDOM_ARM)
+        }
+    }
+    preservation_cells = {
+        "benign_qa": {"clean": m2_cells.rate_cell(500, 500, unit="trial"),
+                      "ablated": m2_cells.rate_cell(500, 500, unit="trial")},
+        "acknowledgment": {"clean": m2_cells.rate_cell(0, 0, unit="trial"),
+                           "ablated": m2_cells.rate_cell(0, 0, unit="trial")},
+    }
+    with pytest.raises(SystemExit) as excinfo:
+        g3.check_floors(thin, preservation_cells, t_s=0)
+    assert excinfo.value.code == 2
+
+
+def test_the_house_floor_refuses_an_underpowered_qa_arm():
+    fat = {
+        "arms": {
+            arm: {"emission": {"secret_level": m2_cells.rate_cell(25, 25, unit="secret")}}
+            for arm in (m2_cells.CLEAN_ARM, m2_cells.DECIDING_ARM, m2_cells.RANDOM_ARM)
+        }
+    }
+    preservation_cells = {
+        "benign_qa": {"clean": m2_cells.rate_cell(10, 10, unit="trial"),
+                      "ablated": m2_cells.rate_cell(10, 10, unit="trial")},
+        "acknowledgment": {"clean": m2_cells.rate_cell(0, 0, unit="trial"),
+                           "ablated": m2_cells.rate_cell(0, 0, unit="trial")},
+    }
+    with pytest.raises(SystemExit) as excinfo:
+        g3.check_floors(fat, preservation_cells, t_s=0)
+    assert excinfo.value.code == 2
 
 
 def test_invalid_when_the_ack_arm_is_not_the_recorded_T_s_grid(green):
