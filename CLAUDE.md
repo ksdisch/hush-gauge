@@ -46,11 +46,17 @@ certified-silent trials is licensed speech being *spoken* (`D24`.6 collapses arm
 stands as an honest null, no G2′ is pre-registered, and M3 Arm A carries a named validity
 caveat.
 
-**Next action: write `docs/M2-BRIEF.md`** — M2 (ablation + the preservation battery) opens
-with its own start-of-stage brief freezing its decisions before any run. The brief inherits
-`D26`'s causal framing (a direction that fails as a detector may still be causally
-load-bearing — if so, that tension is the finding) and `D25`'s decode rule with its
-per-scale assertion.
+**`docs/M2-BRIEF.md` is WRITTEN (2026-08-02) and awaiting Kyle's approval** — it freezes
+M2's decisions (`D27`–`D33`) as **Proposed**: the intervention (the probed direction
+itself, `K6`'s dose operator, full band, λ = 1 deciding), the λ = 0 identity arm
+(exact-return by construction, `D25`'s per-scale assertion), G3's paired T4 contrast,
+the preservation battery (WikiText NLL, calibration-validated benign QA, the
+acknowledgment probe, the collapse guard), the norm-matched random-direction control,
+the byte-frozen `GATE_WORDING`, and the secondaries. It inherits `D26`'s causal framing
+(a direction that fails as a detector may still be causally load-bearing — if so, that
+tension is the finding) and `D25`'s decode rule. **Nothing in M2 runs until Kyle approves
+the brief**; upon approval `D27`–`D33` mirror into `docs/DECISIONS.md` and the build runs
+in a fresh Opus session per the brief's run-config note.
 
 **What M1 found, in one line:** the probe reads the model **speaking** the secret, not holding
 it — recall 0.94 / 0.57 / 0.54 on emitting trials against 0.10 / 0.07 / 0.09 on non-emitting

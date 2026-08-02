@@ -72,8 +72,11 @@ separate those and says so. Full curves, both gates, and every pre-declared seco
 ran under the models' shipped `repetition_penalty`: 1.1 / 1.1 / 1.05 per scale, now owned
 rather than patched), and **D26** rules G2's contrast direction correctly specified: the
 yardstick's edge on silent trials comes from licensed speech being *spoken*, not from
-silent licensing. Next up: M2 (ablation + preservation battery), opening with its own
-frozen brief.
+silent licensing. **M2's start-of-stage brief is written**
+([`docs/M2-BRIEF.md`](docs/M2-BRIEF.md), 2026-08-02) — it freezes M2's decisions
+(`D27`–`D33`: the ablation arms, a λ = 0 substrate-identity check, the preservation
+battery, and a random-direction control) as Proposed, and **nothing in M2 runs until the
+brief is approved**.
 
 **M0 complete, 2026-07-30 — G0 PASSES on all three scales.** The battery has dynamic range:
 under benign chat with no ask the models sit at the floor, and under multi-turn extraction all
