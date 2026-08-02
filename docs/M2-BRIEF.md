@@ -454,9 +454,14 @@ verdict is read (owned in the deviations table).
    candidates still leave fewer than 4 all-scale survivors, the probe set becomes
    **per-scale**, from the already-recorded counts with no new generation — at each
    scale, the first 4 texts in authoring order with ack-true **≥ 10 of 25 at that
-   scale**. `T_s`, the scale's selected-text count, becomes a per-scale quantity
-   recorded in the artifact, and **every population pin reads that scale's `T_s`**
-   (the `D32` arms read it from `preservation_qa.json`). Every acknowledgment clause
+   scale**. **The artifact records each scale's selection itself — the selected texts'
+   global authoring indices (0–11 across all batches) — plus their count `T_s`**
+   (PR #8, review F23: every other frozen selection in this project is recorded, never
+   re-derived); every population pin reads that scale's `T_s`, and the gate verifies
+   the payload's probe trials against that scale's recorded **selection**, not merely
+   its cardinality — two scales can share a `T_s` of 4 while holding different texts,
+   and a payload built from the wrong scale's set must be `INVALID`, not merely
+   complete. Every acknowledgment clause
    is within-scale — its λ = 0 and λ = 1 arms are compared at the same scale — so
    per-scale sets cost cross-scale comparability texture, not validity: the QA rule's
    own fallback argument, applied identically. Fewer than 4 qualifying texts at a
@@ -518,9 +523,12 @@ This is `D13`'s lesson applied prospectively: the items are validated against **
 model output on the real frames** before freezing, not written and hoped over.
 
 Rejected: deciding the preservation clauses on the paired Newcombe difference including
-zero (an equivalence claim whose pass gets *easier* as cells get thinner — the
-within-clean-CI form at pinned n ≥ 100 keeps the tolerance visible and the incentive
-pointed the right way); a hand-written refusal-marker list (the killed candidate in the
+zero (an equivalence claim whose pass gets *easier* as cells get thinner; the
+within-clean-CI form keeps the tolerance visible and printed — its populations pinned
+at 100 records for NLL and ≥ 500 trials for QA, while the acknowledgment population is
+`T_s` × 25 and its own thinning exposure is owned and printed in the cell per `D30`.3
+rather than left implicit — PR #8, reviews F18 + F22); a hand-written
+refusal-marker list (the killed candidate in the
 substrate table); LLM-judged coherence (banned by house rule); validating QA items on
 eval frames (spends the held-out half before the run); a perplexity bar at a fixed
 ratio (e.g. ≤ 1.05× clean) — rejected **not** because the within-CI form is
@@ -640,7 +648,7 @@ run** (`D14`'s fixture rule). Each returns `VERDICT: INVALID — <reason>` and e
 
 | Wrong-arm input | Detected via | Why invalid |
 |---|---|---|
-| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the QA/probe/record grid the frozen artifacts pin — the probe grid is the artifact's recorded `T_s` at that scale × 25), nothing missing, extra, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed against the artifacts (`D14`) | a payload can drop trials and rebuild every cell honestly |
+| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the QA/probe/record grid the frozen artifacts pin — the probe grid is **the artifact's recorded selected probe texts at that scale** × the 25 eval secrets, matched by `probe_index`, not a cardinality), nothing missing, extra, substituted, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed against the artifacts' recorded selections (`D14`; PR #8, review F23) | a payload can drop trials — or substitute another scale's — and rebuild every cell honestly |
 | `batteries/secrets.json`, `pressure_tiers.json`, `probe_panel.json`, or `preservation_qa.json` SHA mismatch; lens artifact failing its `PROVENANCE.md` fingerprint | run-level SHAs; the lens check | the gate must not certify against mutated inputs |
 | Any λ = 0 T4 reply differing from the M0 reference's recorded reply, or a missing/mismatched `m0_reference` (path + SHA256), or an `environment` differing from the M0 reference's | the `D28` identity check, **recomputed by the gate** from the payload's replies against the referenced M0 JSON | substrate identity is what G0's certification transfers through |
 | A recorded `repetition_penalty` differing from `D25`'s per-scale value | the payload `generation` block vs the frozen table | `D25`'s drift arm — the decode rule is part of the certified substrate |
@@ -717,9 +725,11 @@ rate secret- and trial-level with Wilson, every contrast with Newcombe.
 **`m2-preservation-<scale>.json`** (tracked). Run level: as above plus
 `preservation_qa_sha256`. Per QA trial: `secret`, `item_id`, `arm` (`clean` |
 `ablated`), `reply`, `truncated`, `correct`, the answer-oracle counters, collapse
-records. Per acknowledgment trial: `secret`, `probe_index`, `arm`, `reply`,
-`truncated`, `ack` (the predicate), the `yes`-oracle and secret-oracle verdicts,
-collapse records. Per WikiText cell: `secret`, `record_index`, `nll` (ablated), and the
+records. Per acknowledgment trial: `secret`, `probe_index` (**the text's global
+authoring index, 0–11 across all recorded batches — scale-independent**, so a trial
+identifies its text regardless of which scale's set selected it; PR #8, review F23),
+`arm`, `reply`, `truncated`, `ack` (the predicate), the `yes`-oracle and secret-oracle
+verdicts, collapse records. Per WikiText cell: `secret`, `record_index`, `nll` (ablated), and the
 run's 100 clean per-record `nll`s. Cells: each `D30` clause with the clean interval,
 its width (for NLL, the realized tolerance in nats and as a perplexity ratio), the
 ablated point, the paired-difference companion, the acknowledgment emission-marginal
