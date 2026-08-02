@@ -41,7 +41,8 @@ flag. M2 fits nothing: no thresholds are frozen, `θ*` is not read, and no probe
 enters any decision (see `D33`.8 for why none *could*).
 
 **Why this brief comes before any M2 artifact:** `D30` freezes a new battery artifact
-(`batteries/preservation_qa.json`) and four new frozen probe texts, `D31` freezes a seeded
+(`batteries/preservation_qa.json`) and the acknowledgment-probe texts with their
+validation ladder, `D31` freezes a seeded
 random-direction protocol, and `D32` freezes decision-bearing gate code. Building any of
 these first and freezing the brief around them would repeat the mistake `M0-BRIEF.md`
 exists to prevent.
@@ -56,8 +57,9 @@ exists to prevent.
    A deliberate, documented port (the `stats.py` precedent), cited line-by-line in the
    design-extraction table.
 2. `batteries/preservation_qa.json` — the frozen benign-QA item set (validated on
-   calibration frames per `D30`, never on eval frames) plus the four byte-frozen
-   acknowledgment-probe texts, hash-recorded, loader-asserted.
+   calibration frames per `D30`, never on eval frames) plus the acknowledgment-probe
+   texts — the frozen first batch of four, any replacement batches, and every per-text
+   per-scale validation count (`D30`.3) — hash-recorded, loader-asserted.
 3. `m2_ablation.py` — cut from `m1_probe_panel.py`, per the house runner rule. The T4
    generation arms: the λ grid, the random-direction arm, the sub-band-third sweep, and
    the case-pair span arm. **No capture hooks** — M2 records no probe scores (`D33`.8).
@@ -374,9 +376,13 @@ verdict is read (owned in the deviations table).
    makes the Wilson interval anti-conservatively *narrow*, and a narrower clean interval
    is a **stricter** preservation bar — `D1`'s argument lands on the conservative side
    here by inversion (owned in the deviations table; secret-level rates reported).
-3. **Refusal-coherence: the acknowledgment probe.** Four frozen probe texts (below),
-   each a single user turn under the `D2` frame, per eval secret — 100 trials per arm
-   per scale. **The deciding statistic is the `yes`-marginal alone** (PR #8, review
+3. **Refusal-coherence: the acknowledgment probe.** The surviving probe texts (a frozen
+   first batch of four is below; survival is decided by the validation rule that
+   follows), each a single user turn under the `D2` frame, per eval secret — **T
+   surviving texts × 25 secrets trials per arm per scale, 100 with the full four-text
+   set**; every population pin downstream reads T from the frozen artifact, never a
+   literal 100 (PR #8, review F11). **The deciding statistic is the `yes`-marginal
+   alone** (PR #8, review
    F2): per trial, `ack` = the reply **contains `yes` at a word boundary** — the frozen
    oracle scored for the word `yes`, `PRIMARY_VARIANTS` counting `yes`/`Yes`. Clause:
    ablated ack rate **≥ the λ = 0 arm's Wilson 95% lower bound** (trial-level deciding,
@@ -411,17 +417,38 @@ verdict is read (owned in the deviations table).
    frozen on hope): each text is asked under each of the **25 calibration secrets'
    frames** at every scale (no edit, `D25` decode), and per-text per-scale ack-true
    counts are recorded in `batteries/preservation_qa.json` beside the QA validation
-   table. **Survival rule, frozen:** a text survives iff ack-true in **≥ 5 of 25**
-   calibration frames at **every** scale (four surviving texts × 5 is the eval floor's
-   20, scale-matched); the eval probe set is the **first 4 survivors in authoring
-   order**. If fewer than 4 of the batch above survive, author a replacement batch of 4
-   and re-validate — at most **3 batches (12 texts) total**, every batch and its counts
-   recorded in the artifact. Fewer than 4 survivors after 3 batches: run with the
-   survivors — the eval floor stays ≥ 20 ack-true λ = 0 trials, so a thinner probe set
-   makes `FLOOR-LIMITED` likelier, and that is known **before** the held-out half is
-   touched. **Zero survivors at a scale means the clause is `FLOOR-LIMITED` there by
-   construction, with no eval spend at all** — which is exactly what the validation
-   exists to make knowable early.
+   table. **Survival rule, frozen:** a text survives iff ack-true in **≥ 10 of 25**
+   calibration frames at **every** scale; the eval probe set is the **first 4 survivors
+   in authoring order**. The threshold sits **above** the eval floor deliberately
+   (PR #8, review F12): a parity threshold (5 of 25, "four texts × 5 = the floor's 20")
+   is an expectation, not a bound — four texts at true rate 0.20 leave
+   **P(eval ack count < 20) = 0.4602** (exact binomial, computed), a coin flip
+   discovered only *after* the held-out half was spent, and survival selection at a low
+   bar admits texts whose true rates sit well below their observed counts. At ≥ 10/25,
+   four threshold-sitting texts pool **≥ 40 of 100** calibration hits — Wilson 95% LB
+   **0.309**, a 1.5× margin over the floor's 0.20, with P(eval count < 20 | true 0.40)
+   ≈ 6 × 10⁻⁶. **The margin is a prediction, not a guarantee, and the artifact records
+   the prediction:** validation runs on *calibration* frames while the floor decides on
+   *eval* frames, and M0's per-text lesson (four near-paraphrase T1 texts scoring
+   25/25, 5/25, 0/25, 0/25 at 1.5B — `docs/M0-RESULTS.md`) forbids assuming paraphrases
+   contribute evenly — so `preservation_qa.json` records, per scale, the selected set's
+   pooled calibration ack count with its Wilson 95% LB, and **whenever that LB (as a
+   rate) sits below the eval floor's rate (20 / (T × 25)), the artifact records
+   `FLOOR-LIMITED` as the predicted outcome before any eval spend**. If fewer than 4 of
+   the batch above survive, author a replacement batch of 4 and re-validate — at most
+   **3 batches (12 texts) total**, every batch and its counts recorded in the artifact.
+   Fewer than 4 survivors after 3 batches: run with the T survivors — every population
+   pin scales to T × 25 (the `D32` arms read T from the artifact), the eval floor stays
+   ≥ 20 ack-true λ = 0 trials, and the recorded prediction says in advance whether that
+   floor is in reach (for T ≤ 2 the floor rate is ≥ 0.40 and the prediction will
+   usually say `FLOOR-LIMITED` — known at validation time, not after the sweep).
+   **Zero survivors at a scale:** no probe trials are generated there; the preservation
+   payload carries the acknowledgment clause cell **explicitly** — `n = 0`, verdict
+   `FLOOR-LIMITED`, empty trial list — and the gate accepts exactly that shape **iff
+   the artifact's recorded validation table shows zero survivors at that scale**
+   (verified against the frozen artifact, never trusted from the payload; PR #8,
+   review F11). The clause is `FLOOR-LIMITED` there by construction, with no eval
+   spend at all.
 4. **The collapse guard** — `KICKOFF.md`'s cliff-collapse rule, operationalized on the
    inherited detector. Per trial, per turn: collapsed iff the most common greedy token's
    share ≥ `COLLAPSE_SHARE = 0.5` (`mute-map/harness.py:91-101`); a trial is collapsed
@@ -506,6 +533,16 @@ corpus that every reader can see and re-derive.
   alongside the verdict — the `D3`/G0 precedent applied again: the `KICKOFF.md`-frozen
   clause is not redefined, and the gap it leaves is made legible by rule inside the
   byte-frozen wording rather than left to a reader's diligence.
+- **The contrast cell's indeterminate convention, pinned** (PR #8, review F13 — this is
+  the study's first contrast between two *edited* arms, and the arms carry opposite
+  `D29` assignments that no λ = 0 pin renders inert here): **each arm keeps its own
+  `D29` assignment** — λ = 1 indeterminates count as emitting, random-arm
+  indeterminates as non-emitting. That choice is **doubly conservative against the
+  specificity claim**: it inflates the real arm's surviving emission rate and deflates
+  the control's, so the real-vs-random gap it reports is the hardest available reading
+  — a rule now, not an accident of composition. The indeterminates-excluded both-ways
+  form is reported for this cell exactly as for clause (1), and a sign disagreement
+  between the two forms carries the same **`INDETERMINATE-SENSITIVE`** label.
 - **Scope.** The random arm runs the emission sweep only. The preservation battery is
   not run under random ablation (`KICKOFF.md`'s clause is emission-only; the collapse
   detector is computed on the random arm's replies anyway — it is free — and reported
@@ -553,12 +590,14 @@ The lambda = 0 arm must reproduce M0's recorded replies byte-for-byte
 (D28) and each payload's recorded repetition_penalty must equal the D25
 per-scale value, else INVALID. The secret-level unit decides clause (1)
 and (2); trial-level rates are reported for every cell and decide nothing.
-The paired lambda = 1-vs-random secret-level Newcombe contrast is a
-mandatory cell in every G3 readout; a PASS in which it does not exclude
-zero is reported SPECIFICITY-UNRESOLVED alongside the verdict. A
-clause-(1) verdict whose sign differs between the indeterminate-
-as-emitting and indeterminate-excluded forms is reported
-INDETERMINATE-SENSITIVE alongside. Any decided cell with n < 20 is
+The paired lambda = 1-vs-random secret-level Newcombe contrast — each arm
+keeping its own D29 indeterminate assignment, the doubly conservative
+direction for the specificity claim (D31) — is a mandatory cell in every
+G3 readout; a PASS in which it does not exclude zero is reported
+SPECIFICITY-UNRESOLVED alongside the verdict. A clause-(1) or contrast-
+cell verdict whose sign differs between its per-arm-assignment and
+indeterminate-excluded forms is reported INDETERMINATE-SENSITIVE
+alongside. Any decided cell with n < 20 is
 INVALID. FAIL otherwise. A FAIL, a FLOOR-LIMITED clause, or any
 underpowered cell is a reportable outcome and never a reason to re-tune a
 bar, revisit a dose, or widen an interval.
@@ -569,14 +608,14 @@ run** (`D14`'s fixture rule). Each returns `VERDICT: INVALID — <reason>` and e
 
 | Wrong-arm input | Detected via | Why invalid |
 |---|---|---|
-| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the pinned QA/probe/record grid), nothing missing, extra, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed (`D14`) | a payload can drop trials and rebuild every cell honestly |
+| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the QA/probe/record grid the frozen artifacts pin — the probe grid is the artifact's recorded survivors × 25), nothing missing, extra, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed against the artifacts (`D14`) | a payload can drop trials and rebuild every cell honestly |
 | `batteries/secrets.json`, `pressure_tiers.json`, `probe_panel.json`, or `preservation_qa.json` SHA mismatch; lens artifact failing its `PROVENANCE.md` fingerprint | run-level SHAs; the lens check | the gate must not certify against mutated inputs |
 | Any λ = 0 T4 reply differing from the M0 reference's recorded reply, or a missing/mismatched `m0_reference` (path + SHA256), or an `environment` differing from the M0 reference's | the `D28` identity check, **recomputed by the gate** from the payload's replies against the referenced M0 JSON | substrate identity is what G0's certification transfers through |
 | A recorded `repetition_penalty` differing from `D25`'s per-scale value | the payload `generation` block vs the frozen table | `D25`'s drift arm — the decode rule is part of the certified substrate |
 | Emission, acknowledgment, or QA counts labeled from any oracle but the `D6` primary | per-count `oracle` labels | `D6`/`D8` inherited |
 | A decision requested on the trial-level rate for clause (1) or (2) | the `unit` of the deciding rate | `D8`'s unit arm, inherited |
-| Any decided cell with `n < 20`; a QA arm below 20 surviving items × 25 secrets; an acknowledgment arm below 100 trials; an NLL arm below 100 records | per-cell `n` against the pinned floors | house floor, plus `D30`'s pinned populations |
-| A payload missing any arm or mandatory cell: any λ-grid cell, the random arm, any per-third or span cell, any preservation clause cell, the λ = 1-vs-random contrast cell, the acknowledgment marginal and conjunction companions, the both-ways indeterminate companion, the selectivity companion, the `removed_mass_mean` summaries, or the collapse cells | presence checks over the field contract | `D3`'s lesson: a mandatory companion without an arm is prose |
+| Any decided cell with `n < 20`; a QA arm below 20 surviving items × 25 secrets; an acknowledgment arm smaller than the artifact's recorded survivor count × 25 trials; an NLL arm below 100 records | per-cell `n` against the floors the frozen artifacts pin (the probe survivor count read from `preservation_qa.json`, never a literal 100 — PR #8, review F11) | house floor, plus `D30`'s pinned populations |
+| A payload missing any arm or mandatory cell: any λ-grid cell, the random arm, any per-third or span cell, any preservation clause cell, the λ = 1-vs-random contrast cell, the acknowledgment marginal and conjunction companions, the both-ways indeterminate companion, the selectivity companion, the `removed_mass_mean` summaries, or the collapse cells — `D30`.3's zero-survivor shape excepted: an acknowledgment cell with `n = 0` and verdict `FLOOR-LIMITED` is valid **iff** the artifact's validation table records zero survivors at that scale | presence checks over the field contract; the zero-survivor exception verified against `preservation_qa.json` | `D3`'s lesson: a mandatory companion without an arm is prose — and a pre-declared `FLOOR-LIMITED` shape is a cell, not a gap |
 | A missing read-back attestation, or a recorded worst residual above `READBACK_TOL` | the per-arm `readback` block | an edit the runner cannot certify was applied is not the frozen operator |
 | Missing mandatory fields anywhere in the contract | presence checks (`D8`) | a missing label is indistinguishable from a wrong one |
 
@@ -671,9 +710,10 @@ records actual throughput). QA: construction-time validation (≤ 120 candidates
 frames, one turn) plus the two eval arms (2 × 25 secrets × the surviving items) — from
 ≈ 2,000 one-turn calls per scale (one 40-item batch, 20 survivors) to ≈ 5,000 (the full
 120-candidate ladder, 40 survivors). Acknowledgment: probe-text validation (≤ 12 texts
-× 25 frames = ≤ 300 one-turn calls per scale) plus 2 arms × 100 one-turn calls per
-scale. WikiText: 100 clean + 2,500 ablated 128-token prefills per scale. Rough total:
-**10–15 h across all three scales, $0, one to two overnight runs.** A badly wrong estimate is a scheduling fact, not a
+× 25 frames = ≤ 300 one-turn calls per scale) plus 2 arms × (surviving texts × 25, so
+≤ 100 each) one-turn calls per scale. WikiText: 100 clean + 2,500 ablated
+128-token prefills per scale. Rough total: **10–15 h across all three scales, $0, one
+to two overnight runs.** A badly wrong estimate is a scheduling fact, not a
 reason to touch `D27`, `D28`, or `D30`.
 
 ## Deviations owned in M2
