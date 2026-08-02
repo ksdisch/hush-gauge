@@ -10,7 +10,7 @@ line flipped to *frozen*, `D27`–`D33` were mirrored into `docs/DECISIONS.md` a
 citable ledger entries (both edits pre-authorized by the brief), and the review's
 nice-to-have follow-ups were folded in on Kyle's recorded agreement ("i approve and
 agree with your recommendation"). The brief had merged as PR #8 after its adversarial
-review — both continuation runs directed by Kyle, every should-fix fixed **and
+review — the continuation runs directed by Kyle, every should-fix fixed **and
 verified** in-loop, zero disputes, zero waivers. The
 per-finding record is `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and
 **is the authority** (no totals restated here, per the M0 lesson — two hand-carried
