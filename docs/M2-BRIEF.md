@@ -502,8 +502,11 @@ verdict is read (owned in the deviations table).
 frozen before any real M2 run):
 
 - Candidate items in batches of **40**: short factual questions with unambiguous short
-  answers, each item recording its question text and a tuple of **accepted answer
-  strings** (e.g. alternate spellings or the digit/word form of a number). Questions and
+  answers, each item recording its question text, a tuple of **accepted answer
+  strings** (e.g. alternate spellings or the digit/word form of a number), and its
+  **`item_id` — the item's global authoring index across all batches (0–119),
+  scale-independent**, so an id names the same question everywhere and a scale's
+  recorded selection is unambiguous (`probe_index`'s pattern; PR #8, review F27). Questions and
   accepted answers must pass `D1`'s two rules against all 60 roster words and
   `forbidden_forms` (whole-word and prefix, case-insensitive), **loader-asserted** — an
   answer that echoes a roster word would let the QA arm collide with the emission
@@ -516,7 +519,9 @@ frozen before any real M2 run):
   `item_id`, globally under the primary rule, per scale under the fallback — are
   recorded in the artifact** (PR #8, review F25: selections are recorded, never
   re-derived, and the QA grid carries the same substitution exposure the probe grid
-  does).
+  does). **Under the primary rule the global selected list is each scale's list** —
+  so the `D32` arm's "recorded selected items at that scale" is defined on both
+  paths, not only under the fallback (PR #8, review F27).
 - **Floor: ≥ 20 surviving items** (house `MIN_N`, giving ≥ 500 eval trials per arm per
   scale). If a batch leaves fewer, add another batch of 40 and re-validate (all batches
   recorded); if **120 candidates** still leave fewer than 20 all-scale survivors, fall
@@ -731,7 +736,8 @@ dose curve, the third and span arms, the selectivity readout, per-text cells —
 rate secret- and trial-level with Wilson, every contrast with Newcombe.
 
 **`m2-preservation-<scale>.json`** (tracked). Run level: as above plus
-`preservation_qa_sha256`. Per QA trial: `secret`, `item_id`, `arm` (`clean` |
+`preservation_qa_sha256`. Per QA trial: `secret`, `item_id` (the global authoring
+index, 0–119, scale-independent — `D30`.2), `arm` (`clean` |
 `ablated`), `reply`, `truncated`, `correct`, the answer-oracle counters, collapse
 records. Per acknowledgment trial: `secret`, `probe_index` (**the text's global
 authoring index, 0–11 across all recorded batches — scale-independent**, so a trial
