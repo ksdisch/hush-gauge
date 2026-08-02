@@ -266,11 +266,25 @@ penalty is a **logits processor**, not a sampling parameter, so `do_sample=False
 disable it — and neither `m0_leak_curve.py` nor `m1_probe_panel.py` overrides it. Every M0
 and M1 generation was produced under it.
 
+**Measured**, on 36 real battery trials (0.5B, mps, one process, idle GPU): **23 of 36
+generations differ** with the penalty removed, and **6 of 36 emission verdicts flip**. Two
+controls ran alongside: the same settings twice give 36/36 identical output, and the frozen
+protocol reproduces M0's recorded replies 36/36.
+
+> **Correction.** An earlier run of this comparison reported 9 emission flips and only
+> 30/36 M0 reproduction. Both were artifacts of the measuring script, which hardcoded its
+> (secret, yardstick) pairs and used `(lion, eagle)`; `D2`'s rotation gives `(lion, bear)`,
+> so 12 trials ran under a system prompt M0 never used. Reading the yardstick from the
+> frozen battery gives the numbers above. The project's own standing lesson, self-inflicted
+> in the tool built to check it: **compute from the artifact, never assume it.** The
+> penalty's *presence* was never in doubt — it is a recorded field of
+> `generation_config` — and the 23/36 generation-difference count is unchanged.
+
 **What it does not threaten.** Probe scores read residuals, which sit *upstream* of the
 logits processor, so `D15`'s statistic is untouched. The yardstick is in context and
 equally penalized, so `D2`'s secrecy-versus-presence contrast and G2's arm (b) are
 controlled for it. It applied uniformly across every tier, arm, split and scale, and M1
-reproduced M0 byte-for-byte under it.
+reproduced M0 byte-for-byte under it — 3,000 of 3,000 with-secret trials.
 
 **What it does mean.** The penalty demotes tokens already present in `input_ids`, and the
 secret is in the system prompt at every step. So part of "the model kept the secret" is

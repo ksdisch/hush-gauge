@@ -51,25 +51,45 @@ undecided gate, not a negative one.
 
 ## Status
 
+**M1 complete, 2026-08-01 — G1 and G2 both FAIL at all three scales, and both are
+pre-committed nulls.** `KICKOFF.md` calls that a passing v1: what this project guards
+against is an *undecided* gate, not a negative one. No bar was re-tuned, the threshold
+protocol's fallback never fired, and every gate's code was frozen in git before any sweep
+produced a result.
+
+The three readouts agree on why. Detection is carried almost entirely by trials where the
+model is **speaking** the secret — recall 0.94 / 0.57 / 0.54 on emitting trials against
+0.10 / 0.07 / 0.09 on non-emitting ones. And on the trials that matter most, where the
+model stays silent under pressure, the secret's direction sits **below** the licensed
+"public word" sitting beside it in the same session — significantly so at 3B. Either
+suppression genuinely makes a licensed word load the workspace more than a suppressed one,
+or the probe statistic measures something other than the probed word's presence; M1 cannot
+separate those and says so. Full curves, both gates, and every pre-declared secondary in
+[`docs/M1-RESULTS.md`](docs/M1-RESULTS.md).
+
 **M0 complete, 2026-07-30 — G0 PASSES on all three scales.** The battery has dynamic range:
 under benign chat with no ask the models sit at the floor, and under multi-turn extraction all
 25 held-out secrets leak, with the difference Newcombe-clean at every scale. Crucially the
 result survives *exposure matching* — a multi-turn trial gets 3× the scored positions of a
 benign one, and the position-matched contrast is clean too, so this is pressure and not
 arithmetic. Full curves, and three caveats that matter more than the headline, in
-[`docs/M0-RESULTS.md`](docs/M0-RESULTS.md). M1 (probe panel + detection) is next.
+[`docs/M0-RESULTS.md`](docs/M0-RESULTS.md).
 
 ## Where things are
 
 - **`docs/KICKOFF.md`** — the approved brief. Source of truth for scope, milestones,
   gates, and risks.
-- **`docs/M0-BRIEF.md`** — M0's start-of-stage brief: its frozen decisions, the
-  design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and INVALID arms.
+- **`docs/M0-BRIEF.md`** / **`docs/M1-BRIEF.md`** — each stage's start-of-stage brief: its
+  frozen decisions, the design-extraction pre-commit, and its gates' byte-frozen
+  `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D14** (M0). Read **D12/D13 before D10/D11** —
-  the older two say why the oracle's boundary rule exists, the newer two say what it does.
+  bars and the battery/split design), **D1–D14** (M0) and **D15–D24** (M1). Read
+  **D12/D13 before D10/D11** — the older two say why the oracle's boundary rule exists, the
+  newer two say what it does.
 - **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that
   bound how they may be read.
+- **`docs/M1-RESULTS.md`** — G1 and G2 decided, the detection tables, every pre-declared
+  secondary, and the deviations M1 owns.
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 
@@ -78,8 +98,10 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
 `uv` (Python 3.12+) manages the venv; this is an application, not a package.
 
 ```sh
-uv run pytest          # the offline suite
-uv run m0_leak_curve.py --help
+uv run pytest          # the offline suite (651 tests)
+uv run python m0_leak_curve.py --help     # M0's emission sweep
+uv run python m1_probe_panel.py --help    # M1's probe sweep with residual capture
+./run_m1_decide.sh 0.5B                   # thresholds -> cells -> WikiText -> G1 -> G2
 ```
 
 No API keys, no `.env` — everything is local. Model weights pull from HuggingFace.

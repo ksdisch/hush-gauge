@@ -5,19 +5,22 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **M1 BRIEF FROZEN, 2026-08-01** — `docs/M1-BRIEF.md` approved by Kyle and
-merged (PR #5) after a six-round adversarial review (F1–F21; zero critical, seven
-should-fixes all fixed and verified in-loop; F19–F21 recorded as nice-to-have follow-ups).
-`D15`–`D24` are frozen and mirrored into `docs/DECISIONS.md`; nothing in M1 has run.
+**Status:** **M1 COMPLETE, 2026-08-01 — G1 and G2 both FAIL at all three scales.** Both
+are **pre-committed nulls**, which `KICKOFF.md` calls a passing v1: the failure mode this
+project guards against is an *undecided* gate, not a negative one. No bar was re-tuned and
+`D21`'s calibration fallback never fired. `D16` held completely — 3,000 of 3,000
+with-secret trials byte-identical to M0. Full curves, both gates, every `D24`/`D17` readout
+and the deviations in `docs/M1-RESULTS.md`.
 **M0 COMPLETE, 2026-07-30 — G0 PASSES on all three scales**: the battery has dynamic range
-(`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, 412 tests
-passing, full curves and caveats in `docs/M0-RESULTS.md`.
+(`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, full curves and
+caveats in `docs/M0-RESULTS.md`. 651 tests passing.
 
-**Next action:** the **M1 build session** — fresh, from the brief
-(`claude --model claude-opus-5 --effort high`): `probe.py`, the frozen panel artifact, the
-capture runner cut from `m0_leak_curve.py`, `detect.py`, thresholds frozen on calibration,
-G1/G2 as code with dry-run INVALID arms, the ≈6–7 h overnight sweep, each gate decided
-once, `docs/M1-RESULTS.md`.
+**Next action:** **two design questions go to a planning session before M2 starts** (both
+in `docs/M1-RESULTS.md`, neither resolvable in a build session): whether `D5` gains a
+numbered amendment now that "greedy" is known to include `repetition_penalty=1.1`, and
+whether G2's pre-registered contrast direction was mis-specified given that the yardstick
+beats the secret at every scale (significantly at 3B). M2 (ablation + preservation battery)
+is unblocked either way — it does not depend on G1 or G2 passing.
 
 ## Purpose
 
@@ -61,7 +64,8 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**Closed — M0 complete, G0 PASSES (`docs/M0-RESULTS.md`).** Kicked off 2026-07-29 from
+**M0 and M1 both closed.** G0 PASSES (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as
+pre-committed nulls (`docs/M1-RESULTS.md`). Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
 J-lens audit brainstorm), picked at that day's backlog-hygiene pass once mute-map
 closed (M4 PASSED 2026-07-29) — the stated precondition for this project's M3 fusion
@@ -86,11 +90,19 @@ inputs.
    2026-08-01**; `D15`–`D24` frozen, PR #5 merged after a six-round adversarial review
    (21 findings, all should-fixes fixed and verified; `F19`–`F21` are open nice-to-have
    follow-ups).
-7. **Build M1** per the brief's deliverables list and run-config note (Opus 5 at high,
-   fresh session from the brief): `probe.py` → `batteries/probe_panel.json` →
-   `m1_probe_panel.py` → `m1_wikitext_rate.py` → `detect.py` → `m1_freeze_thresholds.py` →
-   `gates/g1.py`+`g2.py` → overnight sweep → thresholds → gates once →
-   `docs/M1-RESULTS.md`.
+7. ~~Build M1 per the brief's deliverables list~~ — **done 2026-08-01**; every deliverable
+   built, `batteries/probe_panel.json` frozen, both gates frozen as code with
+   `GATE_WORDING` byte-identical to the brief, the ~5.7 h sweep run on all three subjects,
+   `θ*` frozen on calibration, **G1 and G2 each decided once and both FAIL at every
+   scale** (`docs/M1-RESULTS.md`). 651 tests.
+8. **Two design questions to a planning session before M2** — both in
+   `docs/M1-RESULTS.md`, neither resolvable in a build session: (a) whether `D5` gains a
+   numbered amendment now that "greedy" is known to include `repetition_penalty=1.1`;
+   (b) whether G2's pre-registered contrast direction was mis-specified, given the
+   yardstick beats the secret at every scale (significantly at 3B).
+9. **M2** — ablation + the preservation battery. Unblocked by M1's nulls: G3 asks whether
+   ablating `v_secret` reduces emission, which does not depend on the probe grading as a
+   detector.
 
 ## Boundaries
 
@@ -149,6 +161,18 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
   exposure-matched evidence, and `GATE_WORDING` makes an exposure-only PASS reportable as
   `EXPOSURE-CONFOUNDED`.
 - **Unresolved** — M3 Arm A's pre-registered similarity metric.
+- **Unresolved (M1, 2026-08-01)** — **why the yardstick beats the secret.** At all three
+  scales the licensed word loads the J-lens-readable workspace more than the secret does on
+  certified-silent trials, significantly at 3B (−0.455, Newcombe 95% [−0.654, −0.161]).
+  Either suppression makes a licensed word *more* active than a suppressed one — in which
+  case G2's pre-registered contrast direction was mis-specified — or `D15` is dominated by
+  something other than the probed word's presence. M1 cannot separate them.
+- **Decision needed (M1, 2026-08-01)** — **`D5`'s "greedy" includes
+  `repetition_penalty=1.1`**, a logits processor `do_sample=False` does not disable.
+  Uniform across every M0 and M1 generation, upstream of the probe, and equally applied to
+  the yardstick — but it demotes tokens already in the prompt, and the secret is in the
+  prompt. Changing it would break `D16` and void G0's certification, so nothing was
+  changed. Whether `D5` gains a numbered amendment is Kyle's call.
 - **Fact (K5)** — mute-map hands over **no** off-switch mediating direction; every one
   of its interventions deletes `v_concept` itself. M3 Arm B must construct and validate
   a candidate (e.g. a primed − control late-band contrast vector) with a sham-ablation
@@ -168,6 +192,7 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
 | Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0), D15–D24 (M1) |
 | M0 results | `docs/M0-RESULTS.md` | measurement | the three emission curves, G0 decided, and the caveats that bound how they may be read |
+| M1 results | `docs/M1-RESULTS.md` | measurement | G1 and G2 decided per scale, the detection tables, every `D24`/`D17` readout, the deviations M1 owns, and the `D5` repetition-penalty finding |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
 | M1 start-of-stage brief | `docs/M1-BRIEF.md` | brief | M1's frozen decisions D15–D24: the probe statistic, the re-generation contract, the probe panel, the threshold protocol, G1/G2's byte-frozen `GATE_WORDING` and INVALID arms |
 | Build plan (upstream) | `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` | plan | the pre-made design this brief was synthesized from |
