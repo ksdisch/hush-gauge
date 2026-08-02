@@ -925,6 +925,17 @@ config is what surfaced 3B's 1.05), **assert the resolved per-scale value above,
 abort on drift** — `D16`'s pattern applied to the config. Changing the decode rule is a
 new numbered decision that opens a new certification chain, never a build-session patch.
 
+**What it does not cover.** The three M0 result JSONs' `generation` blocks predate this
+finding and still read `{do_sample: false, max_new_tokens: 64}` — PR #6's documented
+backfill amended the **M1** payloads only. The M0 payloads are **deliberately left
+un-backfilled**: their file SHA256s are recorded as `m0_reference` in the M1 payloads and
+recomputed by both M1 gates on every run (`gates/g1.py:186-192`; g2 likewise), so editing
+them now would sever exactly the certification chain the M1 backfill preserved. The
+normative record of M0's decode rule is this entry plus the annotation in
+`docs/M0-RESULTS.md` §Provenance — **never read a decode rule off an M0 artifact's
+`generation` block**, and any M2 identity check against M0's recorded replies (e.g. a
+λ = 0 arm) takes its decode rule from here.
+
 **Rejected:** re-running M0+M1 under plain argmax (a new milestone with new gates on a
 second substrate, ~6 h+ of sweeps, off M2's critical path — the 6/36 flip measurement
 already bounds the effect descriptively at 0.5B); leaving the finding as a recorded
@@ -946,8 +957,9 @@ workspace-active" account:
 1. **The secret never separates from the no-secret arm** on certified-silent trials —
    CI-null with inconsistent signs at every scale (−0.040 / +0.120 / −0.182). Active
    suppression of a silent secret would push it *below* the word-absent baseline;
-   nothing does. Presence-in-context contributes nothing the probe can see on silent
-   trials, in either direction.
+   no scale does so with a CI excluding zero, and the signs are inconsistent.
+   Presence-in-context contributes nothing the probe can see on silent trials, in
+   either direction.
 2. **`D24`.6 is the tell.** Restricted to trials where the yardstick was *also* silent,
    arm (b) collapses from 0.52 / 0.52 / 0.68 to **3/24 / 4/25 / 2/13** (descriptive,
    thin, 3B below floor — but the collapse is large and uniform). The yardstick's edge is

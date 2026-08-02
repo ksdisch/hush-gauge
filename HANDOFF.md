@@ -33,8 +33,10 @@ settled by Kyle and recorded in `docs/DECISIONS.md`:**
   named validity caveat anchored at `D26`.**
 
 Annotations landed at every point a reader could hit the stale state — `D5` and the M1
-execution record in `DECISIONS.md`, both open flags in `docs/M1-RESULTS.md` — plus
-`CLAUDE.md` / `PROJECT.md` / `README.md` propagation.
+execution record in `DECISIONS.md`, both open flags in `docs/M1-RESULTS.md`, and
+`docs/M0-RESULTS.md`'s cross-scale readings and Provenance (the doc whose headline claims
+carry `D25`'s cross-scale caveat) — plus `CLAUDE.md` / `PROJECT.md` / `README.md`
+propagation.
 
 ### Earlier — M1 execution and results (2026-08-01)
 
@@ -394,7 +396,9 @@ inherits from the planning session:
   λ = 0, so the λ = 0 arm could serve as M2's `D16`-analogue substrate-identity check —
   byte-identity against M0's recorded replies would certify the substrate and the
   carried-over decode rule in one check. Whether the ablation hook at λ = 0 is bitwise
-  inert is for the brief to pin, not assume.
+  inert is for the brief to pin, not assume. The decode rule for that check comes from
+  `D25`, **never from an M0 artifact's `generation` block** — those predate the finding
+  and are deliberately un-backfilled (see `D25`'s "what it does not cover").
 - **Design-extraction is the free pre-commit step:** the dose operator and preservation
   conventions (WikiText perplexity, benign QA, refusal-coherence, the norm-matched
   random-direction control) from dim-stage/mute-map, with file:line sources.
@@ -424,6 +428,8 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
   `D5` and on the M1 execution record's two open paragraphs.
 - `docs/M1-RESULTS.md` — annotations only: the repetition-penalty section's open flag →
   `D25`; the yardstick Unresolved section → `D26`.
+- `docs/M0-RESULTS.md` — annotations only: the cross-scale readings (§2/§3) and the
+  Provenance section → `D25`, including the deliberate non-backfill of the M0 payloads.
 - `CLAUDE.md`, `PROJECT.md`, `README.md`, `HANDOFF.md` — propagated.
 
 **M0's full deliverable set** (three merged PRs — #2 oracle, #3 artifacts + gate + runner,
