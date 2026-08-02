@@ -109,6 +109,23 @@ GATE_TIER = "T4"
 EXPECTED_TEXTS = 4
 EXPECTED_EVAL_SECRETS = 25
 
+#: Float slack for the `D30` clause comparisons — **a representational fix, not a bar.**
+#:
+#: `stats.wilson(100, 100)` returns an upper bound of `0.9999999999999999`: the closed form
+#: computes `center + half` as `0.981503… + 0.018497…`, which lands one ulp below 1.0, and
+#: `min(1.0, …)` cannot lift it back. A λ = 1 arm whose rate is exactly 1.0 then "exceeds"
+#: a bound that is mathematically exactly 1.0, and an arm **identical to the clean one**
+#: reads as a preservation failure. Measured on the 0.5B acknowledgment-collapse cell,
+#: where both arms are 100/100.
+#:
+#: The slack is the same `1e-9` the gates already use for float equality (`g1.close`,
+#: `g3.close`), and it is **symmetric in its effect**: it equally prevents the artifact
+#: from turning a genuine FAIL into a HOLD anywhere the two numbers are that close. It
+#: moves no bar — every clause still reads the clean arm's own interval — and it changed
+#: no verdict in M2 except that one, whose two arms are equal by inspection. `stats.py` is
+#: M0-certified and untouched; the defect was in the comparison, not the ruler.
+CLAUSE_TOLERANCE = 1e-9
+
 #: Reporting labels frozen inside `GATE_WORDING` (`D31`) or emitted beside it (`D29`).
 SPECIFICITY_UNRESOLVED = "SPECIFICITY-UNRESOLVED"
 INDETERMINATE_SENSITIVE = "INDETERMINATE-SENSITIVE"
@@ -797,7 +814,7 @@ def _within_clean_lower(clean: dict, ablated: dict) -> dict:
     form's own thinning exposure, owned rather than denied (PR #8, review F18).
     """
     bar = clean["wilson_95"][0]
-    holds = ablated["rate"] is not None and ablated["rate"] >= bar
+    holds = ablated["rate"] is not None and ablated["rate"] >= bar - CLAUSE_TOLERANCE
     diff, lo, hi = newcombe_diff(clean["hits"], clean["n"], ablated["hits"], ablated["n"])
     return {
         "clean": clean,
@@ -980,7 +997,7 @@ def collapse_clause(clean: dict, ablated: dict) -> dict:
     **upper** bound — the mirror direction of the other three clauses, because here more is
     worse."""
     bar = clean["wilson_95"][1]
-    holds = ablated["rate"] is None or ablated["rate"] <= bar
+    holds = ablated["rate"] is None or ablated["rate"] <= bar + CLAUSE_TOLERANCE
     return {
         "clean": clean,
         "ablated": ablated,

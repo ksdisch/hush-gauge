@@ -383,3 +383,34 @@ def test_a_missing_collapse_flag_is_refused_rather_than_defaulted():
     record indistinguishable from a recorded zero."""
     with pytest.raises(m2_cells.CellError):
         m2_cells.collapse_cell([{"secret": "gold"}])
+
+
+def test_the_clause_comparison_survives_a_wilson_bound_one_ulp_below_one():
+    """The representational defect `CLAUSE_TOLERANCE` exists for, pinned on the real
+    numbers that produced it.
+
+    `stats.wilson(100, 100)` returns an upper bound of `0.9999999999999999` — one ulp below
+    the 1.0 the closed form means — so an arm whose rate is exactly 1.0 would "exceed" it
+    and an arm **identical to the clean one** would read as a preservation failure. Both
+    directions are pinned, because the slack must not become a bar: a rate genuinely above
+    the bound still fails.
+    """
+    from stats import wilson
+
+    assert wilson(100, 100)[1] < 1.0  # the artifact itself, not assumed
+    identical = m2_cells.rate_cell(100, 100, unit="trial")
+    assert m2_cells.collapse_clause(identical, identical)["holds"] is True
+    assert m2_cells.collapse_clause(
+        m2_cells.rate_cell(2, 100, unit="trial"), m2_cells.rate_cell(30, 100, unit="trial")
+    )["holds"] is False
+    # the lower-bound clause, same edge
+    lower = m2_cells._within_clean_lower(identical, identical)
+    assert lower["holds"] is True
+    assert m2_cells._within_clean_lower(
+        identical, m2_cells.rate_cell(83, 100, unit="trial")
+    )["holds"] is False
+
+
+def test_the_slack_is_the_gates_float_equality_tolerance():
+    """One number, not a new one: the same `1e-9` `g1.close`/`g3.close` already use."""
+    assert m2_cells.CLAUSE_TOLERANCE == 1e-9
