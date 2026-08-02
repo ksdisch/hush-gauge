@@ -346,9 +346,8 @@ by the brief's own standing rule, and neither can be settled by more measurement
 
 1. **Does `D5` gain a numbered amendment?** "Greedy" leaves a `repetition_penalty` live —
    **1.1 at 0.5B/1.5B, 1.05 at 3B**, so the decode rule is not even constant across the
-   three subjects.
-   Uniform, upstream of the probe, equally applied to the yardstick — but it demotes
-   in-prompt tokens and the secret is in the prompt. Nothing was changed, because changing
+   three subjects. Uniform *within* each scale, upstream of the probe, and equally applied
+   to the yardstick — but it demotes in-prompt tokens and the secret is in the prompt. Nothing was changed, because changing
    it breaks `D16` and voids G0. Options are (a) amend `D5` to record the decode rule as
    frozen-and-owned, (b) re-run M0 and M1 under plain argmax as a new milestone, or
    (c) leave it as a recorded property. **(a) is the cheap honest one**; (b) costs another

@@ -21,12 +21,13 @@ be the token that step actually emitted.
 **What writing this test found.** The first version compared the recomputed argmax against
 the emitted token directly and failed on 2 of 12 steps — by 1.60 and 0.26 logits, not by
 floating-point noise, with the other 10 bit-identical. The cause is not the alignment:
-Qwen2.5-Instruct ships `repetition_penalty: 1.1` in its `generation_config`, and a
-repetition penalty is a **logits processor**, not a sampling parameter, so it applies under
-`do_sample=False` as well. The two disagreeing steps were exactly the tokens already in
-context. That is a property of `D5`'s inherited generation call, discovered here and
-recorded in `docs/M1-RESULTS.md`; it is uniform across every tier, arm and scale, and M1
-reproduces M0 byte-for-byte under it. Nothing about it is changed — changing the decode
+Qwen2.5 ships a `repetition_penalty` in its `generation_config`, and a repetition penalty
+is a **logits processor**, not a sampling parameter, so it applies under `do_sample=False`
+as well. The two disagreeing steps were exactly the tokens already in context. That is a
+property of `D5`'s inherited generation call, discovered here and recorded in
+`docs/M1-RESULTS.md`. The value is **1.1 at 0.5B/1.5B and 1.05 at 3B** — uniform across
+every tier, arm, text and split *within* a scale, not between — and M1 reproduces M0
+byte-for-byte under it. Nothing about it is changed — changing the decode
 rule would invalidate `D16` and G0.
 
 So the alignment is proven twice: once against clean argmax ground truth with the penalty
@@ -98,7 +99,8 @@ def test_the_captured_row_is_the_one_that_produced_the_token(subject):
 
 def test_the_alignment_holds_under_the_sweeps_own_generation_settings(subject):
     """The same proof through the call the sweep actually makes — `do_sample=False` with
-    the model's `generation_config` untouched, so `repetition_penalty=1.1` is live.
+    the model's `generation_config` untouched, so its `repetition_penalty` is live (1.1 for
+    this test's 0.5B subject; 1.05 at 3B — the value is read, never assumed).
 
     Applying that penalty to the recomputed logits reproduces the emitted token at every
     step. Two things follow: the alignment is right under the real settings, and the
@@ -111,8 +113,8 @@ def test_the_alignment_holds_under_the_sweeps_own_generation_settings(subject):
 
     penalty = model.generation_config.repetition_penalty
     assert penalty and penalty != 1.0, (
-        "Qwen2.5-Instruct ships repetition_penalty=1.1; if that ever stops being true this "
-        "test is checking nothing and D5's 'greedy' would mean plain argmax after all"
+        f"{MODEL} ships a repetition_penalty (1.1 here, 1.05 at 3B); if that ever stops "
+        "being true this test is checking nothing and D5's 'greedy' would mean plain argmax"
     )
     processor = transformers.RepetitionPenaltyLogitsProcessor(penalty)
     predicted = []

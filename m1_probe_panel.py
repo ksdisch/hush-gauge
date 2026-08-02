@@ -445,8 +445,9 @@ def main() -> int:
             "sha256": sidecar_sha,
         },
         # `repetition_penalty` is recorded because `do_sample=False` does **not** disable
-        # it: a repetition penalty is a logits processor, and Qwen2.5-Instruct ships 1.1 in
-        # its `generation_config`. Writing `{do_sample: False, max_new_tokens: 64}` alone
+        # it: a repetition penalty is a logits processor, and Qwen2.5 ships one in its
+        # `generation_config` — 1.1 at 0.5B/1.5B, 1.05 at 3B, which is exactly why this is
+        # read rather than hard-coded. Writing `{do_sample: False, max_new_tokens: 64}` alone
         # says "greedy" unqualified, which `docs/M1-RESULTS.md` spends a section calling
         # imprecise — a record standing in for the thing it approximates, this project's
         # own recurring defect class, in the very artifact that documented it. Read from the
