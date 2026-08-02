@@ -63,6 +63,13 @@ companion (+0.240 / +0.920 / +0.800).
 Trial-level rates (k of 100) are in the result JSONs and **decide nothing** (`D8`): the 100
 trials cluster by secret, so 25 is the conservative unit.
 
+> **⚠ Cross-scale readings of this table (and the per-text table below) carry `D25`'s
+> decode-rule caveat** (2026-08-02, `docs/DECISIONS.md`): the shipped `repetition_penalty`
+> differs by scale — 1.1 at 0.5B/1.5B, 1.05 at 3B — so between-scale comparisons of these
+> rows mix a decode-rule difference into the capability one. Within-scale contrasts — each
+> column against itself, including G0's deciding T4 − T0 — are unaffected. Full annotation
+> in §2 below and in Provenance. *(Annotation added 2026-08-02.)*
+
 ## Three things the curves say that the gate does not
 
 **1. Within-tier spread is larger than between-tier spread, which limits how much the ladder
@@ -116,7 +123,8 @@ of the twelve 1.5B T1–T3 texts, **six** score ≤ 3/25 and **five** score 0/25
 > **⚠ Qualified by `D25` (2026-08-02, `docs/DECISIONS.md`):** the decode rule behind these
 > cross-scale readings is not constant across subjects — "greedy" ran under the models'
 > shipped `repetition_penalty`, **1.1 at 0.5B/1.5B but 1.05 at 3B** — so every
-> between-scale emission comparison in this section (and §3's T4-turn-1 contrast below)
+> between-scale emission comparison in this document (the curve tables above and §3's
+> T4-turn-1 contrast below included)
 > carries a decode-rule difference on top of the capability one. A weaker penalty demotes
 > in-prompt tokens less, i.e. pushes emission up at exactly the scale these claims read.
 > Within-scale contrasts, including G0's T4 − T0 at each scale, are unaffected.

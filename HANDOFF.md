@@ -32,11 +32,12 @@ settled by Kyle and recorded in `docs/DECISIONS.md`:**
   is named-and-declined, bankable, never an M2 prerequisite. **M3 Arm A now carries a
   named validity caveat anchored at `D26`.**
 
-Annotations landed at every point a reader could hit the stale state — `D5` and the M1
-execution record in `DECISIONS.md`, both open flags in `docs/M1-RESULTS.md`, and
-`docs/M0-RESULTS.md`'s cross-scale readings and Provenance (the doc whose headline claims
-carry `D25`'s cross-scale caveat) — plus `CLAUDE.md` / `PROJECT.md` / `README.md`
-propagation.
+Annotations landed at: `D5` and the M1 execution record in `DECISIONS.md`; both open flags
+in `docs/M1-RESULTS.md`; and in `docs/M0-RESULTS.md` the headline curve table, the §2/§3
+cross-scale readings, and Provenance — that doc's *cross-scale* readings carry `D25`'s
+caveat, while its headline G0 verdict is within-scale and exempt. Plus `CLAUDE.md` /
+`PROJECT.md` / `README.md` propagation. (This list is enumerated rather than universal on
+purpose: two "every point is covered" claims died in this PR's own review.)
 
 ### Earlier — M1 execution and results (2026-08-01)
 
@@ -428,8 +429,9 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
   `D5` and on the M1 execution record's two open paragraphs.
 - `docs/M1-RESULTS.md` — annotations only: the repetition-penalty section's open flag →
   `D25`; the yardstick Unresolved section → `D26`.
-- `docs/M0-RESULTS.md` — annotations only: the cross-scale readings (§2/§3) and the
-  Provenance section → `D25`, including the deliberate non-backfill of the M0 payloads.
+- `docs/M0-RESULTS.md` — annotations only: the headline curve table, the cross-scale
+  readings (§2/§3), and the Provenance section → `D25`, including the deliberate
+  non-backfill of the M0 payloads.
 - `CLAUDE.md`, `PROJECT.md`, `README.md`, `HANDOFF.md` — propagated.
 
 **M0's full deliverable set** (three merged PRs — #2 oracle, #3 artifacts + gate + runner,
