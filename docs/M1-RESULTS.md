@@ -233,6 +233,15 @@ rule — *"if a gate fails in a way that questions the design rather than the mo
 that decision to a Fable session"* — it is recorded here and not resolved in this build
 session.
 
+> **⚠ Resolved 2026-08-02 as `D26`** (`docs/DECISIONS.md`): the contrast direction stands
+> and no G2′ is pre-registered. The frozen data favor the second reading for the secret
+> side — on non-emitting trials the probe fires at its own false-alarm rate
+> (0.103 / 0.068 / 0.088 against FPR 0.132 / 0.074 / 0.098) — and attribute the
+> yardstick's edge to licensed speech being *spoken*: `D24`.6's both-silent restriction
+> collapses arm (b) from 0.52 / 0.52 / 0.68 to 3/24 / 4/25 / 2/13, and the scale trend
+> tracks the yardstick's emission fraction (30% / 40% / 58%). M2 inherits the causal
+> framing; M3 Arm A inherits a named validity caveat. *(Annotation added 2026-08-02.)*
+
 ## `D17`'s owned split leak, measured rather than argued
 
 The brief kept `D17`'s cross rotation crossing the 25/25 split, named the bias direction
@@ -305,6 +314,12 @@ Any write-up saying "greedy decode" without qualification is imprecise.
 reproduce M0 byte-for-byte, `D16` would abort, and G0's certification would no longer
 transfer to the substrate M1 reads. Re-running M0 under a different decode rule is a new
 numbered decision, not a build-session patch. **Flagged to Kyle 2026-08-01; open.**
+
+> **⚠ Resolved 2026-08-02 — `D5` is amended by `D25`** (`docs/DECISIONS.md`): the decode
+> rule is frozen as-run and owned — greedy under the shipped `generation_config`, penalty
+> 1.1 / 1.1 / 1.05, cross-scale caveat named — and M2+ runners must read the value from
+> `model.generation_config` and assert the per-scale figure. Nothing re-ran; no verdict
+> changed. *(Annotation added 2026-08-02; the section above is as-run.)*
 
 **How it was found.** By writing the test for `D15`'s produced-from alignment. The first
 version compared the recomputed argmax of each captured residual against the emitted token

@@ -1,9 +1,45 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-01 (**M1 COMPLETE — G1 and G2 both FAIL at all three scales, both
-pre-committed nulls**; two design questions go to a planning session before M2)_
+_Last updated: 2026-08-02 (**planning session COMPLETE — `D25` and `D26` decided**; M1's
+two open design questions are closed and `docs/M2-BRIEF.md` is the next move)_
 
 ## What was just done
+
+**The planning session M1 routed its two design questions to ran 2026-08-02. Both are
+settled by Kyle and recorded in `docs/DECISIONS.md`:**
+
+- **`D25` — `D5` is amended: the decode rule is frozen as-run and owned.** "Greedy" means
+  greedy under the model's shipped `generation_config`, whose one live logits processor
+  under `do_sample=False` is `repetition_penalty` — **1.1 (0.5B), 1.1 (1.5B), 1.05 (3B)**,
+  verified from the three cached configs during the session (the other shipped fields are
+  sampling parameters `do_sample=False` disables). Owned: cross-scale emission readings
+  carry the decode-rule difference, and non-emission-defined populations are partly
+  decode-rule products. Bound forward: M2+ runners read the value from
+  `model.generation_config`, assert the per-scale figure, and abort on drift — `D16`'s
+  pattern applied to the config. Nothing re-ran; no verdict changed. Rejected: a
+  plain-argmax re-run (a new milestone on a second substrate, off M2's critical path) and
+  leaving it a recorded property (leaves `D5` citable-as-written while known-imprecise).
+- **`D26` — G2's contrast direction was NOT mis-specified; the null stands honest.** The
+  frozen data resolve M1's Unresolved item: (1) the secret never separates from the
+  no-secret arm on certified-silent trials — CI-null, inconsistent signs, so no
+  silent-presence signal in either direction; (2) `D24`.6's both-silent restriction
+  collapses arm (b) from 0.52 / 0.52 / 0.68 to **3/24 / 4/25 / 2/13** — the yardstick's
+  edge is carried by trials where it was *spoken* (emitted in 30% / 40% / 58% of the
+  population), and the scale trend tracks that fraction; (3) non-emitting recall ≈ FPR at
+  every scale (0.103 / 0.068 / 0.088 vs 0.132 / 0.074 / 0.098) — the probe fires at its
+  false-alarm rate on silent trials. No re-signed G2′ (post-hoc, and its only available
+  "pass" is already established by `D24`.3); the discriminating licensing-flip experiment
+  is named-and-declined, bankable, never an M2 prerequisite. **M3 Arm A now carries a
+  named validity caveat anchored at `D26`.**
+
+Annotations landed at: `D5` and the M1 execution record in `DECISIONS.md`; both open flags
+in `docs/M1-RESULTS.md`; and in `docs/M0-RESULTS.md` the headline curve table, the §2/§3
+cross-scale readings, and Provenance — that doc's *cross-scale* readings carry `D25`'s
+caveat, while its headline G0 verdict is within-scale and exempt. Plus `CLAUDE.md` /
+`PROJECT.md` / `README.md` propagation. (This list is enumerated rather than universal on
+purpose: two "every point is covered" claims died in this PR's own review.)
+
+### Earlier — M1 execution and results (2026-08-01)
 
 **M1 is COMPLETE. G1 and G2 were each decided once per scale and both FAIL at 0.5B, 1.5B
 and 3B — every one a pre-committed null**, which `KICKOFF.md` calls a passing v1. No bar
@@ -29,7 +65,7 @@ emissions (21/34/29), `D24`.1's T2 populations (78/81/26 from 25/25/21), `D17`'s
 exclusion (1/0/0 of 250), and `D24`.6's 21-of-50 restriction at 3B. Four are pinned as gate
 tests. **`D16` held completely: 3,000 of 3,000 with-secret trials byte-identical to M0.**
 
-### Two things that need Kyle, and neither is a build-session call
+### Two things that need Kyle, and neither is a build-session call *(both settled 2026-08-02: `D25`, `D26`)*
 
 1. **`D5`'s "greedy" leaves a `repetition_penalty` live — and not uniformly.** Qwen2.5
    ships it in `generation_config`; a repetition penalty is a *logits processor*, not a
@@ -273,6 +309,10 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
+**The 2026-08-02 planning session is complete: `D25` and `D26` are recorded, every open M1
+flag is annotated, and `D1`–`D26` are settled.** M2 is unblocked and next, opening with
+`docs/M2-BRIEF.md`.
+
 **M1 is complete and both its gates are decided.** `docs/M1-RESULTS.md` is normative for
 what M1 found; `docs/M1-BRIEF.md` stays normative for how it was specified, and
 `docs/DECISIONS.md` carries `D15`–`D24` plus an execution-record entry that adds **no new
@@ -341,23 +381,28 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**A planning session, not a build session.** Two questions M1 raised are design questions
-by the brief's own standing rule, and neither can be settled by more measurement:
+**Write `docs/M2-BRIEF.md`** — M2's start-of-stage brief (ablation + the preservation
+battery), freezing its decisions before any run, per the house methodology. What the brief
+inherits from the planning session:
 
-1. **Does `D5` gain a numbered amendment?** "Greedy" leaves a `repetition_penalty` live —
-   **1.1 at 0.5B/1.5B, 1.05 at 3B**, so the decode rule is not even constant across the
-   three subjects. Uniform *within* each scale, upstream of the probe, and equally applied
-   to the yardstick — but it demotes in-prompt tokens and the secret is in the prompt. Nothing was changed, because changing
-   it breaks `D16` and voids G0. Options are (a) amend `D5` to record the decode rule as
-   frozen-and-owned, (b) re-run M0 and M1 under plain argmax as a new milestone, or
-   (c) leave it as a recorded property. **(a) is the cheap honest one**; (b) costs another
-   ~6 h sweep plus a G0 re-decision and would invalidate the current certification chain.
-2. **Was G2's contrast direction mis-specified?** The yardstick beats the secret at every
-   scale. If licensed speech is *supposed* to load the workspace more, then G2 as written
-   can never pass and M2/M3 inherit a mis-signed hypothesis.
-
-Then **M2** — ablation and the preservation battery — opening with `docs/M2-BRIEF.md` and
-freezing its decisions before any run, per the house methodology.
+- **`D26`'s causal framing:** G3 asks whether ablating `v_secret` reduces emission under
+  pressure while the model stays coherent — a claim about a direction, not about the probe
+  grading as a detector. A direction that fails as a detector may still be causally
+  load-bearing; if G3 passes, that tension is itself the finding.
+- **`D25`'s decode rule:** M2's runner (cut from `m1_probe_panel.py`) inherits greedy
+  under the shipped `generation_config` verbatim, reads `repetition_penalty` from
+  `model.generation_config`, asserts the per-scale value (1.1 / 1.1 / 1.05), and aborts
+  on drift.
+- **One free design observation for the brief to evaluate:** K6's dose set includes
+  λ = 0, so the λ = 0 arm could serve as M2's `D16`-analogue substrate-identity check —
+  byte-identity against M0's recorded replies would certify the substrate and the
+  carried-over decode rule in one check. Whether the ablation hook at λ = 0 is bitwise
+  inert is for the brief to pin, not assume. The decode rule for that check comes from
+  `D25`, **never from an M0 artifact's `generation` block** — those predate the finding
+  and are deliberately un-backfilled (see `D25`'s "what it does not cover").
+- **Design-extraction is the free pre-commit step:** the dose operator and preservation
+  conventions (WikiText perplexity, benign QA, refusal-coherence, the norm-matched
+  random-direction control) from dim-stage/mute-map, with file:line sources.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
@@ -377,6 +422,17 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 - **No blockers.** Nothing external is waiting on anything.
 
 ## Files touched recently
+
+**The planning session's deliverable set (2026-08-02):**
+
+- `docs/DECISIONS.md` — new planning-session section with `D25` and `D26`; annotations on
+  `D5` and on the M1 execution record's two open paragraphs.
+- `docs/M1-RESULTS.md` — annotations only: the repetition-penalty section's open flag →
+  `D25`; the yardstick Unresolved section → `D26`.
+- `docs/M0-RESULTS.md` — annotations only: the headline curve table, the cross-scale
+  readings (§2/§3), and the Provenance section → `D25`, including the deliberate
+  non-backfill of the M0 payloads.
+- `CLAUDE.md`, `PROJECT.md`, `README.md`, `HANDOFF.md` — propagated.
 
 **M0's full deliverable set** (three merged PRs — #2 oracle, #3 artifacts + gate + runner,
 #4 results):
@@ -402,18 +458,17 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 
 ---
 
-**Run-config note:** the next session is a **planning** session, not a build one — the two
-open questions are design calls with real tradeoffs (amend `D5` vs re-run under plain
-argmax; whether G2's contrast is mis-signed), and both feed `docs/M2-BRIEF.md`. Start it
-fresh from `docs/M1-RESULTS.md` and `docs/M1-BRIEF.md`, never from this session's
-transcript, with the M0 reading order (`D12`/`D13`/`D14` before `D10`/`D11`) still in force.
+**Run-config note:** the next session writes **`docs/M2-BRIEF.md`** — judgment-first
+design work (G3's arms and INVALID conditions, the preservation battery's bars, the λ = 0
+identity check, the random-direction control), so it stays on **Fable 5 at xhigh**. Start
+it fresh from `docs/KICKOFF.md` §Milestone 2, `docs/M1-RESULTS.md`, and `D25`/`D26` in
+`docs/DECISIONS.md`, never from this session's transcript, with the M0 reading order
+(`D12`/`D13`/`D14` before `D10`/`D11`) still in force. Launch:
+`claude --model claude-fable-5 --effort xhigh`.
 
-Recommended model + effort: **Fable 5 at xhigh** — judgment-first work on two bounded but
-genuinely hard calls, one of which can invalidate a certification chain if decided
-carelessly. Launch: `claude --model claude-fable-5 --effort xhigh`.
-
-The build that follows it — M2's ablation runners and G3 — is well-specified once the brief
-freezes, and belongs on **Opus 5 at high** in its own fresh session.
+The build that follows the frozen brief — M2's ablation runners and G3 — is well-specified
+once the brief freezes, and belongs on **Opus 5 at high** in its own fresh session:
+`claude --model claude-opus-5 --effort high`.
 
 Two standing rules carry forward, both earned in M0 and both used in M1: if a gate fails in
 a way that questions the *design* rather than the models, bounce that decision to a Fable

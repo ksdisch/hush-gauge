@@ -1,7 +1,8 @@
 # DECISIONS.md — hush-gauge
 
 Frozen decisions, newest section last. `K*` = settled at the kickoff interview
-(2026-07-29); `D*` = settled in a milestone start-of-stage brief. A decision here is
+(2026-07-29); `D*` = settled in a milestone start-of-stage brief or a recorded planning
+session. A decision here is
 settled — changing one is a new numbered entry that says what it supersedes and why,
 never an edit in place.
 
@@ -278,6 +279,12 @@ The 10 spares are labelled in the artifact as G0's pre-declared revision pool. U
 spare pool is `Egypt, July, shark, Mercury, flute, bronze, opal, chicken, bee, Thursday`.
 
 ## D5 — Generation settings
+
+> **⚠ Qualified by `D25` (2026-08-02):** "greedy" here ran under the models' shipped
+> `generation_config`, whose live `repetition_penalty` (1.1 at 0.5B/1.5B, 1.05 at 3B)
+> `do_sample=False` does not disable. `D5`'s selections stand unchanged; `D25` is
+> normative for what the decode rule *is*. *(Annotation only, per the
+> never-edit-a-settled-entry rule.)*
 
 **Decided 2026-07-29.** `do_sample=False` (greedy), `max_new_tokens=64` **per turn** —
 room for a rambling roleplay or injection response to reach a leak while keeping the
@@ -859,6 +866,9 @@ is partly a product of the decode rule. **Changing it would break `D16` and void
 certification, so nothing was changed.** Whether `D5` gains a numbered amendment is Kyle's
 call; recorded here as open, with the full write-up in `docs/M1-RESULTS.md`.
 
+> **⚠ Resolved by `D25` (2026-08-02):** the decode rule is frozen as-run and owned;
+> nothing re-ran and no verdict changed. *(Annotation added 2026-08-02.)*
+
 **One question M1 raises about its own design, bounced rather than settled.** At all three
 scales the yardstick arm exceeds the secret arm on certified-silent trials — significantly
 at 3B (−0.455, Newcombe 95% [−0.654, −0.161], excludes zero). Either suppression genuinely
@@ -866,3 +876,114 @@ makes a licensed word load the workspace more than a suppressed one, in which ca
 pre-registered contrast direction was mis-specified, or `D15` is dominated by something
 other than the probed word's presence. M1 cannot separate them, and `M1-BRIEF.md`'s standing
 rule sends a design question to a planning session rather than a build session. **Unresolved.**
+
+> **⚠ Resolved by `D26` (2026-08-02):** the contrast direction stands; the yardstick's
+> edge is attributed to licensed speech being *spoken*, not to silent licensing.
+> *(Annotation added 2026-08-02.)*
+
+---
+
+# Planning session (2026-08-02) — closing M1's two open design questions
+
+*Both settled by Kyle 2026-08-02, at the planning session `HANDOFF.md` pre-registered —
+the first entries recorded outside a start-of-stage brief, because both are design calls
+`M1-BRIEF.md`'s standing rule routed out of the build session and both had to close before
+`docs/M2-BRIEF.md` opens. Full evidence base: `docs/M1-RESULTS.md`.*
+
+## D25 — D5's decode rule, resolved and owned: greedy under the shipped repetition penalty
+
+**Decided 2026-08-02 by Kyle.** Qualifies `D5` — supersedes its unqualified "greedy"
+label; `D5`'s selections (`do_sample=False`, `max_new_tokens=64` per turn) are unchanged,
+and **nothing re-runs**: no gate verdict, artifact, or certification is touched.
+
+**The rule.** `D5`'s generation is HF `generate` with `do_sample=False`,
+`max_new_tokens=64` per turn, **under the model's shipped `generation_config`** — whose
+one live logits processor under `do_sample=False` is `repetition_penalty`: **1.1 (0.5B),
+1.1 (1.5B), 1.05 (3B)**. Verified from the three cached configs (snapshots `7ae5576`,
+`989aa79`, `aa8e725`): beyond the penalty they carry only sampling parameters
+(`temperature`, `top_p`, `top_k`, `do_sample: true`) that the runner's `do_sample=False`
+disables, plus token ids. Every M0 and M1 generation ran under this rule; it is frozen as
+the study's decode rule.
+
+**What it owns** (measured in `docs/M1-RESULTS.md`):
+
+- The penalty demotes tokens already in `input_ids` and the secret is in the system
+  prompt at every step, so part of "the model kept the secret" is "the decode rule
+  discouraged repeating a context token" — G2's certified-silent population, and any
+  future population defined by non-emission, is partly a product of the decode rule.
+- The value differs between scales, so **cross-scale emission comparisons carry the
+  decode-rule difference**. Every gated comparison is within-scale and unaffected; probe
+  scores read residuals upstream of the logits processor and are untouched.
+- Write-ups say "greedy under the shipped repetition penalty," never unqualified
+  "greedy."
+- Magnitude at 0.5B, on 36 real battery trials: 23/36 generations differ without the
+  penalty; 6/36 emission verdicts flip.
+
+**What it binds forward.** M2+ runners inherit the rule verbatim: read
+`repetition_penalty` from `model.generation_config` (never hard-code it — reading the
+config is what surfaced 3B's 1.05), **assert the resolved per-scale value above, and
+abort on drift** — `D16`'s pattern applied to the config. Changing the decode rule is a
+new numbered decision that opens a new certification chain, never a build-session patch.
+
+**What it does not cover.** The three M0 result JSONs' `generation` blocks predate this
+finding and still read `{do_sample: false, max_new_tokens: 64}` — PR #6's documented
+backfill amended the **M1** payloads only. The M0 payloads are **deliberately left
+un-backfilled**: their file SHA256s are recorded as `m0_reference` in the M1 payloads and
+recomputed by both M1 gates on every run (`gates/g1.py:186-192`; g2 likewise), so editing
+them now would sever exactly the certification chain the M1 backfill preserved. The
+normative record of M0's decode rule is this entry plus the annotation in
+`docs/M0-RESULTS.md` §Provenance — **never read a decode rule off an M0 artifact's
+`generation` block**, and any M2 identity check against M0's recorded replies (e.g. a
+λ = 0 arm) takes its decode rule from here.
+
+**Rejected:** re-running M0+M1 under plain argmax (a new milestone with new gates on a
+second substrate, ~6 h+ of sweeps, off M2's critical path — the 6/36 flip measurement
+already bounds the effect descriptively at 0.5B); leaving the finding as a recorded
+property (leaves `D5` citable-as-written while known-imprecise, and hands M2's build
+session a footnote instead of a frozen rule).
+
+## D26 — G2's contrast direction stands; the yardstick's edge is licensed speech being spoken
+
+**Decided 2026-08-02 by Kyle.** Closes M1's Unresolved item ("why the yardstick beats
+the secret"). G2's pre-registered contrast direction was **not mis-specified**; its FAIL
+stands as an honest pre-committed null, and **no re-signed or two-sided G2′ is
+pre-registered.**
+
+**The resolution (Inference, from the frozen data — no new run).** Three readouts,
+all computed in `docs/M1-RESULTS.md`, favor the "`D15` reads speech and word identity,
+not silent presence" account over the "suppression makes a licensed word more
+workspace-active" account:
+
+1. **The secret never separates from the no-secret arm** on certified-silent trials —
+   CI-null with inconsistent signs at every scale (−0.040 / +0.120 / −0.182). Active
+   suppression of a silent secret would push it *below* the word-absent baseline;
+   no scale does so with a CI excluding zero, and the signs are inconsistent.
+   Presence-in-context contributes nothing the probe can see on silent trials, in
+   either direction.
+2. **`D24`.6 is the tell.** Restricted to trials where the yardstick was *also* silent,
+   arm (b) collapses from 0.52 / 0.52 / 0.68 to **3/24 / 4/25 / 2/13** (descriptive,
+   thin, 3B below floor — but the collapse is large and uniform). The yardstick's edge is
+   carried by the trials where it was spoken — it was emitted in 30% / 40% / 58% of the
+   population, and the probe reads speech (`D24`.3). The scale trend (−0.200 → −0.455)
+   tracks that emission fraction at least as well as it tracks capability.
+3. **On non-emitting present trials the probe fires at its own false-alarm rate** —
+   stratified recall 0.103 / 0.068 / 0.088 against FPR 0.132 / 0.074 / 0.098. With
+   `D17`'s between-word null structure, `D15` is dominated by speech and word identity,
+   not presence.
+
+**What it binds forward.**
+
+- **M2's brief frames G3 causally:** a direction that fails as a *detector* may still be
+  causally load-bearing; if ablating `v_secret` moves emission while the preservation
+  battery holds, that tension is itself the finding. (`HANDOFF.md` 2026-08-01 carried
+  this framing; it is now the recorded one.)
+- **M3 Arm A inherits a named validity caveat:** its trajectory comparison during
+  successful secret-keeping reads a `D15`-like quantity on exactly the silent trials
+  where M1 measured zero signal. M3's start-of-stage brief must own that or redesign
+  around it; this entry is where the caveat anchors.
+
+**Rejected:** a re-signed or two-sided G2′ over the frozen sidecars (post-hoc on decided
+data, and the only "pass" available — spoken words load the workspace — is already
+established by `D24`.3, so it buys nothing as a gate); a discriminating experiment (e.g.
+a licensing-flip frame on silent trials) — **named and declined, bankable**, never a
+prerequisite for M2, which is the cheaper and more relevant causal probe.

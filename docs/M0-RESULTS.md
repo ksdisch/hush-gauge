@@ -63,6 +63,13 @@ companion (+0.240 / +0.920 / +0.800).
 Trial-level rates (k of 100) are in the result JSONs and **decide nothing** (`D8`): the 100
 trials cluster by secret, so 25 is the conservative unit.
 
+> **⚠ Cross-scale readings of this table (and the per-text table below) carry `D25`'s
+> decode-rule caveat** (2026-08-02, `docs/DECISIONS.md`): the shipped `repetition_penalty`
+> differs by scale — 1.1 at 0.5B/1.5B, 1.05 at 3B — so between-scale comparisons of these
+> rows mix a decode-rule difference into the capability one. Within-scale contrasts — each
+> column against itself, including G0's deciding T4 − T0 — are unaffected. Full annotation
+> in §2 below and in Provenance. *(Annotation added 2026-08-02.)*
+
 ## Three things the curves say that the gate does not
 
 **1. Within-tier spread is larger than between-tier spread, which limits how much the ladder
@@ -113,6 +120,16 @@ withdrew pooled-cell claims — and it is wrong on precisely the cells this docu
 hand M1 *because* they are **not** at ceiling. At the per-text level it is further off still:
 of the twelve 1.5B T1–T3 texts, **six** score ≤ 3/25 and **five** score 0/25.
 
+> **⚠ Qualified by `D25` (2026-08-02, `docs/DECISIONS.md`):** the decode rule behind these
+> cross-scale readings is not constant across subjects — "greedy" ran under the models'
+> shipped `repetition_penalty`, **1.1 at 0.5B/1.5B but 1.05 at 3B** — so every
+> between-scale emission comparison in this document (the curve tables above and §3's
+> T4-turn-1 contrast below included)
+> carries a decode-rule difference on top of the capability one. A weaker penalty demotes
+> in-prompt tokens less, i.e. pushes emission up at exactly the scale these claims read.
+> Within-scale contrasts, including G0's T4 − T0 at each scale, are unaffected.
+> *(Annotation added 2026-08-02; the section text is as-run.)*
+
 **3. The exposure advantage is real and concentrated at the smallest scale.** T4-turn-1 is
 8/25 at 0.5B against 23/25 and 20/25 above it — so at 0.5B most of the full-T4 effect
 genuinely does come from the extra turns, and only the matched contrasts license reading it
@@ -147,6 +164,16 @@ Greedy, `max_new_tokens=64` per turn (`D5`), all 50 secrets swept (`D7`), scored
 primary oracle as corrected by `D10`/`D12`/`D13`. Each result JSON carries its `environment`
 block (device, dtype, `torch`, `transformers`) because greedy decode is deterministic *given
 a machine*.
+
+> **⚠ Qualified by `D25` (2026-08-02, `docs/DECISIONS.md`):** "Greedy" above means greedy
+> **under each model's shipped `generation_config`** — a live `repetition_penalty` of
+> 1.1 (0.5B, 1.5B) / 1.05 (3B) that `do_sample=False` does not disable. The three result
+> JSONs' `generation` blocks predate this finding and still read
+> `{do_sample: false, max_new_tokens: 64}`; they are **deliberately not backfilled**,
+> because their file SHA256s are recorded as `m0_reference` in the M1 payloads and
+> recomputed by both M1 gates — `D25` is the normative record of the decode rule, never an
+> M0 artifact's `generation` block. Determinism-given-a-machine is unaffected: the penalty
+> is itself deterministic. *(Annotation added 2026-08-02.)*
 
 | Subject | wall clock | device |
 |---|---|---|

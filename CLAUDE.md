@@ -34,15 +34,23 @@ No bar was re-tuned, `D21`'s calibration fallback never fired, and `D16` held co
 (`docs/M0-BRIEF.md` is normative, `docs/DECISIONS.md` is the citable ledger, `docs/M0-RESULTS.md`
 holds the curves). The battery has dynamic range — `R1` is retired — and the single
 pre-declared battery revision was **not** used, so the battery re-freezes as built.
-**`D1`–`D24` are settled — don't relitigate them.**
+**`D1`–`D26` are settled — don't relitigate them.**
 
-**Next action: a *planning* session, not a build session.** M1 raised two questions that are
-design calls by the brief's own standing rule, both in `docs/M1-RESULTS.md` and both feeding
-`docs/M2-BRIEF.md`: (a) whether `D5` gains a numbered amendment now that "greedy" is known to
-leave `repetition_penalty` live — and **not uniformly: 1.1 at 0.5B/1.5B, 1.05 at 3B**;
-(b) whether `G2`'s pre-registered contrast direction was mis-specified, since the yardstick
-beats the secret at every scale (significantly at 3B). Then M2 — ablation and the preservation
-battery — opening with its own start-of-stage brief.
+**The planning session ran 2026-08-02 and closed M1's two design questions** (`D25`/`D26` in
+`docs/DECISIONS.md`): **`D25`** amends `D5` — the decode rule is frozen as-run, greedy under
+the shipped `generation_config` (live `repetition_penalty` 1.1 / 1.1 / 1.05 per scale), owned
+with its cross-scale caveat, and M2+ runners assert the per-scale value and abort on drift.
+**`D26`** rules G2's contrast direction correctly specified — the yardstick's edge on
+certified-silent trials is licensed speech being *spoken* (`D24`.6 collapses arm (b) to
+3/24 / 4/25 / 2/13 when the yardstick is also silent; non-emitting recall ≈ FPR), the FAIL
+stands as an honest null, no G2′ is pre-registered, and M3 Arm A carries a named validity
+caveat.
+
+**Next action: write `docs/M2-BRIEF.md`** — M2 (ablation + the preservation battery) opens
+with its own start-of-stage brief freezing its decisions before any run. The brief inherits
+`D26`'s causal framing (a direction that fails as a detector may still be causally
+load-bearing — if so, that tension is the finding) and `D25`'s decode rule with its
+per-scale assertion.
 
 **What M1 found, in one line:** the probe reads the model **speaking** the secret, not holding
 it — recall 0.94 / 0.57 / 0.54 on emitting trials against 0.10 / 0.07 / 0.09 on non-emitting
@@ -147,8 +155,13 @@ lives there and in `docs/DECISIONS.md`.
   drawn from the spare pool — those 10 words stay reserved for G0's single revision.
   Because the yardstick word is in context, **M1's cross-secret baseline must exclude
   that session's yardstick**.
-- **Generation is greedy, `max_new_tokens=64` per turn** (D5). T4 is 3 frozen escalating
-  user turns with the model's own replies fed back (D3).
+- **Generation is greedy under the shipped `generation_config`, `max_new_tokens=64` per
+  turn** (D5 as qualified by D25): the one live logits processor is `repetition_penalty` —
+  **1.1 at 0.5B/1.5B, 1.05 at 3B** — so cross-scale emission readings carry a decode-rule
+  difference, non-emission-defined populations are partly decode-rule products, and M2+
+  runners read the value from `model.generation_config`, assert the per-scale figure, and
+  abort on drift. Never write unqualified "greedy" in a result doc. T4 is 3 frozen
+  escalating user turns with the model's own replies fed back (D3).
 - **T4 is exposure-advantaged — ≤192 scored positions vs 64** (D3). Never read a
   `T4 − T0` difference as pressure without its exposure-matched companions: the
   **T4-turn-1 rate** (mandatory in every result JSON) and the **T1/T2/T3-vs-T0**

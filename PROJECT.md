@@ -15,13 +15,15 @@ and the deviations in `docs/M1-RESULTS.md`.
 (`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, full curves and
 caveats in `docs/M0-RESULTS.md`. 656 tests passing.
 
-**Next action:** **two design questions go to a planning session before M2 starts** (both
-in `docs/M1-RESULTS.md`, neither resolvable in a build session): whether `D5` gains a
-numbered amendment now that "greedy" is known to leave `repetition_penalty` live —
-and not uniformly: 1.1 at 0.5B/1.5B, 1.05 at 3B — and
-whether G2's pre-registered contrast direction was mis-specified given that the yardstick
-beats the secret at every scale (significantly at 3B). M2 (ablation + preservation battery)
-is unblocked either way — it does not depend on G1 or G2 passing.
+**Planning session COMPLETE, 2026-08-02** — both M1 design questions closed and recorded in
+`docs/DECISIONS.md`: **`D25`** (D5 amended — the decode rule is frozen as-run: greedy under
+the shipped `generation_config`, `repetition_penalty` 1.1 / 1.1 / 1.05 per scale, owned) and
+**`D26`** (G2's contrast direction stands — the yardstick's edge is licensed speech being
+spoken, not silent licensing; the FAIL is an honest null and no G2′ is pre-registered).
+
+**Next action:** **open M2 with `docs/M2-BRIEF.md`** (ablation + preservation battery),
+freezing its decisions before any run. The brief inherits `D26`'s causal framing and `D25`'s
+decode rule with its per-scale assertion. M2 does not depend on G1 or G2 having passed.
 
 ## Purpose
 
@@ -96,15 +98,13 @@ inputs.
    `GATE_WORDING` byte-identical to the brief, the ~5.7 h sweep run on all three subjects,
    `θ*` frozen on calibration, **G1 and G2 each decided once and both FAIL at every
    scale** (`docs/M1-RESULTS.md`). 656 tests.
-8. **Two design questions to a planning session before M2** — both in
-   `docs/M1-RESULTS.md`, neither resolvable in a build session: (a) whether `D5` gains a
-   numbered amendment now that "greedy" is known to leave `repetition_penalty` live, and
-   not uniformly (1.1 at 0.5B/1.5B, 1.05 at 3B);
-   (b) whether G2's pre-registered contrast direction was mis-specified, given the
-   yardstick beats the secret at every scale (significantly at 3B).
-9. **M2** — ablation + the preservation battery. Unblocked by M1's nulls: G3 asks whether
-   ablating `v_secret` reduces emission, which does not depend on the probe grading as a
-   detector.
+8. ~~Two design questions to a planning session before M2~~ — **done 2026-08-02**; both
+   closed as `D25` (D5 amended — decode rule frozen as-run and owned) and `D26` (G2's
+   direction stands — the yardstick's edge is licensed speech being spoken; no G2′).
+9. **Write `docs/M2-BRIEF.md`, then M2** — ablation + the preservation battery. Unblocked
+   by M1's nulls: G3 asks whether ablating `v_secret` reduces emission, which does not
+   depend on the probe grading as a detector. The brief inherits `D26`'s causal framing
+   and `D25`'s decode rule with its per-scale assertion.
 
 ## Boundaries
 
@@ -163,19 +163,20 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
   exposure-matched evidence, and `GATE_WORDING` makes an exposure-only PASS reportable as
   `EXPOSURE-CONFOUNDED`.
 - **Unresolved** — M3 Arm A's pre-registered similarity metric.
-- **Unresolved (M1, 2026-08-01)** — **why the yardstick beats the secret.** At all three
-  scales the licensed word loads the J-lens-readable workspace more than the secret does on
-  certified-silent trials, significantly at 3B (−0.455, Newcombe 95% [−0.654, −0.161]).
-  Either suppression makes a licensed word *more* active than a suppressed one — in which
-  case G2's pre-registered contrast direction was mis-specified — or `D15` is dominated by
-  something other than the probed word's presence. M1 cannot separate them.
-- **Decision needed (M1, 2026-08-01)** — **`D5`'s "greedy" includes
-  a `repetition_penalty`**, a logits processor `do_sample=False` does not disable — and
-  **not the same value at every scale: 1.1 at 0.5B/1.5B, 1.05 at 3B.** Uniform within each
-  scale (every tier, arm, text, split), upstream of the probe, and equally applied to
-  the yardstick — but it demotes tokens already in the prompt, and the secret is in the
-  prompt. Changing it would break `D16` and void G0's certification, so nothing was
-  changed. Whether `D5` gains a numbered amendment is Kyle's call.
+- **Decision (D26, 2026-08-02)** — **why the yardstick beats the secret: licensed speech
+  being spoken.** G2's pre-registered contrast direction was *not* mis-specified; the FAIL
+  stands as an honest null. Evidence (Inference, frozen data): the secret never separates
+  from the no-secret arm on certified-silent trials; `D24`.6's both-silent restriction
+  collapses arm (b) from 0.52 / 0.52 / 0.68 to 3/24 / 4/25 / 2/13; non-emitting recall ≈
+  FPR at every scale. No G2′ is pre-registered; M2 is framed causally; M3 Arm A carries a
+  named validity caveat.
+- **Decision (D25, 2026-08-02)** — **`D5` is amended: the decode rule is frozen as-run.**
+  "Greedy" means greedy under the shipped `generation_config`, whose one live logits
+  processor under `do_sample=False` is `repetition_penalty` — 1.1 at 0.5B/1.5B, 1.05 at
+  3B. Cross-scale emission readings carry the difference; non-emission-defined populations
+  are partly decode-rule products; M2+ runners assert the per-scale value and abort on
+  drift. Changing the decode rule is a new numbered decision opening a new certification
+  chain.
 - **Fact (K5)** — mute-map hands over **no** off-switch mediating direction; every one
   of its interventions deletes `v_concept` itself. M3 Arm B must construct and validate
   a candidate (e.g. a primed − control late-band contrast vector) with a sham-ablation
@@ -184,7 +185,8 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
 ## Decisions
 
 Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D14 from the M0 brief,
-D15–D24 from the M1 brief), not in a root `Decisions.md` — this
+D15–D24 from the M1 brief, D25–D26 from the 2026-08-02 planning session), not in a root
+`Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
 
@@ -193,7 +195,7 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0), D15–D24 (M1) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0), D15–D24 (M1), D25–D26 (planning 2026-08-02) |
 | M0 results | `docs/M0-RESULTS.md` | measurement | the three emission curves, G0 decided, and the caveats that bound how they may be read |
 | M1 results | `docs/M1-RESULTS.md` | measurement | G1 and G2 decided per scale, the detection tables, every `D24`/`D17` readout, the deviations M1 owns, and the `D5` repetition-penalty finding |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |
