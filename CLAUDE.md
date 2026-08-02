@@ -46,17 +46,24 @@ certified-silent trials is licensed speech being *spoken* (`D24`.6 collapses arm
 stands as an honest null, no G2′ is pre-registered, and M3 Arm A carries a named validity
 caveat.
 
-**`docs/M2-BRIEF.md` is WRITTEN (2026-08-02) and awaiting Kyle's approval** — it freezes
-M2's decisions (`D27`–`D33`) as **Proposed**: the intervention (the probed direction
-itself, `K6`'s dose operator, full band, λ = 1 deciding), the λ = 0 identity arm
-(exact-return by construction, `D25`'s per-scale assertion), G3's paired T4 contrast,
-the preservation battery (WikiText NLL, calibration-validated benign QA, the
-acknowledgment probe, the collapse guard), the norm-matched random-direction control,
-the byte-frozen `GATE_WORDING`, and the secondaries. It inherits `D26`'s causal framing
-(a direction that fails as a detector may still be causally load-bearing — if so, that
-tension is the finding) and `D25`'s decode rule. **Nothing in M2 runs until Kyle approves
-the brief**; upon approval `D27`–`D33` mirror into `docs/DECISIONS.md` and the build runs
-in a fresh Opus session per the brief's run-config note.
+**`docs/M2-BRIEF.md` is FROZEN — approved by Kyle 2026-08-02** after the adversarial
+review on PR #8 (the review mailbox is the per-finding authority). **`D27`–`D33` are
+settled** and mirrored into `docs/DECISIONS.md`: the intervention (the probed direction
+itself, `K6`'s dose operator, full band, λ = 1 deciding, the (1 − λ) read-back), the
+λ = 0 identity arm (exact-return by construction; both runners assert `D25`'s per-scale
+`repetition_penalty` and abort on drift), G3's paired secret-level T4 contrast (baseline
+25/25 everywhere; first decidable reduction 20/25), the four-clause preservation battery
+(WikiText NLL, calibration-validated benign QA, the acknowledgment probe with its
+`FLOOR-LIMITED` floor, the collapse guard — all "within the clean arm's CI", tolerances
+printed), the norm-matched random-direction control with its mandatory λ = 1-vs-random
+contrast cell, the byte-frozen `GATE_WORDING` with ten INVALID arms, and the descriptive
+secondaries. It carries `D26`'s causal framing: a direction that fails as a detector may
+still be causally load-bearing — if G3 passes, that tension is the finding.
+
+**Next action: the M2 build**, in a fresh session per the brief's run-config note
+(`claude --model claude-opus-5 --effort high`), following the brief's "What M2 delivers"
+list. M2 records no probe scores (`S_secret ≡ 0` under the edit at the hook point) and
+reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**.
 
 **What M1 found, in one line:** the probe reads the model **speaking** the secret, not holding
 it — recall 0.94 / 0.57 / 0.54 on emitting trials against 0.10 / 0.07 / 0.09 on non-emitting

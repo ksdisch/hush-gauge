@@ -1,12 +1,34 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-02 (**`docs/M2-BRIEF.md` is WRITTEN — Proposed, awaiting Kyle's
-approval**; `D27`–`D33` drafted, nothing in M2 runs before the approval)_
+_Last updated: 2026-08-02 (**`docs/M2-BRIEF.md` is FROZEN — approved by Kyle**;
+`D27`–`D33` settled and mirrored into `docs/DECISIONS.md`; next: the M2 build)_
 
 ## What was just done
 
-**`docs/M2-BRIEF.md` was written 2026-08-02** — M2's start-of-stage brief (ablation + the
-preservation battery), freezing `D27`–`D33` as **Proposed** pending Kyle's approval:
+**Kyle approved the M2 brief 2026-08-02, and the approval package landed:** the status
+line flipped to *frozen*, `D27`–`D33` were mirrored into `docs/DECISIONS.md` as the
+citable ledger entries (both edits pre-authorized by the brief), and the review's
+nice-to-have follow-ups were folded in on Kyle's recorded agreement ("i approve and
+agree with your recommendation"). The brief had merged as PR #8 after an adversarial
+review of seven rounds across three runs — both continuation runs directed by Kyle,
+every should-fix fixed **and verified** in-loop, zero disputes, zero waivers. The
+per-finding record is `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and
+**is the authority** (no totals restated here, per the M0 lesson — two hand-carried
+totals died in this very session's chat while the PR comment stayed correct).
+
+**What the review earned:** it killed a refusal-coherence marker that would have failed
+exactly when ablation works (measured on frozen M0 replies before it froze), caught the
+specificity clause's power gap and gave it a mandatory direct-contrast cell, forced the
+acknowledgment clause onto the `yes`-marginal (the conjunction re-created the killed
+marker's defect with the sign flipped), and chased the probe-text machinery through
+four generations of fix-introduced defects until the record-the-selection principle
+held on every path. Every fix commit sprouted new findings until the last — the loop's
+cap-and-continue structure is what converged it.
+
+### Earlier — the brief itself (2026-08-02)
+
+**`docs/M2-BRIEF.md` was written** — M2's start-of-stage brief (ablation + the
+preservation battery), freezing `D27`–`D33`:
 
 - **`D27`** — the intervention: `v̂_l(w)` from the frozen panel's `probe_row` (identically
   the probed direction — `D26`'s framing made causal), `K6`'s dose operator at **every
@@ -426,20 +448,17 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**Kyle reviews and approves `docs/M2-BRIEF.md`.** The brief is written and lands through
-the standard pre-merge adversarial-review loop (its PR is the record); `D27`–`D33` are
-**Proposed**, not frozen. Upon
-approval, two pre-authorized edits happen (the brief's status line flips to *frozen*;
-`D27`–`D33` mirror into `docs/DECISIONS.md`), and then the M2 build runs in a **fresh
-Opus 5 session at high**, started from the frozen brief per its run-config note — never
-from this session's transcript. **Nothing in M2 runs before the approval.**
-
-Everything the old "what the brief inherits" list carried is now inside the brief itself:
-`D26`'s causal framing (the preamble and `D33`.8), `D25`'s decode rule with the per-scale
-assertion (`D28`), the λ = 0 identity-check evaluation (`D28` — resolved as exact-return
-by construction, not assumed bitwise inertness), and the design-extraction pre-commit
-(the table, with the honest finding that no perplexity/QA/refusal machinery exists
-upstream — those are new decisions, owned as such).
+**Build M2**, in a fresh Opus 5 session started from the frozen brief — never from this
+session's transcript. The brief's "What M2 delivers" list is the build's step list:
+`intervene.py` (the ported operator + read-back + random constructor),
+`build_preservation_qa.py` + `batteries/preservation_qa.json` (validation on calibration
+frames only), `m2_ablation.py` (cut from `m1_probe_panel.py`, no capture),
+`m2_preservation.py`, `gates/g3.py` (GATE_WORDING byte-identical to the brief; every
+INVALID arm proven against the runners' unmodified output before any real run), then the
+sweeps, the gate decision, and `docs/M2-RESULTS.md`. Binding throughout: `D25`/`D28`'s
+per-scale `repetition_penalty` assertion, the λ = 0 byte-identity stop condition,
+M0/M1-certified modules read-only, and **do not delete `results/*.npz`** (M2 reuses
+M1's sidecars; M2 records no probe scores of its own — `S_secret ≡ 0` under the edit).
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
@@ -459,6 +478,13 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 - **No blockers.** Nothing external is waiting on anything.
 
 ## Files touched recently
+
+**The approval package (2026-08-02, after Kyle's approval):**
+
+- `docs/M2-BRIEF.md` — status flipped to *frozen*; the review's nice-to-have follow-ups
+  folded in (each anchored `PR #8, review F<n>` in place).
+- `docs/DECISIONS.md` — new M2 section: `D27`–`D33` mirrored as the citable entries.
+- `CLAUDE.md`, `PROJECT.md`, `README.md`, `HANDOFF.md` — propagated (frozen; next: build).
 
 **The M2-brief session's deliverable set (2026-08-02, later the same day):**
 
@@ -501,12 +527,14 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 
 ---
 
-**Run-config note:** the next Claude session is the **M2 build**, and it starts only
-after Kyle approves `docs/M2-BRIEF.md` (approval is a Kyle action, not a session). The
-build is well-specified once the brief freezes — `D27`–`D33` pre-make the design calls —
-so it belongs on **Opus 5 at high**, in a fresh session started from the frozen brief
-(never from this session's transcript), with the reading order (`D12`/`D13`/`D14` before
-`D10`/`D11`) still in force. Launch: `claude --model claude-opus-5 --effort high`.
+**Run-config note:** the next Claude session is the **M2 build**. The brief is frozen
+and `D27`–`D33` pre-make the design calls, so what remains is well-specified build work:
+**Opus 5 at high**, in a fresh session started from the frozen brief (never from this
+session's transcript), with the reading order (`D12`/`D13`/`D14` before `D10`/`D11`)
+still in force. Launch: `claude --model claude-opus-5 --effort high`. The two standing
+rules carry: a gate failing in a way that questions the design bounces to a Fable
+planning session, and an oracle-class defect found in review is a design question, not
+a patch.
 
 Two standing rules carry forward, both earned in M0 and both used in M1: if a gate fails in
 a way that questions the *design* rather than the models, bounce that decision to a Fable

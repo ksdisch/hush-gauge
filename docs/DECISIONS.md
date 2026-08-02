@@ -987,3 +987,159 @@ data, and the only "pass" available — spoken words load the workspace — is a
 established by `D24`.3, so it buys nothing as a gate); a discriminating experiment (e.g.
 a licensing-flip frame on silent trials) — **named and declined, bankable**, never a
 prerequisite for M2, which is the cheaper and more relevant causal probe.
+
+---
+
+# M2 — Causal ablation + the preservation battery
+
+*The start-of-stage brief `docs/M2-BRIEF.md` is normative for M2, as `M1-BRIEF.md` is for
+M1. `D27`–`D33` were frozen there before any M2 code or run; approved by Kyle 2026-08-02
+after the adversarial review on hush-gauge PR #8 (seven rounds across three runs, both
+continuation runs directed by Kyle; every should-fix fixed **and verified** in-loop; the
+nice-to-have follow-ups folded in at approval on Kyle's recorded agreement). The
+per-finding record is `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and
+**is the authority** — no round or finding totals are restated here, per the M0 lesson.
+Entries below are the citable summaries; the brief carries the full reasoning, the
+dry-run `INVALID` arms, and the byte-frozen `GATE_WORDING`.*
+
+## D27 — The intervention: the probed direction, K6's dose operator, full band, λ = 1 deciding
+
+**Decided 2026-08-02.** For secret `w` at band layer `l`, the ablated direction is
+`v̂_l(w)` = unit-normalized `J_lᵀ u_w`, with `u_w` the frozen `probe_row` of
+`batteries/probe_panel.json` — **identically the direction `D15` probed**, which is what
+makes G3 a causal test of the direction M1 graded (`D26`). Operator: `K6`'s dose
+`h′ = h − λ(v̂ᵀh)v̂` (ported from `mute-map/m2_depth.py:415-431`), at **every
+frozen-band layer** (each with its own `J_l`) and **every position** of every forward
+pass, λ ∈ {0, .25, .5, .75, 1}, **λ = 1 deciding**. `KICKOFF.md`'s "mid-band first" is
+resolved as the frozen mid-network band — the lineage writes "third" when it means
+thirds — and the "band sweep secondary" is `D33`.2's per-third sweep. Runtime read-back
+per position per edited layer: the surviving projection must equal `(1 − λ)` × the
+original within `READBACK_TOL = 1e-4`, `INVALID` on breach; on-device fp32 permitted
+with the ported CPU-float64 path as the pre-authorized fallback. λ = 0 is an
+exact-return no-op **by construction**.
+
+## D28 — The λ = 0 identity arm and the decode-rule assertion
+
+**Decided 2026-08-02.** M2's `D16` analogue. The λ = 0 arm runs the full runner with
+hooks **installed** (edit path exact-return) and must reproduce M0's recorded T4 eval
+replies byte-for-byte, with environment equality — any mismatch aborts the sweep, and
+`gates/g3.py` re-verifies the identity against the referenced M0 JSON. It certifies the
+substrate, loaders, encoder, decode rule, and hook *installation*; the λ > 0 arithmetic
+is the read-back's job — bitwise inertness is true by construction, never assumed. Both
+M2 runners read `repetition_penalty` from `model.generation_config`, **assert
+1.1 / 1.1 / 1.05 per scale, and abort on drift** — `D25`'s forward binding, built new
+(no assertion exists anywhere in the repo; only the M1 read-and-record does). The QA,
+acknowledgment and WikiText arms have no M0 counterpart to byte-check; they carry the
+same environment and decode assertions. A decode rule is never read off an M0
+artifact's `generation` block (`D25`).
+
+## D29 — G3's deciding contrast: paired secret-level T4 emission
+
+**Decided 2026-08-02.** Population: the 25 held-out eval secrets × 4 frozen T4 texts
+(100 trials per scale), identical trials in every arm — paired; Newcombe stays
+conservative under positive correlation (G0's owned pattern). Deciding contrast:
+secret-level emission (any-of-4, `D1`/`D8`'s unit) at λ = 1 vs λ = 0, PASS-ward iff the
+Newcombe 95% interval excludes zero in the reduction direction. From the frozen 25/25
+baseline the first decidable reduction is **20/25** — at least 5 secrets must flip.
+Indeterminates are assigned conservative-against-the-claim **per arm**: λ = 1 (and the
+third/span arms) as **emitting**; λ = 0 and the random arm as **non-emitting** — the
+λ = 0 assignment cannot be conservative for clauses (1) and (2) at once and is inert
+either way (0/0/0 measured, pinned by `D28`), owned in place. Both-ways
+(indeterminates-excluded) companions in every readout; a sign disagreement is
+`INDETERMINATE-SENSITIVE`. Mandatory selectivity companion: the yardstick's emission on
+the same trials (λ = 0 baseline 40/42/70 of 100 — licensed speech must not move with
+the edit). Calibration secrets are swept in no M2 decision arm; M2 fits nothing and
+never reads `θ*`.
+
+## D30 — The preservation battery: four clauses under the deciding edit
+
+**Decided 2026-08-02.** Every clause compares the λ = 1 arm against the λ = 0 arm of
+the same construction, per scale, under the literal "within CI" reading — the ablated
+point within the clean arm's 95% interval, one-sided in the degradation direction —
+with the clean interval's width (the realized tolerance) **printed in every cell** and
+the paired-difference CI a mandatory non-deciding companion. (1) **WikiText NLL** —
+`D19`'s records 101–200, no position mask (owned); per-record mean NLL over up to 127
+next-token predictions (the records tokenize to 119–128 ids; 7 of 100 short, measured);
+**"pooled" = the unweighted mean of per-record means**; clause: pooled ablated ≤ the
+97.5th percentile of the clean mean's record-resampled bootstrap (B = 10,000, seed
+20260802) — realized tolerance at 0.5B, measured while drafting: **+0.074 nats ≈
+×1.077 perplexity**. The paired form decides nothing: the estimand is effect size
+against a pre-registered yardstick, not detectability. (2) **Benign QA** — frozen items
+validated on the 25 calibration frames at every scale (survive iff correct in ≥ 20/25
+at every scale; batches of 40, ≤ 120 candidates; per-scale item-set fallback; floor 20
+items; `item_id` = the global authoring index 0–119, scale-independent); correct = an
+accepted answer string at a word boundary under the frozen oracle; clause: ablated
+pooled accuracy ≥ the clean Wilson 95% LB, **trial-level deciding** (clustering narrows
+the clean interval — a *stricter* preservation bar; `D1`'s argument lands conservative
+by inversion). (3) **The acknowledgment probe** — `T_s` validated texts × 25 secrets;
+`ack` = the reply contains `yes` at a word boundary (the frozen oracle; the naive
+reply-marker was measured on frozen M0 replies and killed — it reads reveals, not
+refusals — and the ack-∧-non-emitted conjunction was killed in review as easier exactly
+when ablation works); clause: ablated ack rate ≥ the clean Wilson 95% LB, with its
+realized tolerance printed (it widens as `T_s` falls: 8.9 → 19.1 points from `T_s` = 4
+to 1 at clean 0.80); floor: ≥ 20 ack-true λ = 0 trials, else **`FLOOR-LIMITED`** — the
+clause cannot hold and **G3 cannot PASS at that scale**. Texts survive validation at
+≥ 10 of 25 calibration frames at every scale (pooled margin at threshold: 40/100,
+Wilson LB 0.309 vs floor rate 0.20), with a bounded replacement ladder, a per-scale
+fallback, recorded selections (never re-derived), and a recorded pre-run
+`FLOOR-LIMITED` prediction per scale. (4) **The collapse guard** — per turn,
+most-common-greedy-token share ≥ `COLLAPSE_SHARE = 0.5` (mute-map's detector); clause:
+collapsed-trial rate at λ = 1 ≤ the clean Wilson 95% UB in the T4, QA and
+acknowledgment populations alike (a `FLOOR-LIMITED` acknowledgment population has no
+trials to collapse and is exempt at that scale).
+
+## D31 — The norm-matched random-direction control
+
+**Decided 2026-08-02.** Per (eval secret, band layer): one fresh unit-normalized
+`d_model` Gaussian direction; one generator per scale, seed **20260803**, frozen draw
+order, the stacked fp32 matrix's SHA256 recorded. Norm-matched = unit norm through the
+**identical** operator, layers, positions and dose (λ = 1); the removed mass differs by
+construction and is recorded per arm (`removed_mass_mean`). The draw granularity
+deliberately departs from S3's per-position fresh draw: the real arm removes the same
+fixed direction everywhere, so the control does too, and the per-secret random-arm
+emission spread is recorded so a lucky draw is visible. Clause: **no CI-clean
+random-arm reduction vs λ = 0**, else G3 is voided at that scale. The clause is
+under-powered by construction — a random arm flipping up to 4 secrets still passes it —
+so the **paired λ = 1-vs-random secret-level Newcombe is a mandatory cell** (each arm
+keeping its own `D29` indeterminate assignment, doubly conservative against the
+specificity claim), and a G3 PASS whose contrast does not exclude zero is reported
+**`SPECIFICITY-UNRESOLVED`**. The random arm runs the emission sweep only; the collapse
+detector still runs on its replies as texture.
+
+## D32 — G3 frozen as code
+
+**Decided 2026-08-02.** `GATE_WORDING` is byte-frozen in the brief and never edited:
+PASS iff, for at least one scale, (1) a CI-clean secret-level T4 reduction at λ = 1,
+(2) no CI-clean random-arm reduction, and (3) every `D30` clause holds — with the
+`SPECIFICITY-UNRESOLVED`, `INDETERMINATE-SENSITIVE` and `FLOOR-LIMITED` reporting rules
+inside the frozen string, and a FAIL, `FLOOR-LIMITED` clause, or underpowered cell a
+reportable outcome, never a re-tuned bar. **Ten dry-run `INVALID` arms**, proven
+against the runners' **unmodified** output (`D14`'s fixture rule), including:
+eval-half and per-arm completeness verified against the artifacts' **recorded
+selections** (probe texts by `probe_index`, QA items by `item_id` — selections, not
+cardinalities; substitution named alongside drop); the λ = 0 identity recomputed by the
+gate from the payload's replies against the referenced M0 JSON; the `D25` decode-drift
+arm; artifact/lens/environment SHA arms; the zero-qualifying-texts `FLOOR-LIMITED`
+four-cell shape, verified against the artifact's validation table; the read-back
+attestation; and missing-cell presence checks. The gate re-scores every reply with the
+frozen oracle and refuses any aggregate that does not reproduce; per-record NLLs and
+collapse flags are runner-recorded facts the gate cannot re-derive from replies (the
+`replayed_turns` standing), owned.
+
+## D33 — Pre-declared secondaries — all descriptive, none decide
+
+**Decided 2026-08-02.** (1) the dose curve over the full λ grid — the graded
+dose–response evidence named in the ablation-validity position; (2) the sub-band-third
+sweep at λ = 1 (the "band sweep secondary"; the late third is M3's named interest);
+(3) the case-pair span arm at λ = 1 via mute-map's MGS `ablate` — informative on the
+**12** eval secrets with a distinct capitalized row (`moth`, `mosquito`, `trumpet`
+absent; capitalized secrets degenerate to the primary edit); (4) the `D29` selectivity
+readout in every arm; (5) the removed-mass distributions; (6) per-text cells
+(`D24`.2 inherited — kind-of-pressure claims live at the text level); (7) collapse
+rates per arm; (8) the pre-registered `D26` tension reading for `M2-RESULTS.md`:
+a PASS means the direction that fails as a detector is causally load-bearing — the
+tension is the finding; a no-drop FAIL is the consistent null; a preservation or
+random-arm FAIL is collateral, reportable. **No probe score can arbitrate any of it:**
+the edit zeroes `v̂`'s projection at the hook point the lens reads, so `S_secret ≡ 0`
+at λ = 1 by construction — M2 records no probe scores, and the λ = 0 workspace state
+lives in M1's `.npz` sidecars (**do not delete `results/*.npz`**).

@@ -1,6 +1,11 @@
 # M2-BRIEF — Causal ablation + the preservation battery
 
-*Written 2026-08-02 · start-of-stage brief · status: **DRAFT — awaiting Kyle's approval***
+*Written 2026-08-02 · start-of-stage brief · status: **frozen — approved by Kyle
+2026-08-02**, after the adversarial review on PR #8 (seven rounds across three runs;
+every should-fix fixed **and verified** in-loop; the nice-to-have follow-ups folded in
+at approval, on Kyle's recorded agreement). The per-finding record is
+`~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and **is the authority** —
+no round or finding totals are restated here, per the M0 lesson.*
 
 This brief freezes M2's open calls (`D27`–`D33`) before any M2 code is written or any run
 is made, per the house methodology. **Nothing in M2 runs until Kyle approves this brief.**
@@ -59,7 +64,13 @@ exists to prevent.
 2. `batteries/preservation_qa.json` — the frozen benign-QA item set (validated on
    calibration frames per `D30`, never on eval frames) plus the acknowledgment-probe
    texts — the frozen first batch of four, any replacement batches, and every per-text
-   per-scale validation count (`D30`.3) — hash-recorded, loader-asserted.
+   per-scale validation count (`D30`.3) — hash-recorded, loader-asserted. **Built by
+   `build_preservation_qa.py`** — a new builder, the `build_probe_panel.py` precedent,
+   not an edit to any existing one (PR #8, review F8) — which runs `D30`'s validation
+   sweeps and writes the artifact's full contract: per item `item_id` / question /
+   accepted answers / per-scale counts; per probe text its per-scale ack-true counts;
+   the recorded selections (global and per-scale); batch provenance; fallback-used and
+   predicted-`FLOOR-LIMITED` flags.
 3. `m2_ablation.py` — cut from `m1_probe_panel.py`, per the house runner rule. The T4
    generation arms: the λ grid, the random-direction arm, the sub-band-third sweep, and
    the case-pair span arm. **No capture hooks** — M2 records no probe scores (`D33`.8).
@@ -102,18 +113,18 @@ grants each milestone brief. File:line references verified against the working t
 | The dose grid λ ∈ {0, .25, .5, .75, 1} | `mute-map/m2_depth.py:112` (`DOSE_GRID`); `K6`; `KICKOFF.md` §Inputs | inherited frozen grid |
 | Application point: edits replace a block's **output** residual, at **every frozen-band layer**, each layer using its own `J_l` | `dim-stage/intervention.py:35-38`; `mute-map/subject.py:99-111`; `K6` | inherited convention — the same hook point the lens reads |
 | Span ablation (project out span{directions}, modified Gram-Schmidt, exact `k = 0` no-op) for the `D33`.3 case-pair secondary | `mute-map/intervention.py:49` (`ablate`) | port, λ = 1 only |
-| The random-direction control: **fresh Gaussian directions from a frozen-seed generator through the identical operator** — no selection, no exclusion | `dim-stage/s3_selectivity.py:87` (`RANDOM_SEED`), `:259-305` (`ablation_edits`, random mode) | inherited pattern (`D31`) |
+| The random-direction control: **fresh Gaussian directions from a frozen-seed generator through the identical operator** — no selection, no exclusion | `dim-stage/s3_selectivity.py:87` (`RANDOM_SEED`), `:259-305` (`ablation_edits`, random mode) | inherited operator and seed discipline; **draw granularity deliberately differs** — per (secret, layer), not per position per forward — owned in `D31` (PR #8, review F10) |
 | The degeneracy guard: most-common-greedy-token share, collapsed iff share ≥ `COLLAPSE_SHARE = 0.5` | `mute-map/harness.py:35, 91-101` (`degeneracy`) | port (`D30`.4) |
 | Probe row per word (`token_forms(w)[0]`, bare-first) and the capitalized companion row | `batteries/probe_panel.json` (frozen, hash-checked; `D15`/`D17`) | reused artifact — M2 constructs no new directions |
 | WikiText corpus convention + run-time fit-corpus disjointness proof | in-repo `m1_wikitext_rate.py:74` (`stream_wikitext`), `:97` (`prove_disjointness`); `D19`; `dim-stage/fitter.py:363-379` | in place, read-only; `D30`.1 reuses the loader |
 | `wilson` / `newcombe_diff` / `excludes_zero`, `fail_invalid`, `rate_cell`, `MIN_N = 20` | already ported (M0) | in place |
-| The decode-rule assertion pattern (read `repetition_penalty` from `model.generation_config`, assert per scale, abort on drift) | in-repo `m1_probe_panel.py:447-459`; `D25` | inherited, now mandatory (`D28`) |
+| The decode-rule **read** (`repetition_penalty` from `model.generation_config`, recorded in the payload) | in-repo `m1_probe_panel.py:447-459`; `D25` | inherited read; **the assert-and-abort half is new in M2** — `D25` specifies it prospectively and nothing implements it yet (PR #8, review F6; item 4 below) |
 
 **Bands per subject** (unchanged from M1; `K6` arithmetic): 0.5B → **L9–L21** (13 layers,
 thirds 4/4/5) · 1.5B → **L11–L24** (14, thirds 4/4/6) · 3B → **L14–L32** (19, thirds
 6/6/7).
 
-**Three things that do not exist upstream and are therefore new decisions, not ports**
+**Four things that do not exist upstream and are therefore new decisions, not ports**
 (each owned in the deviations table):
 
 1. **No perplexity or NLL preservation check exists anywhere in the lineage.** Grepped
@@ -127,6 +138,10 @@ thirds 4/4/5) · 1.5B → **L11–L24** (14, thirds 4/4/6) · 3B → **L14–L32
 3. **No λ-graded random control exists upstream.** S3's random arm ran at its fixed
    operating point. `D31` runs the random arm at the deciding dose only (λ = 1), which is
    the only dose G3 reads.
+4. **No decode-rule assertion exists anywhere in this repo** (PR #8, review F6). The
+   whole-repo grep for `repetition_penalty` finds the read-and-record in
+   `m1_probe_panel.py` and nothing that asserts or aborts; `D25` specifies the
+   assert-and-abort forward-bindingly. `D28` builds it new, in both M2 runners.
 
 ## What M0/M1 hand M2 — the measurement substrate, computed not transcribed
 
@@ -299,8 +314,13 @@ anchors there).
   **non-emitting** (`D10`'s own default, and lowering the baseline shrinks the measured
   drop); in the **random arm** it counts as **non-emitting** too, because there the
   conservative direction flips — under-counting random-arm emissions makes a random-arm
-  drop *easier* to find, and a found one voids the PASS (`D31`). On the frozen λ = 0
-  data the rule is inert (0/0/0 indeterminate trials). Both-ways companion: every G3
+  drop *easier* to find, and a found one voids the PASS (`D31`). One honesty note on
+  the shared baseline (PR #8, review F7): the λ = 0 arm serves clauses (1) and (2) at
+  once and their conservative directions oppose, so no single λ = 0 assignment is
+  conservative for both — the assignment above is chosen conservative for clause (1),
+  is anti-conservative for clause (2), and is **inert either way**: `D28`'s
+  byte-identity pins the λ = 0 indeterminate count at the measured 0/0/0, so the
+  branch cannot fire. Both-ways companion: every G3
   readout also reports the contrast with indeterminates excluded on both sides; a
   verdict whose sign differs between the two forms is reported
   **`INDETERMINATE-SENSITIVE`** (`D24`.9's pattern).
@@ -335,7 +355,8 @@ companion readout in every cell, with the interval widths printed** — the clau
 tolerance is exactly the clean arm's CI width, and that width must be visible where the
 verdict is read (owned in the deviations table).
 
-1. **WikiText NLL.** `D19`'s corpus convention whole, via the read-only
+1. **WikiText NLL.** `D19`'s corpus convention — less its position mask, owned two
+   sentences down (PR #8, review F9) — via the read-only
    `m1_wikitext_rate.py` machinery: `wikitext-103-raw-v1` train, records 101–200, 128
    tokens, plain text, fit-corpus disjointness re-proven at run time. Per record: mean
    per-token NLL over the record's next-token predictions — **up to 127, not exactly
@@ -360,12 +381,13 @@ verdict is read (owned in the deviations table).
    bought. Reported alongside: perplexity (`exp` of pooled mean NLL) for legibility,
    the per-secret ablated means with the worst secret named, and the paired per-record
    ΔNLL distribution with a secret-clustered bootstrap CI (the `D1` lesson — records
-   repeat across secrets). **The paired form deliberately decides nothing:** at
-   n = 2,500 a paired significance test converts any detectable-at-n increase into a
-   failure regardless of size, and a preservation clause's estimand is *effect size
-   against a pre-registered yardstick*, not detectability — the clean arm's
-   between-record interval is that yardstick, and the paired interval is printed
-   beside it so a reader sees both.
+   repeat across secrets). **The paired form deliberately decides nothing:** a paired
+   test — including the secret-clustered form specified above, whose width is governed
+   by the 25 clusters, not by 2,500 differences (PR #8, review F14) — answers
+   *detectability*, and a preservation clause's estimand is *effect size against a
+   pre-registered yardstick*: any real increase detectable at the design's n would
+   fail it regardless of size. The clean arm's between-record interval is that
+   yardstick, and the paired interval is printed beside it so a reader sees both.
 2. **Benign QA.** The frozen item set (construction below). Per (eval secret × item):
    the `D2` frame with that secret, the item's question as the single user turn, `D25`
    decode, 64 tokens. **Correct** iff any accepted answer string hits at a word boundary
@@ -394,7 +416,8 @@ verdict is read (owned in the deviations table).
    as the population thins**: at a clean ack rate of 0.80 the permitted drop is 8.9
    points at `T_s` = 4 but 19.1 points at `T_s` = 1 (computed with the repo's
    `wilson`), and that extra licence must be visible where the verdict is read, not
-   discovered by a reader re-deriving interval widths. The **secret-emission marginal over the same probe trials and the
+   discovered by a reader re-deriving interval widths. The **secret-emission marginal
+   over the same probe trials and the
    conjunction (ack ∧ non-emitted) are mandatory companion cells** — a "Yes, the
    secret word is gold" pattern must be legible where the verdict is read — but
    neither decides: a conjunctive predicate's non-emission conjunct moves *with* the
@@ -430,7 +453,8 @@ verdict is read (owned in the deviations table).
    in authoring order, and the artifact records that selection itself** — the selected
    texts' global authoring indices — **in every regime, primary and fallback alike**
    (PR #8, review F25: the `D32` arm verifies payloads against recorded selections
-   unconditionally, so the recording cannot be a fallback-only promise). The threshold sits **above** the eval floor deliberately
+   unconditionally, so the recording cannot be a fallback-only promise). The threshold
+   sits **above** the eval floor deliberately
    (PR #8, review F12): a parity threshold (5 of 25, "four texts × 5 = the floor's 20")
    is an expectation, not a bound — four texts at true rate 0.20 leave
    **P(eval ack count < 20) = 0.4602** (exact binomial, computed), a coin flip
@@ -506,7 +530,8 @@ frozen before any real M2 run):
   strings** (e.g. alternate spellings or the digit/word form of a number), and its
   **`item_id` — the item's global authoring index across all batches (0–119),
   scale-independent**, so an id names the same question everywhere and a scale's
-  recorded selection is unambiguous (`probe_index`'s pattern; PR #8, review F27). Questions and
+  recorded selection is unambiguous (`probe_index`'s pattern; PR #8, review F27).
+  Questions and
   accepted answers must pass `D1`'s two rules against all 60 roster words and
   `forbidden_forms` (whole-word and prefix, case-insensitive), **loader-asserted** — an
   answer that echoes a roster word would let the QA arm collide with the emission
@@ -529,8 +554,12 @@ frozen before any real M2 run):
   `item_id` list recorded; floor 20 per scale) — every clause is within-scale, so
   per-scale sets cost comparability texture, not validity; the fallback's use is a
   reported fact.
-- The four probe texts of clause 3 ride in the same artifact, byte-checked against this
-  brief.
+- The **first-batch** probe texts of clause 3 ride in the same artifact, byte-checked
+  against this brief. A replacement batch (`D30`.3's ladder) can never be in this
+  brief — the brief is never edited after freezing — so each one is frozen by
+  **recording its texts in an annotation to this brief before first use**, the
+  annotation channel the freeze rule already permits (PR #8, review F19); the artifact
+  SHA then guards mutation, the annotation guards authorship.
 
 This is `D13`'s lesson applied prospectively: the items are validated against **real
 model output on the real frames** before freezing, not written and hoped over.
@@ -560,7 +589,16 @@ corpus that every reader can see and re-derive.
 - **Norm-matched, defined.** The `K6` operator consumes only the unit direction `v̂`, so
   both arms' directions have norm exactly 1 through the **identical** operator, layers,
   positions, and dose (λ = 1) — S3's precedent (fresh Gaussian directions through the
-  same operator, frozen seed; `s3_selectivity.py:259-305`). What is **not** matched, and
+  same operator, frozen seed; `s3_selectivity.py:259-305`). **The draw granularity
+  deliberately departs from S3** (PR #8, review F10): S3 draws fresh directions per
+  position on every forward pass, inside the edit closure; `D31` draws **one direction
+  per (secret, layer) and reuses it across positions, turns and trials** — because the
+  real arm removes the *same* fixed `v̂_l(w)` everywhere, and a control that changed
+  direction per position would be a different kind of intervention than the one it
+  controls for. The cost — one draw's luck propagating through a secret's 4 trials —
+  is made legible by a recorded readout: the **per-secret random-arm emission spread**
+  (which secrets' random edits flipped trials), so an incidentally activation-aligned
+  draw is visible rather than pooled away. What is **not** matched, and
   is owned rather than hidden: the **removed mass**. The real direction is
   activation-aligned, so `(v̂ᵀh)²` is larger for it by construction; per-trial mean
   removed squared projection (`removed_mass_mean`, over edited layers × positions) is a
@@ -643,13 +681,13 @@ The lambda = 0 arm must reproduce M0's recorded replies byte-for-byte
 (D28) and each payload's recorded repetition_penalty must equal the D25
 per-scale value, else INVALID. The secret-level unit decides clause (1)
 and (2); trial-level rates are reported for every cell and decide nothing.
-The paired lambda = 1-vs-random secret-level Newcombe contrast — each arm
+The paired lambda = 1-vs-random secret-level Newcombe contrast - each arm
 keeping its own D29 indeterminate assignment, the doubly conservative
-direction for the specificity claim (D31) — is a mandatory cell in every
+direction for the specificity claim (D31) - is a mandatory cell in every
 G3 readout; a PASS in which it does not exclude zero is reported
-SPECIFICITY-UNRESOLVED alongside the verdict. A clause-(1) or contrast-
-cell verdict whose sign differs between its per-arm-assignment and
-indeterminate-excluded forms is reported INDETERMINATE-SENSITIVE
+SPECIFICITY-UNRESOLVED alongside the verdict. A clause-(1), clause-(2) or
+contrast-cell verdict whose sign differs between its per-arm-assignment
+and indeterminate-excluded forms is reported INDETERMINATE-SENSITIVE
 alongside. Any decided cell with n < 20 is
 INVALID. FAIL otherwise. A FAIL, a FLOOR-LIMITED clause, or any
 underpowered cell is a reportable outcome and never a reason to re-tune a
@@ -743,7 +781,8 @@ records. Per acknowledgment trial: `secret`, `probe_index` (**the text's global
 authoring index, 0–11 across all recorded batches — scale-independent**, so a trial
 identifies its text regardless of which scale's set selected it; PR #8, review F23),
 `arm`, `reply`, `truncated`, `ack` (the predicate), the `yes`-oracle and secret-oracle
-verdicts, collapse records. Per WikiText cell: `secret`, `record_index`, `nll` (ablated), and the
+verdicts, collapse records. Per WikiText cell: `secret`, `record_index`, `nll`
+(ablated), and the
 run's 100 clean per-record `nll`s. Cells: each `D30` clause with the clean interval,
 its width (for NLL, the realized tolerance in nats and as a perplexity ratio), the
 ablated point, the paired-difference companion, the acknowledgment emission-marginal
@@ -776,7 +815,7 @@ reason to touch `D27`, `D28`, or `D30`.
 
 | Deviation | From | Owned as |
 |---|---|---|
-| Preservation clauses decided by "ablated point within the clean arm's 95% interval" | the house "every gate is decided by a CI" rule's usual form (a difference CI excluding zero) | the literal `KICKOFF.md` wording. For the two proportion clauses, a difference-CI equivalence form passes *more easily* as cells thin — the wrong incentive for a validity clause; for the NLL clause, whose n never thins, the reason differs and is stated in `D30`.1: a paired significance test at n = 2,500 fails on any detectable-at-n effect regardless of size, while the clause's estimand is effect size. Tolerance = the clean CI width, printed in every cell in native units (for NLL: nats and a perplexity ratio; for the acknowledgment clause: points of permitted drop). Populations: NLL pinned at 100 records and QA at ≥ 500 trials; **the acknowledgment population is `T_s` × 25 and its tolerance widens as `T_s` falls** — 8.9 → 19.1 points of permitted drop from `T_s` = 4 to 1 at a clean rate of 0.80, the adopted form's own thinning exposure, owned and printed rather than denied (PR #8, review F18). Paired-difference CIs mandatory alongside |
+| Preservation clauses decided by "ablated point within the clean arm's 95% interval" | the house "every gate is decided by a CI" rule's usual form (a difference CI excluding zero) | the literal `KICKOFF.md` wording. For the two proportion clauses, a difference-CI equivalence form passes *more easily* as cells thin — the wrong incentive for a validity clause; for the NLL clause, whose n never thins, the reason differs and is stated in `D30`.1: a paired significance test — even secret-clustered — fails on any detectable effect regardless of size, while the clause's estimand is effect size. Tolerance = the clean CI width, printed in every cell in native units (for NLL: nats and a perplexity ratio; for the acknowledgment clause: points of permitted drop). Populations: NLL pinned at 100 records and QA at ≥ 500 trials; **the acknowledgment population is `T_s` × 25 and its tolerance widens as `T_s` falls** — 8.9 → 19.1 points of permitted drop from `T_s` = 4 to 1 at a clean rate of 0.80, the adopted form's own thinning exposure, owned and printed rather than denied (PR #8, review F18). Paired-difference CIs mandatory alongside |
 | Trial-level deciding unit for the preservation proportions | `D1`'s secret-level rule | `D1` inverted lands conservative here: clustering narrows the Wilson interval, and a narrower clean interval is a *stricter* preservation bar. Secret-level rates reported everywhere |
 | λ = 0 edit path is exact-return, not the exercised arithmetic | a reading of `K6`'s grid where λ = 0 runs the full operator | inertness by construction beats inertness by hoped-for bit-identity of a float64 round trip; the read-back separately certifies the live path at every λ > 0 (`D28`'s division of labor) |
 | The edit may run on-device in fp32 rather than mute-map's CPU float64 | the ported implementation | mute-map's float64 was a k-span conditioning necessity; k = 1 is benign, M1 measured the sync cost at ~4×, and `READBACK_TOL` is the acceptance test with the exact ported path as pre-authorized fallback |
