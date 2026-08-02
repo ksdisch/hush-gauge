@@ -67,6 +67,14 @@ or the probe statistic measures something other than the probed word's presence;
 separate those and says so. Full curves, both gates, and every pre-declared secondary in
 [`docs/M1-RESULTS.md`](docs/M1-RESULTS.md).
 
+**Planning follow-up, 2026-08-02:** both of M1's open design questions are settled in
+[`docs/DECISIONS.md`](docs/DECISIONS.md) — **D25** freezes the decode rule as-run ("greedy"
+ran under the models' shipped `repetition_penalty`: 1.1 / 1.1 / 1.05 per scale, now owned
+rather than patched), and **D26** rules G2's contrast direction correctly specified: the
+yardstick's edge on silent trials comes from licensed speech being *spoken*, not from
+silent licensing. Next up: M2 (ablation + preservation battery), opening with its own
+frozen brief.
+
 **M0 complete, 2026-07-30 — G0 PASSES on all three scales.** The battery has dynamic range:
 under benign chat with no ask the models sit at the floor, and under multi-turn extraction all
 25 held-out secrets leak, with the difference Newcombe-clean at every scale. Crucially the
@@ -83,7 +91,8 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
   frozen decisions, the design-extraction pre-commit, and its gates' byte-frozen
   `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design), **D1–D14** (M0) and **D15–D24** (M1). Read
+  bars and the battery/split design), **D1–D14** (M0), **D15–D24** (M1) and **D25–D26**
+  (the 2026-08-02 planning session). Read
   **D12/D13 before D10/D11** — the older two say why the oracle's boundary rule exists, the
   newer two say what it does.
 - **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that
