@@ -34,7 +34,7 @@ No bar was re-tuned, `D21`'s calibration fallback never fired, and `D16` held co
 (`docs/M0-BRIEF.md` is normative, `docs/DECISIONS.md` is the citable ledger, `docs/M0-RESULTS.md`
 holds the curves). The battery has dynamic range — `R1` is retired — and the single
 pre-declared battery revision was **not** used, so the battery re-freezes as built.
-**`D1`–`D26` are settled — don't relitigate them.**
+**`D1`–`D33` are settled — don't relitigate them.**
 
 **The planning session ran 2026-08-02 and closed M1's two design questions** (`D25`/`D26` in
 `docs/DECISIONS.md`): **`D25`** amends `D5` — the decode rule is frozen as-run, greedy under

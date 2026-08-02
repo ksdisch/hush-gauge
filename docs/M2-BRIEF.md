@@ -1,9 +1,9 @@
 # M2-BRIEF — Causal ablation + the preservation battery
 
 *Written 2026-08-02 · start-of-stage brief · status: **frozen — approved by Kyle
-2026-08-02**, after the adversarial review on PR #8 (seven rounds across three runs;
-every should-fix fixed **and verified** in-loop; the nice-to-have follow-ups folded in
-at approval, on Kyle's recorded agreement). The per-finding record is
+2026-08-02**, after the adversarial review on PR #8 (every should-fix fixed **and
+verified** in-loop; the nice-to-have follow-ups folded in at approval, on Kyle's
+recorded agreement). The per-finding record is
 `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and **is the authority** —
 no round or finding totals are restated here, per the M0 lesson.*
 
@@ -138,10 +138,11 @@ thirds 4/4/5) · 1.5B → **L11–L24** (14, thirds 4/4/6) · 3B → **L14–L32
 3. **No λ-graded random control exists upstream.** S3's random arm ran at its fixed
    operating point. `D31` runs the random arm at the deciding dose only (λ = 1), which is
    the only dose G3 reads.
-4. **No decode-rule assertion exists anywhere in this repo** (PR #8, review F6). The
-   whole-repo grep for `repetition_penalty` finds the read-and-record in
-   `m1_probe_panel.py` and nothing that asserts or aborts; `D25` specifies the
-   assert-and-abort forward-bindingly. `D28` builds it new, in both M2 runners.
+4. **No decode-rule assertion exists in any runner or gate** (PR #8, reviews F6 + PR #9
+   F5). `m1_probe_panel.py` reads and records the resolved value; the M1 *tests* assert
+   it (`tests/test_g1.py`, `tests/test_capture_alignment.py`) but nothing in the sweep
+   path asserts-and-aborts. `D25` specifies the assert-and-abort forward-bindingly;
+   `D28` builds it new, in both M2 runners.
 
 ## What M0/M1 hand M2 — the measurement substrate, computed not transcribed
 

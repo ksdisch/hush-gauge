@@ -994,9 +994,9 @@ prerequisite for M2, which is the cheaper and more relevant causal probe.
 
 *The start-of-stage brief `docs/M2-BRIEF.md` is normative for M2, as `M1-BRIEF.md` is for
 M1. `D27`–`D33` were frozen there before any M2 code or run; approved by Kyle 2026-08-02
-after the adversarial review on hush-gauge PR #8 (seven rounds across three runs, both
-continuation runs directed by Kyle; every should-fix fixed **and verified** in-loop; the
-nice-to-have follow-ups folded in at approval on Kyle's recorded agreement). The
+after the adversarial review on hush-gauge PR #8 (both continuation runs directed by
+Kyle; every should-fix fixed **and verified** in-loop; the nice-to-have follow-ups
+folded in at approval on Kyle's recorded agreement). The
 per-finding record is `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and
 **is the authority** — no round or finding totals are restated here, per the M0 lesson.
 Entries below are the citable summaries; the brief carries the full reasoning, the
@@ -1014,7 +1014,8 @@ pass, λ ∈ {0, .25, .5, .75, 1}, **λ = 1 deciding**. `KICKOFF.md`'s "mid-band
 resolved as the frozen mid-network band — the lineage writes "third" when it means
 thirds — and the "band sweep secondary" is `D33`.2's per-third sweep. Runtime read-back
 per position per edited layer: the surviving projection must equal `(1 − λ)` × the
-original within `READBACK_TOL = 1e-4`, `INVALID` on breach; on-device fp32 permitted
+original within `READBACK_TOL = 1e-4` **relative to `‖h‖`**, `INVALID` on breach;
+on-device fp32 permitted
 with the ported CPU-float64 path as the pre-authorized fallback. λ = 0 is an
 exact-return no-op **by construction**.
 
@@ -1028,7 +1029,8 @@ substrate, loaders, encoder, decode rule, and hook *installation*; the λ > 0 ar
 is the read-back's job — bitwise inertness is true by construction, never assumed. Both
 M2 runners read `repetition_penalty` from `model.generation_config`, **assert
 1.1 / 1.1 / 1.05 per scale, and abort on drift** — `D25`'s forward binding, built new
-(no assertion exists anywhere in the repo; only the M1 read-and-record does). The QA,
+(no runner or gate asserts it today; the M1 sweep path only reads and records, and the
+M1 tests' assertions live outside the sweep path). The QA,
 acknowledgment and WikiText arms have no M0 counterpart to byte-check; they carry the
 same environment and decode assertions. A decode rule is never read off an M0
 artifact's `generation` block (`D25`).
@@ -1074,8 +1076,9 @@ the clean interval — a *stricter* preservation bar; `D1`'s argument lands cons
 by inversion). (3) **The acknowledgment probe** — `T_s` validated texts × 25 secrets;
 `ack` = the reply contains `yes` at a word boundary (the frozen oracle; the naive
 reply-marker was measured on frozen M0 replies and killed — it reads reveals, not
-refusals — and the ack-∧-non-emitted conjunction was killed in review as easier exactly
-when ablation works); clause: ablated ack rate ≥ the clean Wilson 95% LB, with its
+refusals — and the ack-∧-non-emitted conjunction was demoted in review to a mandatory
+companion cell, because as a deciding conjunct it gets easier exactly when ablation
+works); clause: ablated ack rate ≥ the clean Wilson 95% LB, with its
 realized tolerance printed (it widens as `T_s` falls: 8.9 → 19.1 points from `T_s` = 4
 to 1 at clean 0.80); floor: ≥ 20 ack-true λ = 0 trials, else **`FLOOR-LIMITED`** — the
 clause cannot hold and **G3 cannot PASS at that scale**. Texts survive validation at
@@ -1085,8 +1088,11 @@ fallback, recorded selections (never re-derived), and a recorded pre-run
 `FLOOR-LIMITED` prediction per scale. (4) **The collapse guard** — per turn,
 most-common-greedy-token share ≥ `COLLAPSE_SHARE = 0.5` (mute-map's detector); clause:
 collapsed-trial rate at λ = 1 ≤ the clean Wilson 95% UB in the T4, QA and
-acknowledgment populations alike (a `FLOOR-LIMITED` acknowledgment population has no
-trials to collapse and is exempt at that scale).
+acknowledgment populations alike. The exemption is **by-construction only**: an
+acknowledgment population `FLOOR-LIMITED` because zero texts qualified at that scale
+has no trials to collapse and is exempt; the floor-route `FLOOR-LIMITED` case (`T_s` ≥ 1
+texts but < 20 ack-true λ = 0 trials) still has its `T_s` × 25 trials, and its collapse
+cell is still required (`D32`'s missing-cell arm reads it).
 
 ## D31 — The norm-matched random-direction control
 

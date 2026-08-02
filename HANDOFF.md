@@ -9,21 +9,22 @@ _Last updated: 2026-08-02 (**`docs/M2-BRIEF.md` is FROZEN — approved by Kyle**
 line flipped to *frozen*, `D27`–`D33` were mirrored into `docs/DECISIONS.md` as the
 citable ledger entries (both edits pre-authorized by the brief), and the review's
 nice-to-have follow-ups were folded in on Kyle's recorded agreement ("i approve and
-agree with your recommendation"). The brief had merged as PR #8 after an adversarial
-review of seven rounds across three runs — both continuation runs directed by Kyle,
-every should-fix fixed **and verified** in-loop, zero disputes, zero waivers. The
+agree with your recommendation"). The brief had merged as PR #8 after its adversarial
+review — both continuation runs directed by Kyle, every should-fix fixed **and
+verified** in-loop, zero disputes, zero waivers. The
 per-finding record is `~/.claude/reviews/hush-gauge/2026-08-02-docs-m2-brief.md` and
 **is the authority** (no totals restated here, per the M0 lesson — two hand-carried
 totals died in this very session's chat while the PR comment stayed correct).
 
-**What the review earned:** it killed a refusal-coherence marker that would have failed
-exactly when ablation works (measured on frozen M0 replies before it froze), caught the
-specificity clause's power gap and gave it a mandatory direct-contrast cell, forced the
-acknowledgment clause onto the `yes`-marginal (the conjunction re-created the killed
-marker's defect with the sign flipped), and chased the probe-text machinery through
-four generations of fix-introduced defects until the record-the-selection principle
-held on every path. Every fix commit sprouted new findings until the last — the loop's
-cap-and-continue structure is what converged it.
+**What the review earned** (distinct from what drafting earned — the refusal-marker
+kill was a drafting-time measurement, already in the brief the first round reviewed):
+it caught the specificity clause's power gap and gave it a mandatory direct-contrast
+cell; it forced the acknowledgment clause onto the `yes`-marginal after the ack ∧
+non-emitted conjunction re-created the killed marker's defect with the sign flipped;
+and it chased the probe-text machinery through four generations of fix-introduced
+defects until the record-the-selection principle held on every path. Every fix commit
+sprouted new findings until the last — the loop's cap-and-continue structure is what
+converged it.
 
 ### Earlier — the brief itself (2026-08-02)
 
