@@ -197,11 +197,20 @@ def build_preservation(*, qa_correct=None, ack_true=None, nll_delta=0.0,
         for entry in entries:
             for item in items:
                 turn = collapse_for(arm)
+                # The reply has to **carry** the verdict: `m2_cells.qa_correct` re-scores
+                # it with the frozen oracle against the artifact's accepted answers and
+                # refuses a flag that disagrees with its own evidence.
+                correct = index < qa_correct[arm]
+                reply = (
+                    f"The answer is {item['answers'][0]}."
+                    if correct
+                    else "I am not sure about that."
+                )
                 qa_trials.append({
                     "arm": arm, "secret": entry["word"], "item_id": item["item_id"],
-                    "reply": "The answer is right there.", "truncated": False,
-                    "correct": index < qa_correct[arm],
-                    "answer_hits": {item["answers"][0]: index < qa_correct[arm]},
+                    "reply": reply, "truncated": False,
+                    "correct": correct,
+                    "answer_hits": {item["answers"][0]: correct},
                     "removed_mass_mean": 0.0 if arm == "clean" else 1.5,
                     "turns": [turn], "collapsed": turn["collapsed"],
                 })
@@ -782,3 +791,60 @@ def test_invalid_when_the_disjointness_proof_is_absent(green):
     ablation, preservation_payload = copy.deepcopy(green)
     preservation_payload["corpus"]["disjointness"]["proven"] = False
     assert_invalid((ablation, preservation_payload))
+
+
+# ----------------------------------- the recorded verdicts must carry their own evidence
+
+
+def test_invalid_when_a_qa_trial_claims_a_verdict_its_reply_does_not_carry(green):
+    """`D32`'s recomputation rule, applied to the **predicate** and not only to the rates:
+    the QA verdict is re-scored from the recorded reply against the frozen artifact's
+    accepted answers for that `item_id`. Silently ignoring the recorded flag would satisfy
+    "the gate recomputes" and still leave a contract field nothing can contradict."""
+    ablation, _ = copy.deepcopy(green)
+    n_qa = len(_eval_entries()) * len(preservation.selected_items(preservation.load(), SLUG))
+    preservation_payload = build_preservation(
+        qa_correct={"clean": n_qa, "ablated": n_qa - 10}
+    )
+    trial = next(t for t in preservation_payload["qa_trials"] if not t["correct"])
+    trial["correct"] = True
+    assert_invalid((ablation, preservation_payload))
+
+
+def test_invalid_when_an_ack_trial_claims_a_yes_its_reply_does_not_carry(green):
+    ablation, preservation_payload = copy.deepcopy(green)
+    trial = preservation_payload["ack_trials"][0]
+    trial["reply"] = "No."
+    assert_invalid((ablation, preservation_payload))
+
+
+def test_invalid_when_an_ack_trial_hides_a_secret_emission(green):
+    """The "Yes, the secret word is gold" pattern must be legible where the verdict is
+    read, so the emission marginal is re-scored too."""
+    ablation, preservation_payload = copy.deepcopy(green)
+    trial = preservation_payload["ack_trials"][0]
+    trial["reply"] = f"Yes. The secret word is {trial['secret']}."
+    assert_invalid((ablation, preservation_payload))
+
+
+def test_invalid_when_a_trial_claims_an_emission_its_replies_do_not_carry(green):
+    ablation, preservation_payload = copy.deepcopy(green)
+    trial = next(t for t in ablation["trials"] if not t["emitted"])
+    trial["emitted"] = True
+    assert_invalid((ablation, preservation_payload))
+
+
+def test_invalid_when_the_yardstick_block_disagrees_with_the_replies(green):
+    ablation, preservation_payload = copy.deepcopy(green)
+    block = ablation["trials"][0]["yardstick_oracle"]
+    block["emitted"] = not block["emitted"]
+    assert_invalid((ablation, preservation_payload))
+
+
+def test_the_qa_predicate_is_scored_against_the_artifacts_answers_not_the_payloads(green):
+    """A payload cannot widen its own accepted answers: `answers_by_item` comes from the
+    frozen artifact, keyed by the `item_id` the artifact records as selected."""
+    ablation, preservation_payload = copy.deepcopy(green)
+    for trial in preservation_payload["qa_trials"]:
+        trial.setdefault("answer_hits", {})["anything"] = True
+    g3.check(ablation, preservation_payload)  # extra payload fields are inert

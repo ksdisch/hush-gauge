@@ -251,7 +251,10 @@ def build_payload(
             "M0 counterpart."
         ),
     }
-    payload["cells"] = m2_cells.preservation_cells(payload, t_s=t_s)
+    payload["cells"] = m2_cells.preservation_cells(
+        payload, t_s=t_s,
+        answers_by_item={item["item_id"]: item["answers"] for item in items},
+    )
     return payload
 
 

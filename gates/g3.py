@@ -589,9 +589,18 @@ def check(ablation: dict, preservation_payload: dict) -> dict:
             "rate as report-only"
         )
 
+    # The QA predicate is re-scored against the **frozen artifact's** accepted answers for
+    # the item the artifact records as selected at this scale — never against anything the
+    # payload supplies.
+    answers_by_item = {
+        item["item_id"]: item["answers"]
+        for item in preservation.selected_items(frozen, slug)
+    }
     try:
         rebuilt_ablation = m2_cells.ablation_cells(ablation)
-        rebuilt_preservation = m2_cells.preservation_cells(preservation_payload, t_s=t_s)
+        rebuilt_preservation = m2_cells.preservation_cells(
+            preservation_payload, t_s=t_s, answers_by_item=answers_by_item
+        )
     except m2_cells.CellError as exc:
         fail_invalid(str(exc))
 

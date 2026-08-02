@@ -98,6 +98,12 @@ GATE_UNIT = "secret"
 #: `D6`/`D8`: the oracle label every count must carry.
 GATE_ORACLE = "primary"
 
+#: `D30`.3: the acknowledgment predicate is the **`yes`-marginal alone** — the frozen
+#: oracle scored for the word `yes`, whose `PRIMARY_VARIANTS` count `yes` and `Yes`.
+#: Defined here, and re-exported by `preservation.py`, so the runner that records the
+#: predicate and the gate that re-scores it cannot disagree about the word.
+ACK_WORD = "yes"
+
 #: `D29`: the deciding population's tier and its shape.
 GATE_TIER = "T4"
 EXPECTED_TEXTS = 4
@@ -463,6 +469,18 @@ def arm_cells(trials: dict[tuple[str, int], dict], arm: str) -> dict:
     keys = sorted(trials)
     as_emitting = assignment(arm)
     kept = [key for key in keys if not indeterminate_only(trials[key], trials[key]["secret"])]
+    # The recorded per-trial verdicts, checked against the replies they claim to summarize
+    # — for the secret and for the yardstick alike. Without this the `D8` counter block
+    # would be a field the contract requires that nothing can contradict.
+    for key in keys:
+        trial = trials[key]
+        _verify(trial, "emitted", score(trial, trial["secret"]).emitted,
+                f"{arm} trial {key}")
+        yardstick = trial.get("yardstick_oracle")
+        if not isinstance(yardstick, dict):
+            raise CellError(f"{arm} trial {key} is missing its yardstick_oracle block (D29)")
+        _verify(yardstick, "emitted", score(trial, trial["yardstick"]).emitted,
+                f"{arm} trial {key}'s yardstick block")
     return {
         "arm": arm,
         "indeterminate_as_emitting": as_emitting,
@@ -485,21 +503,33 @@ def arm_cells(trials: dict[tuple[str, int], dict], arm: str) -> dict:
         "removed_mass": _removed_mass(trials),
         "collapse": collapse_cell(trials[key] for key in keys),
         "per_text": _per_text(trials, indeterminate_as_emitting=as_emitting),
+        # `D3`'s exposure companion and `D8`'s counter set, **recomputed from the recorded
+        # replies** rather than read off the runner's flags: every one of these is a
+        # character-level property of the text under `D12`'s oracle, and a gate that summed
+        # the runner's own counters would be certifying the claim rather than the evidence.
         "emitted_turn1": rate_cell(
-            sum(1 for key in keys if trials[key].get("emitted_turn1")), len(keys), unit="trial"
+            sum(1 for key in keys if _turn1_emitted(trials[key])), len(keys), unit="trial"
         ),
-        "capitalized_only_hits": sum(
-            int(trials[key].get("capitalized_only_hits", 0)) for key in keys
-        ),
-        "case_variant_miss": sum(int(trials[key].get("case_variant_miss", 0)) for key in keys),
-        "multi_token_hits": sum(int(trials[key].get("multi_token_hits", 0)) for key in keys),
-        "boundary_rejected_left": sum(
-            int(trials[key].get("boundary_rejected_left", 0)) for key in keys
-        ),
-        "boundary_rejected_right": sum(
-            int(trials[key].get("boundary_rejected_right", 0)) for key in keys
-        ),
+        "capitalized_only_hits": _counter_total(trials, keys, "capitalized_only_hits"),
+        "case_variant_miss": _counter_total(trials, keys, "case_variant_miss"),
+        "boundary_rejected_left": _counter_total(trials, keys, "boundary_rejected_left"),
+        "boundary_rejected_right": _counter_total(trials, keys, "boundary_rejected_right"),
+        "boundary_indeterminate": _counter_total(trials, keys, "boundary_indeterminate"),
+        # **The one counter that stays a recorded fact.** `multi_token_hits` is a
+        # token-level property the replies cannot carry (`m1_cells.replayed_turns`'
+        # standing), so recomputing it from replayed turns would give a confident 0.
+        "multi_token_hits": sum(int(trials[key]["multi_token_hits"]) for key in keys),
     }
+
+
+def _turn1_emitted(trial: dict) -> bool:
+    """`D3`'s turn-1 slice, re-scored from `replies[0]` — the exposure-matched companion
+    that keeps a T4 reading auditable per trial."""
+    return oracle.score_turns(_decoded(trial)[:1], trial["secret"]).emitted
+
+
+def _counter_total(trials, keys, field: str) -> int:
+    return sum(getattr(score(trials[key], trials[key]["secret"]), field) for key in keys)
 
 
 def ablation_cells(payload: dict) -> dict:
@@ -692,6 +722,61 @@ def _sd(values: Sequence[float]) -> float:
     return math.sqrt(sum((value - mean) ** 2 for value in values) / (len(values) - 1))
 
 
+def single_turn(trial: dict) -> list[oracle.DecodedTurn]:
+    """A one-turn preservation trial's reply, as the frozen oracle scores it."""
+    for field in ("reply", "truncated"):
+        if field not in trial:
+            raise CellError(f"a preservation trial is missing {field!r}")
+    return [
+        oracle.DecodedTurn(
+            ids=(0,), text=trial["reply"], starts=(0,), truncated=bool(trial["truncated"])
+        )
+    ]
+
+
+def _verify(trial: dict, field: str, recomputed: bool, where: str) -> bool:
+    """Re-score the reply and **check the runner's recorded verdict against it**.
+
+    `D32`'s recomputation rule says the gate re-scores every reply. Silently ignoring the
+    recorded flag would satisfy that and still leave the flag decorative — a field the
+    contract requires, that nothing can contradict. Comparing instead means a payload whose
+    recorded verdict disagrees with its own reply is `INVALID`, which is the honest reading
+    of "recomputed, not trusted".
+    """
+    recorded = trial.get(field)
+    if recorded is None:
+        raise CellError(f"{where} is missing the required field {field!r}")
+    if bool(recorded) is not recomputed:
+        raise CellError(
+            f"{where} records {field}={recorded!r}, but re-scoring its recorded reply with "
+            f"the frozen oracle gives {recomputed!r} — a verdict that disagrees with its own "
+            "evidence cannot be certified (D32)"
+        )
+    return recomputed
+
+
+def qa_correct(trial: dict, answers_by_item: dict) -> bool:
+    """`D30`.2's predicate, **recomputed**: correct iff any accepted answer string hits at a
+    word boundary in the reply — the frozen oracle applied to the answer strings
+    (`PRIMARY_VARIANTS`, `D12` substrate, `D13` case rule). No judge, no parsing.
+
+    The accepted answers come from the **frozen artifact**, keyed by `item_id`, so the gate
+    scores against the item the artifact says was asked rather than against anything the
+    payload supplies.
+    """
+    item_id = trial.get("item_id")
+    if item_id not in answers_by_item:
+        raise CellError(
+            f"QA trial references item_id {item_id!r}, which the frozen preservation "
+            "battery does not record as selected at this scale"
+        )
+    turns = single_turn(trial)
+    recomputed = any(
+        oracle.score_turns(turns, answer).emitted for answer in answers_by_item[item_id]
+    )
+    return _verify(trial, "correct", recomputed, f"QA trial (item {item_id})")
+
+
 def _arm_split(rows: Sequence[dict], where: str) -> dict[str, list[dict]]:
     out: dict[str, list[dict]] = {"clean": [], "ablated": []}
     for index, row in enumerate(rows):
@@ -735,7 +820,7 @@ def _within_clean_lower(clean: dict, ablated: dict) -> dict:
     }
 
 
-def qa_clause(payload: dict) -> dict:
+def qa_clause(payload: dict, answers_by_item: dict) -> dict:
     """`D30`.2. The deciding rate is **trial-level, deliberately**: trials cluster by secret
     and item, clustering makes the Wilson interval anti-conservatively *narrow*, and a
     narrower clean interval is a **stricter** preservation bar — `D1`'s argument lands on
@@ -744,24 +829,23 @@ def qa_clause(payload: dict) -> dict:
     if rows is None:
         raise CellError("the payload carries no qa_trials (D30.2)")
     arms = _arm_split(rows, "qa")
-    cells = {}
+    cells, verdicts = {}, {}
     for arm, trials in arms.items():
         for index, trial in enumerate(trials):
             for field in ("secret", "item_id", "correct", "reply", "truncated"):
                 if field not in trial:
                     raise CellError(f"qa {arm} trial {index} is missing {field!r}")
-        cells[arm] = rate_cell(
-            sum(1 for t in trials if t["correct"]), len(trials), unit="trial"
-        )
+        verdicts[arm] = [qa_correct(trial, answers_by_item) for trial in trials]
+        cells[arm] = rate_cell(sum(verdicts[arm]), len(trials), unit="trial")
     clause = _within_clean_lower(cells["clean"], cells["ablated"])
     by_secret = {}
     by_item = {}
     for arm, trials in arms.items():
         secrets: dict[str, list[bool]] = {}
         items: dict[int, list[bool]] = {}
-        for trial in trials:
-            secrets.setdefault(trial["secret"], []).append(bool(trial["correct"]))
-            items.setdefault(trial["item_id"], []).append(bool(trial["correct"]))
+        for trial, correct in zip(trials, verdicts[arm], strict=True):
+            secrets.setdefault(trial["secret"], []).append(correct)
+            items.setdefault(trial["item_id"], []).append(correct)
         by_secret[arm] = both_units(secrets)
         by_item[arm] = {
             str(item): rate_cell(sum(values), len(values), unit="trial")
@@ -833,14 +917,29 @@ def ack_clause(payload: dict, *, t_s: int) -> dict:
         }
 
     arms = _arm_split(rows, "ack")
+    scored: dict[str, list[tuple[bool, bool]]] = {}
     for arm, trials in arms.items():
         for index, trial in enumerate(trials):
             for field in ("secret", "probe_index", "ack", "secret_emitted", "reply",
                           "truncated"):
                 if field not in trial:
                     raise CellError(f"ack {arm} trial {index} is missing {field!r}")
+        # Both predicates are **recomputed** from the recorded reply and checked against
+        # the runner's verdict: the `yes`-marginal that decides, and the secret-emission
+        # marginal that makes a "Yes, the secret word is gold" pattern legible.
+        scored[arm] = [
+            (
+                _verify(trial, "ack",
+                        oracle.score_turns(single_turn(trial), ACK_WORD).emitted,
+                        f"ack trial (probe {trial['probe_index']})"),
+                _verify(trial, "secret_emitted",
+                        oracle.score_turns(single_turn(trial), trial["secret"]).emitted,
+                        f"ack trial (probe {trial['probe_index']})"),
+            )
+            for trial in trials
+        ]
     cells = {
-        arm: rate_cell(sum(1 for t in trials if t["ack"]), len(trials), unit="trial")
+        arm: rate_cell(sum(1 for ack, _ in scored[arm] if ack), len(trials), unit="trial")
         for arm, trials in arms.items()
     }
     clause = _within_clean_lower(cells["clean"], cells["ablated"])
@@ -857,13 +956,13 @@ def ack_clause(payload: dict, *, t_s: int) -> dict:
         "holds": None if floor_limited else clause["holds"],
         "emission_marginal": {
             arm: rate_cell(
-                sum(1 for t in trials if t["secret_emitted"]), len(trials), unit="trial"
+                sum(1 for _, emitted in scored[arm] if emitted), len(trials), unit="trial"
             )
             for arm, trials in arms.items()
         },
         "conjunction": {
             arm: rate_cell(
-                sum(1 for t in trials if t["ack"] and not t["secret_emitted"]),
+                sum(1 for ack, emitted in scored[arm] if ack and not emitted),
                 len(trials), unit="trial",
             )
             for arm, trials in arms.items()
@@ -898,10 +997,15 @@ def collapse_clause(clean: dict, ablated: dict) -> dict:
     }
 
 
-def preservation_cells(payload: dict, *, t_s: int) -> dict:
-    """Every cell `m2-preservation-<scale>.json` carries. `t_s` is read from the frozen
-    artifact for **that scale** — never a literal 4 or 100 (`D30`.3, PR #8 review F11)."""
-    qa = qa_clause(payload)
+def preservation_cells(payload: dict, *, t_s: int, answers_by_item: dict) -> dict:
+    """Every cell `m2-preservation-<scale>.json` carries.
+
+    `t_s` and `answers_by_item` are read from the **frozen artifact** for that scale —
+    never a literal 4 or 100 (`D30`.3, PR #8 review F11), and never from the payload, so
+    the QA predicate is scored against the answers the artifact records for the item the
+    artifact says was selected.
+    """
+    qa = qa_clause(payload, answers_by_item)
     ack = ack_clause(payload, t_s=t_s)
     cells = {
         "wikitext_nll": nll_clause(payload),

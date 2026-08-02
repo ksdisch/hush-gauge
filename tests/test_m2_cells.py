@@ -254,13 +254,20 @@ def test_an_ablated_nll_cell_with_no_clean_counterpart_is_refused():
 # ---------------------------------------------------------- D30.2/.3's proportion clauses
 
 
+#: The QA predicate is **recomputed** from the reply against the artifact's accepted
+#: answers, so a fixture's reply has to carry its own verdict.
+QA_ANSWERS = {index: ["four"] for index in range(20)}
+
+
 def _qa_payload(clean_correct: int, ablated_correct: int, n: int = 500) -> dict:
     rows = []
     for arm, correct in (("clean", clean_correct), ("ablated", ablated_correct)):
         for index in range(n):
+            hit = index < correct
             rows.append({
                 "arm": arm, "secret": f"w{index % 25}", "item_id": index % 20,
-                "reply": "x", "truncated": False, "correct": index < correct,
+                "reply": "The answer is four." if hit else "I am not sure.",
+                "truncated": False, "correct": hit,
                 "collapsed": False,
                 "turns": [{"collapsed": False, "attractor_token": ".", "share": 0.1}],
             })
@@ -268,20 +275,20 @@ def _qa_payload(clean_correct: int, ablated_correct: int, n: int = 500) -> dict:
 
 
 def test_the_qa_clause_is_read_against_the_clean_arms_wilson_lower_bound():
-    cell = m2_cells.qa_clause(_qa_payload(500, 500))
+    cell = m2_cells.qa_clause(_qa_payload(500, 500), QA_ANSWERS)
     assert cell["holds"] is True
     assert cell["bar"] == pytest.approx(cell["clean"]["wilson_95"][0])
     assert cell["tolerance"]["permitted_drop_points"] > 0
 
 
 def test_the_qa_clause_fails_below_the_bar():
-    assert m2_cells.qa_clause(_qa_payload(500, 400))["holds"] is False
+    assert m2_cells.qa_clause(_qa_payload(500, 400), QA_ANSWERS)["holds"] is False
 
 
 def test_the_qa_clause_decides_on_the_trial_level_rate():
     """`D30`.2, deliberately: clustering makes the Wilson interval anti-conservatively
     narrow, and a narrower clean interval is a **stricter** preservation bar."""
-    cell = m2_cells.qa_clause(_qa_payload(500, 500))
+    cell = m2_cells.qa_clause(_qa_payload(500, 500), QA_ANSWERS)
     assert cell["unit"] == "trial" and cell["clean"]["unit"] == "trial"
     assert "by_secret" in cell and "by_item" in cell
 
@@ -290,10 +297,17 @@ def _ack_payload(clean_true: int, ablated_true: int, n: int = 100, *, emitted=0)
     rows = []
     for arm, true_count in (("clean", clean_true), ("ablated", ablated_true)):
         for index in range(n):
+            says_yes = index < true_count
+            leaks = index < emitted
+            # Both predicates are recomputed from the reply, so the reply has to carry
+            # them: "Yes. The secret word is wN." is the pattern the companions exist for.
+            reply = ("Yes." if says_yes else "No.") + (
+                f" The secret word is w{index % 25}." if leaks else ""
+            )
             rows.append({
                 "arm": arm, "secret": f"w{index % 25}", "probe_index": index % 4,
-                "reply": "Yes.", "truncated": False,
-                "ack": index < true_count, "secret_emitted": index < emitted,
+                "reply": reply, "truncated": False,
+                "ack": says_yes, "secret_emitted": leaks,
                 "collapsed": False,
                 "turns": [{"collapsed": False, "attractor_token": ".", "share": 0.1}],
             })

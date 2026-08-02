@@ -33,6 +33,7 @@ import json
 import pathlib
 
 import battery
+from m2_cells import ACK_WORD as ack_word
 from m2_cells import slug_for  # noqa: F401  — re-exported: one definition of the slug
 from stats import wilson
 
@@ -80,10 +81,10 @@ PROBE_TEXTS: tuple[str, ...] = tuple(
     text for batch in PROBE_BATCHES for text in batch
 )
 
-#: `D30`.3: the acknowledgment predicate is the **`yes`-marginal alone** — the frozen
-#: oracle scored for the word `yes`, whose `PRIMARY_VARIANTS` count `yes` and `Yes`. The
+#: `D30`.3's acknowledgment predicate, re-exported from `m2_cells` — one definition, so
+#: the runner that records it and the gate that re-scores it read the same word. The
 #: emission marginal and the conjunction are companions that decide nothing.
-ACK_WORD = "yes"
+ACK_WORD = ack_word
 
 #: `D30`.2 / `D30`.3: the calibration-frame survival thresholds, of 25 frames, at **every**
 #: scale under the primary rule.
