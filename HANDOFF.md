@@ -52,7 +52,7 @@ tests. **`D16` held completely: 3,000 of 3,000 with-secret trials byte-identical
 `probe.py`, `panel.py` + the frozen `batteries/probe_panel.json`, `detect.py`,
 `m1_probe_panel.py`, `m1_freeze_thresholds.py`, `m1_cells.py`, `m1_wikitext_rate.py`,
 `gates/g1.py`, `gates/g2.py`, `build_probe_panel.py`, and the sweep/decide scripts.
-**651 tests** (M0 left 412). All 97 gate `INVALID` arms proven against the runner's
+**656 tests** (M0 left 412). All 97 gate `INVALID` arms proven against the runner's
 *unmodified* output per `D14`.
 
 **Three defects found by testing, not by reading:**

@@ -96,6 +96,53 @@ def close(a, b, tolerance: float = 1e-9) -> bool:
     return abs(float(a) - float(b)) <= tolerance
 
 
+def reproduces(reported, rebuilt, where: str, *, tolerance: float = 1e-9) -> None:
+    """`D22`'s recomputation rule, applied **structurally**: walk the rebuilt cell and
+    require the reported one to match it everywhere, naming the path and both numbers.
+
+    Enumerating the fields to compare by hand is what let ten published cells —
+    `recall_per_tier`, `recall_by_emission`, `recall_per_text`, `yardstick_excess`,
+    `arm_b_yardstick_silent`, `uncertifiable_trials`, the T2 secondary's contrasts and the
+    rest — be presence-checked and then ignored, while `D22`'s frozen text and
+    `docs/M1-RESULTS.md` both told the reader they were recomputed. Walking the structure
+    instead means a cell the runner learns to emit is covered the day it appears, rather
+    than the day someone remembers to add it to a list.
+
+    The rebuilt side drives the walk, so a payload carrying **extra** keys is not refused —
+    the rule is that every number the gate publishes reproduces, not that the payload is
+    byte-identical to a rebuild.
+    """
+    if isinstance(rebuilt, dict):
+        if not isinstance(reported, dict):
+            fail_invalid(f"{where} should be an object, got {type(reported).__name__}")
+        for key, value in rebuilt.items():
+            if key not in reported:
+                fail_invalid(f"{where}.{key} is missing (D22's field contract)")
+            reproduces(reported[key], value, f"{where}.{key}", tolerance=tolerance)
+    elif isinstance(rebuilt, list):
+        if not isinstance(reported, list) or len(reported) != len(rebuilt):
+            fail_invalid(
+                f"{where} is {reported!r}, but recomputing it gives a {len(rebuilt)}-element "
+                "list"
+            )
+        for index, value in enumerate(rebuilt):
+            reproduces(reported[index], value, f"{where}[{index}]", tolerance=tolerance)
+    elif isinstance(rebuilt, bool) or rebuilt is None or isinstance(rebuilt, str):
+        if reported != rebuilt:
+            fail_invalid(
+                f"{where} is {reported!r}, but recomputing it from the per-trial records "
+                f"gives {rebuilt!r}"
+            )
+    elif isinstance(rebuilt, (int, float)):
+        if isinstance(reported, bool) or not isinstance(reported, (int, float)) or not close(
+            reported, rebuilt, tolerance
+        ):
+            fail_invalid(
+                f"{where} is {reported!r}, but recomputing it from the per-trial records "
+                f"gives {rebuilt!r}"
+            )
+
+
 def check_artifacts(payload: dict) -> dict:
     """`D22` arm 2 and arm 6's substrate half: the frozen artifacts, the lens fingerprint,
     the environment, and `D16`'s identity check re-verified against the referenced M0
@@ -153,6 +200,27 @@ def check_artifacts(payload: dict) -> dict:
             "not transfer)"
         )
     require(payload, "scores_sidecar", "run")
+
+    # `D22`'s contract lists `generation` as required, and `D5`'s generation rule is the
+    # substrate G0 certified — `D16` exists to make that certification transfer. Checked
+    # against the M0 reference's block rather than merely for presence: a payload could
+    # otherwise assert a decode rule it did not use. (A genuinely different rule would also
+    # change the replies and trip `check_reply_identity`; this closes the *labelling* gap,
+    # which is the one the contract names.)
+    generation = require(payload, "generation", "run")
+    if not isinstance(generation, dict):
+        fail_invalid(f"run-level generation must be an object, got {type(generation).__name__}")
+    # Shared keys must agree; M1 may record **more**. M0's block predates the discovery that
+    # `do_sample=False` leaves `repetition_penalty` live, so it legitimately carries fewer
+    # keys — requiring exact equality would refuse the more honest record for being more
+    # honest. What is refused is a payload that *contradicts* M0 on a rule they share.
+    for key, value in m0.get("generation", {}).items():
+        if generation.get(key) != value:
+            fail_invalid(
+                f"run-level generation[{key!r}] is {generation.get(key)!r}, but the M0 "
+                f"reference records {value!r} — D5's generation rule is the substrate G0 "
+                "certified, and D16 only transfers that certification if the rule is the same"
+            )
     return m0
 
 
@@ -337,39 +405,11 @@ def check_cells(payload: dict, theta: float, rows: dict[str, dict]) -> dict:
             )
     rebuilt = m1_cells.g1_cells(eval_rows, theta)
 
-    for field in ("fpr", "recall_per_tier", "recall_by_emission", "recall_per_text",
-                  "excluded_nulls", "null_mix", "confusion", "auc"):
-        require(reported, field, "cells.g1")
-    for tier in EXPECTED_TIERS:
-        require(reported["recall_per_tier"], tier, "cells.g1.recall_per_tier")
-    for stratum in ("emitting", "non_emitting"):
-        require(reported["recall_by_emission"], stratum, "cells.g1.recall_by_emission")
-
-    for field in ("n_present", "n_null"):
-        if reported.get(field) != rebuilt[field]:
-            fail_invalid(
-                f"cells.g1.{field} is {reported.get(field)}, but recomputing D22's evaluation "
-                f"set from the trials and replies gives {rebuilt[field]}"
-            )
-    for field, value in rebuilt["confusion"].items():
-        if reported["confusion"].get(field) != value:
-            fail_invalid(
-                f"cells.g1.confusion.{field} is {reported['confusion'].get(field)}, but "
-                f"recomputing it at theta*={theta!r} gives {value}"
-            )
-    for field in ("precision", "recall", "fpr"):
-        if not close(reported[field].get("point"), rebuilt[field]["point"]):
-            fail_invalid(
-                f"cells.g1.{field} is {reported[field].get('point')!r}, but recomputing it "
-                f"from the per-trial records gives {rebuilt[field]['point']!r}"
-            )
-    for field in ("auc", "lower_95"):
-        if not close(reported["auc"].get(field), rebuilt["auc"][field]):
-            fail_invalid(
-                f"cells.g1.auc.{field} is {reported['auc'].get(field)!r}, but recomputing the "
-                f"D20 cluster bootstrap (B={detect.BOOTSTRAP_B}, seed={detect.BOOTSTRAP_SEED}) "
-                f"gives {rebuilt['auc'][field]!r}"
-            )
+    # `D22`'s recomputation rule, over **every** cell the gate publishes — not a hand-kept
+    # list of the ones it decides on. `recall_per_tier`, `recall_by_emission`,
+    # `recall_per_text`, `excluded_nulls`, `null_mix` and the AUC block are all printed as
+    # tables in `docs/M1-RESULTS.md`, so a reader has been told the gate verified them.
+    reproduces(reported, rebuilt, "cells.g1")
     if reported["auc"].get("B") != detect.BOOTSTRAP_B or reported["auc"].get("seed") != detect.BOOTSTRAP_SEED:
         fail_invalid(
             f"cells.g1.auc was computed with B={reported['auc'].get('B')}, "

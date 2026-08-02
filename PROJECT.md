@@ -13,7 +13,7 @@ with-secret trials byte-identical to M0. Full curves, both gates, every `D24`/`D
 and the deviations in `docs/M1-RESULTS.md`.
 **M0 COMPLETE, 2026-07-30 — G0 PASSES on all three scales**: the battery has dynamic range
 (`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, full curves and
-caveats in `docs/M0-RESULTS.md`. 651 tests passing.
+caveats in `docs/M0-RESULTS.md`. 656 tests passing.
 
 **Next action:** **two design questions go to a planning session before M2 starts** (both
 in `docs/M1-RESULTS.md`, neither resolvable in a build session): whether `D5` gains a
@@ -94,7 +94,7 @@ inputs.
    built, `batteries/probe_panel.json` frozen, both gates frozen as code with
    `GATE_WORDING` byte-identical to the brief, the ~5.7 h sweep run on all three subjects,
    `θ*` frozen on calibration, **G1 and G2 each decided once and both FAIL at every
-   scale** (`docs/M1-RESULTS.md`). 651 tests.
+   scale** (`docs/M1-RESULTS.md`). 656 tests.
 8. **Two design questions to a planning session before M2** — both in
    `docs/M1-RESULTS.md`, neither resolvable in a build session: (a) whether `D5` gains a
    numbered amendment now that "greedy" is known to include `repetition_penalty=1.1`;

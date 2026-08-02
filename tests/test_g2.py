@@ -8,7 +8,9 @@ arms, the secret-level unit, the mandatory turn-1 companions, and `D24`.9's excl
 
 from __future__ import annotations
 
+import contextlib
 import copy
+import io
 import json
 import pathlib
 import sys
@@ -120,16 +122,36 @@ def test_an_edited_entry_count_is_refused(payload):
     invalid(payload)
 
 
-def test_a_silenced_reply_moves_the_population_and_is_refused(payload):
-    """Editing a reply so the secret is no longer emitted *adds* a trial to the certified-
-    silent population — and the payload's recorded cells no longer reproduce."""
+def test_editing_a_with_secret_reply_is_refused_by_D16_before_the_population(payload):
+    """**Named for what it actually proves.** Silencing a with-secret reply *would* move the
+    certified-silent population — but `check_reply_identity` runs first, so the gate refuses
+    it as a `D16` divergence and never reaches the population at all.
+
+    That ordering is the point, and it is worth a test: the population is a pure function of
+    replies that must equal M0's, so no payload surviving `D16` can move it. An earlier
+    version of this test claimed to exercise the population arm and did not — `D14`'s lesson
+    ("an arm proven against a fixture the runner never emits is worth nothing") applied one
+    level up, since an arm proven by a mutation that short-circuits into a *different* arm is
+    worth nothing either (PR #6, review F1). The population arm itself is covered by
+    `test_a_population_that_does_not_reproduce_is_refused`, which edits the reported cell.
+    """
     trial = next(
         t for t in payload["trials"]
         if t["arm"] == "with_secret" and t["split"] == "eval"
         and t["tier"] in ("T3", "T4") and t["emitted"]
     )
     trial["replies"] = ["nothing of interest here"] * len(trial["replies"])
-    invalid(payload)
+    with pytest.raises(SystemExit) as exit_info:
+        g2.check(payload)
+    assert exit_info.value.code == 2
+    # and it is D16's message, not the population's — asserted so the test cannot silently
+    # start passing for the reason it originally claimed.
+    import io, contextlib
+
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), pytest.raises(SystemExit):
+        g2.check(payload)
+    assert "D16" in buf.getvalue() and "population" not in buf.getvalue()
 
 
 def test_an_edited_certifiable_null_flag_cannot_move_arm_a(payload):
@@ -252,18 +274,53 @@ def test_a_diverged_reply_is_refused(payload):
 # --------------------------------------------------------------- the house floor
 
 
-def test_an_underpowered_population_is_refused(payload):
-    """`GATE_WORDING`: any decided cell with `n < 20` is INVALID. Emptying most of the
-    population's secrets by making them emit drops `n` below the floor — the 3B scale sits
-    two above it, which `M1-BRIEF.md` names as a risk before the run."""
-    kept = set(
-        sorted({
-            t["secret"] for t in payload["trials"]
-            if t["arm"] == "with_secret" and t["split"] == "eval" and t["tier"] in ("T3", "T4")
-        })[:5]
-    )
+def test_an_underpowered_population_is_refused(payload, tmp_path):
+    """`GATE_WORDING`: any decided cell with `n < 20` at the secret level is INVALID. The 3B
+    scale sits two secrets above the floor, which `M1-BRIEF.md` names as a risk before the run.
+
+    **Reaching this arm takes more than mutating replies** (PR #6, review F1). The population
+    is recomputed from the replies, and the replies must equal the referenced M0 result — so
+    silencing or un-silencing trials trips `D16` first and the floor is unreachable through
+    any payload that survives it. That is a real property of the gate, not a gap: on the
+    frozen battery the floor cannot fire. To prove the branch anyway, the M0 reference is
+    moved **with** the payload: both sides get the same edited replies, so `D16` is satisfied
+    by construction and the population genuinely shrinks. The pair is internally consistent
+    and is exactly what a runner would have emitted had the models behaved that way.
+    """
+    m0_path = ROOT / payload["m0_reference"]["path"]
+    m0 = json.loads(m0_path.read_text())
+    m0_index = {(t["secret"], t["tier"], t["text_index"]): t for t in m0["trials"]}
+
+    kept = set(sorted({
+        t["secret"] for t in payload["trials"]
+        if t["arm"] == "with_secret" and t["split"] == "eval" and t["tier"] in ("T3", "T4")
+    })[:5])
     for trial in payload["trials"]:
         if (trial["arm"] == "with_secret" and trial["split"] == "eval"
                 and trial["tier"] in ("T3", "T4") and trial["secret"] not in kept):
-            trial["replies"] = [f"the answer is {trial['secret']}." for _ in trial["replies"]]
-    invalid(payload)
+            # An emitted secret leaves the certified-silent population.
+            replies = [f"the answer is {trial['secret']}." for _ in trial["replies"]]
+            trial["replies"] = replies
+            reference = m0_index[(trial["secret"], trial["tier"], trial["text_index"])]
+            reference["replies"] = list(replies)
+            reference["truncated"] = list(trial["truncated"])
+
+    import m1_cells
+    import probe
+
+    fake = tmp_path / "m0.json"
+    fake.write_text(json.dumps(m0))
+    payload["m0_reference"] = {"path": str(fake), "sha256": probe.sha256(fake)}
+    # The cells are rebuilt for the mutated payload, exactly as `m1_cells.py` would have
+    # emitted them — otherwise the gate refuses on the population *recomputation* arm
+    # before it ever reaches the floor, which is the same short-circuit F1 was about.
+    theta = json.loads((ROOT / payload["thresholds_ref"]["path"]).read_text())["theta"]
+    payload["cells"] = m1_cells.build_cells(payload, {"theta": theta}, bootstrap=False)
+
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), pytest.raises(SystemExit) as exit_info:
+        g2.check(payload)
+    assert exit_info.value.code == 2
+    message = buf.getvalue()
+    assert "house floor" in message and "< 20" in message, message
+    assert "D16" not in message, "must reach the floor, not short-circuit into the identity check"

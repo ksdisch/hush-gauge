@@ -104,3 +104,12 @@ def test_g2_wording_carries_both_reporting_rules_it_owns():
     # asymmetry is owned in docs/M1-RESULTS.md rather than smoothed over (PR #5, F20).
     assert "IMPUTATION-SENSITIVE" not in g2.GATE_WORDING
     assert "IMPUTATION-SENSITIVE" in g2.__doc__
+
+
+def test_the_runner_reads_the_repetition_penalty_from_the_resolved_config():
+    """`D5`'s decode rule is recorded, not assumed. Hard-coding the value would have hidden
+    that Qwen2.5 ships **1.1 at 0.5B/1.5B and 1.05 at 3B** — reading it from
+    `model.generation_config` is what surfaced the difference (PR #6, review F4)."""
+    source = (pathlib.Path(__file__).resolve().parent.parent / "m1_probe_panel.py").read_text()
+    assert "model.generation_config.repetition_penalty" in source
+    assert '"repetition_penalty": float(' in source

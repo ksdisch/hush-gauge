@@ -261,10 +261,18 @@ reach. Recorded as an owned limitation, not resolved.
 **Discovered during M1, recorded, and deliberately not patched.** It changes what `D5`
 *means*, so it is reported at the same prominence as a gate result.
 
-Qwen2.5-Instruct ships `repetition_penalty: 1.1` in its `generation_config`. A repetition
+Qwen2.5-Instruct ships a `repetition_penalty` in its `generation_config`. A repetition
 penalty is a **logits processor**, not a sampling parameter, so `do_sample=False` does not
 disable it — and neither `m0_leak_curve.py` nor `m1_probe_panel.py` overrides it. Every M0
 and M1 generation was produced under it.
+
+**And it is not the same value at every scale.** Read from the resolved configs rather than
+assumed: **1.1 at 0.5B and 1.5B, 1.05 at 3B.** The decode rule is uniform across every tier,
+arm, text and split *within* a scale — which is what every gated comparison needs, since all
+of them are within-scale — but it is **not** uniform *between* scales, so any cross-scale
+reading of emission rates carries that caveat. This was surfaced by the fix for the finding
+below, which reads the value from `model.generation_config` instead of hard-coding it; an
+earlier draft of this section asserted 1.1 uniformly.
 
 **Measured**, on 36 real battery trials (0.5B, mps, one process, idle GPU): **23 of 36
 generations differ** with the penalty removed, and **6 of 36 emission verdicts flip**. Two
@@ -283,8 +291,9 @@ protocol reproduces M0's recorded replies 36/36.
 **What it does not threaten.** Probe scores read residuals, which sit *upstream* of the
 logits processor, so `D15`'s statistic is untouched. The yardstick is in context and
 equally penalized, so `D2`'s secrecy-versus-presence contrast and G2's arm (b) are
-controlled for it. It applied uniformly across every tier, arm, split and scale, and M1
-reproduced M0 byte-for-byte under it — 3,000 of 3,000 with-secret trials.
+controlled for it. It applied uniformly within each scale — across every tier, arm, text and
+split — and M1 reproduced M0 byte-for-byte under it, 3,000 of 3,000 with-secret trials. Every
+gated comparison in M1 is within-scale, so the between-scale difference touches none of them.
 
 **What it does mean.** The penalty demotes tokens already present in `input_ids`, and the
 secret is in the system prompt at every step. So part of "the model kept the secret" is
@@ -328,6 +337,7 @@ the same capture and shown to predict the next token everywhere.
 | Both gates re-derive each probe role's word from the frozen panel | trusting the runner's `probes[*].word` | Found in self-review: a payload could label a block `cross` while it carried the secret's own score, and the null class, the AUC and arm (b) would all be self-consistent and wrong. The cross probe is a *null*, and its whole claim — that the word is not in context — is a property of `D17`'s rotation, not of anything the runner writes. |
 | `probe.capture_producing_rows` factored out of `capture_band_cosines` | one capture function | Introduced so `D15`'s alignment could be tested through production code rather than a lookalike. |
 | Captured vectors stay on the accelerator until the end of a turn | the obvious per-hook `.cpu()` | Measured: the per-layer-per-token transfer cost ~4× the uncaptured generation time against the brief's ≤50% estimate — the cost was in the device synchronizations, not the arithmetic. Moved to once per layer per turn; overhead then within noise. A throughput fact, exactly as the brief pre-authorized. |
+| The three result JSONs' `generation` block was **backfilled** with `repetition_penalty` after the run | the house rule that a certified runner is never edited in place | PR #6, review `F4`. The tracked artifact said `{do_sample: false, max_new_tokens: 64}` — the unqualified "greedy" this document spends a section calling imprecise, left in the very artifact that documented it, and `m1_probe_panel.py` is what M2's runner is cut from. Done as a **deliberate, documented amendment**: the runner now reads the value from `model.generation_config`, the three payloads record what was always true of those runs, **no generation was re-run**, and all six gate verdicts were re-checked and unchanged. It also *found* something — reading the config instead of assuming 1.1 is what surfaced 3B's 1.05. |
 | `m1_wikitext_rate.py` reads the local parquet cache rather than `datasets` | `dim-stage/fitter.py:363-379`'s `load_dataset(..., streaming=True)` | `datasets` is not in the `K6`-pinned dependency set and resolving it would move the inference stack the lens fingerprints depend on. The read reproduces `datasets`' streaming order, and `D19`'s disjointness proof certifies that **per run**: if the order differed, the first 100 records would not match the fit corpus. The tracked copy is byte-identical to dim-stage's. |
 
 ## The three M0 caveats, revisited

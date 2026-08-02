@@ -238,6 +238,39 @@ def test_a_probe_block_missing_S_turn1_is_refused(payload):
 # ------------------------------------- arm 6: environment, the M0 reference, D16 identity
 
 
+def test_a_missing_generation_is_refused(payload):
+    """`D22`'s contract lists `generation` as required and closes "missing any required
+    field returns INVALID rather than defaulting". `D5`'s generation rule is the substrate
+    G0 certified, and it was the one required field no gate read (PR #6, review F3)."""
+    del payload["generation"]
+    invalid(payload)
+
+
+def test_a_generation_block_contradicting_the_M0_reference_is_refused(payload):
+    payload["generation"]["do_sample"] = True
+    invalid(payload)
+
+
+def test_a_generation_block_recording_more_than_M0_is_accepted(payload):
+    """Shared keys must agree; M1 may record **more**. M0's block predates the discovery
+    that `do_sample=False` leaves `repetition_penalty` live, so requiring exact equality
+    would refuse the more honest record for being more honest."""
+    payload["generation"]["some_future_field"] = "recorded"
+    assert g1.check(payload)["verdict"] in ("PASS", "FAIL")
+
+
+def test_the_payload_records_the_repetition_penalty(payload):
+    """`D5`'s "greedy" leaves a repetition penalty live — a logits processor, which
+    `do_sample=False` does not disable. The artifact has to say so, or it asserts an
+    unqualified "greedy" this project's own results doc calls imprecise (PR #6, review F4).
+
+    Not pinned to a value: it is **1.1 at 0.5B/1.5B and 1.05 at 3B**, which is exactly why
+    the runner reads it from `model.generation_config` rather than hard-coding it — and
+    reading it is what surfaced that it differs by scale.
+    """
+    assert payload["generation"]["repetition_penalty"] > 1.0
+
+
 def test_a_missing_environment_is_refused(payload):
     del payload["environment"]
     invalid(payload)

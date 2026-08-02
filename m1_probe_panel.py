@@ -444,7 +444,19 @@ def main() -> int:
             "path": str(sidecar_path.relative_to(RESULTS.parent)),
             "sha256": sidecar_sha,
         },
-        "generation": {"do_sample": False, "max_new_tokens": MAX_NEW_TOKENS},
+        # `repetition_penalty` is recorded because `do_sample=False` does **not** disable
+        # it: a repetition penalty is a logits processor, and Qwen2.5-Instruct ships 1.1 in
+        # its `generation_config`. Writing `{do_sample: False, max_new_tokens: 64}` alone
+        # says "greedy" unqualified, which `docs/M1-RESULTS.md` spends a section calling
+        # imprecise — a record standing in for the thing it approximates, this project's
+        # own recurring defect class, in the very artifact that documented it. Read from the
+        # resolved config rather than hard-coded, so a subject shipping a different default
+        # records the different default (hush-gauge PR #6, review F4).
+        "generation": {
+            "do_sample": False,
+            "max_new_tokens": MAX_NEW_TOKENS,
+            "repetition_penalty": float(model.generation_config.repetition_penalty),
+        },
         "environment": environment,
         "band": band,
         "thirds": thirds,

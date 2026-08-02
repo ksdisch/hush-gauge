@@ -48,6 +48,7 @@ from g1 import (  # the shared substrate checks, written once and used by both g
     check_trial_set,
     close,
     fail_invalid,
+    reproduces,
     require,
 )
 
@@ -191,14 +192,26 @@ def check(payload: dict) -> dict:
     check_population(reported, rebuilt, "cells.g2")
     check_arms(reported, rebuilt, "cells.g2")
     check_contrasts(reported, rebuilt_parts, "cells.g2")
+    # `D22`'s recomputation rule over the whole block, not just the arms the verdict turns
+    # on: `yardstick_excess` (`D24`.5), `arm_b_yardstick_silent` (`D24`.6), `per_text`
+    # (`D24`.2) and `arm_a_no_secret.uncertifiable_trials` are all published numbers, and a
+    # reader has been told the gate verified them. The arm/population/contrast checks above
+    # stay because they name the cell in the language `D23` uses; this catches the rest.
+    reproduces(reported, {**rebuilt, "verdict_parts": rebuilt_parts}, "cells.g2")
 
     # `D24`.1's T2 secondary is a mandatory readout — first-class texture, never a gate
     # input. Presence-checked and recomputed on the same terms as G2's own cells, so a
     # payload cannot ship a T2 block that disagrees with its own trials.
     secondary = require(cells, "d24_1_t2_secondary", "cells")
     rebuilt_secondary = m1_cells.g2_arms(payload, theta, (m1_cells.SECONDARY_TIER,))
+    rebuilt_secondary_parts = m1_cells.g2_verdict_parts(rebuilt_secondary)
     check_population(secondary, rebuilt_secondary, "cells.d24_1_t2_secondary")
     check_arms(secondary, rebuilt_secondary, "cells.d24_1_t2_secondary")
+    reproduces(
+        secondary,
+        {**rebuilt_secondary, "verdict_parts": rebuilt_secondary_parts},
+        "cells.d24_1_t2_secondary",
+    )
 
     for field in ("arm_b_yardstick_silent", "yardstick_excess", "per_text"):
         require(reported, field, "cells.g2")
@@ -241,7 +254,7 @@ def check(payload: dict) -> dict:
         "uncertifiable_trials": rebuilt["arm_a_no_secret"]["uncertifiable_trials"],
         "exposure_sensitive": rebuilt_parts["exposure_sensitive"],
         "imputation_sensitive": rebuilt_parts["imputation_sensitive"],
-        "t2_secondary_verdict": m1_cells.g2_verdict_parts(rebuilt_secondary)["passes"],
+        "t2_secondary_verdict": rebuilt_secondary_parts["passes"],
     }
 
 
