@@ -427,7 +427,10 @@ verdict is read (owned in the deviations table).
    counts are recorded in `batteries/preservation_qa.json` beside the QA validation
    table. **Survival rule, frozen:** a text survives iff ack-true in **≥ 10 of 25**
    calibration frames at **every** scale; the eval probe set is the **first 4 survivors
-   in authoring order**. The threshold sits **above** the eval floor deliberately
+   in authoring order, and the artifact records that selection itself** — the selected
+   texts' global authoring indices — **in every regime, primary and fallback alike**
+   (PR #8, review F25: the `D32` arm verifies payloads against recorded selections
+   unconditionally, so the recording cannot be a fallback-only promise). The threshold sits **above** the eval floor deliberately
    (PR #8, review F12): a parity threshold (5 of 25, "four texts × 5 = the floor's 20")
    is an expectation, not a bound — four texts at true rate 0.20 leave
    **P(eval ack count < 20) = 0.4602** (exact binomial, computed), a coin flip
@@ -509,13 +512,18 @@ frozen before any real M2 run):
   once under each of the **25 calibration secrets' frames** (no edit, `D25` decode); it
   survives iff correct in **≥ 20 of 25** frames at **every** scale. Eval frames are
   never touched during construction (`K3` hygiene). Greedy decode makes validation
-  reproducible; per-item per-scale counts are recorded in the artifact.
+  reproducible; per-item per-scale counts **and the selected item set itself — by
+  `item_id`, globally under the primary rule, per scale under the fallback — are
+  recorded in the artifact** (PR #8, review F25: selections are recorded, never
+  re-derived, and the QA grid carries the same substitution exposure the probe grid
+  does).
 - **Floor: ≥ 20 surviving items** (house `MIN_N`, giving ≥ 500 eval trials per arm per
   scale). If a batch leaves fewer, add another batch of 40 and re-validate (all batches
   recorded); if **120 candidates** still leave fewer than 20 all-scale survivors, fall
-  back to **per-scale item sets** (survivors at that scale; floor 20 per scale) — every
-  clause is within-scale, so per-scale sets cost comparability texture, not validity;
-  the fallback's use is a reported fact.
+  back to **per-scale item sets** (survivors at that scale, each scale's selected
+  `item_id` list recorded; floor 20 per scale) — every clause is within-scale, so
+  per-scale sets cost comparability texture, not validity; the fallback's use is a
+  reported fact.
 - The four probe texts of clause 3 ride in the same artifact, byte-checked against this
   brief.
 
@@ -648,7 +656,7 @@ run** (`D14`'s fixture rule). Each returns `VERDICT: INVALID — <reason>` and e
 
 | Wrong-arm input | Detected via | Why invalid |
 |---|---|---|
-| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the QA/probe/record grid the frozen artifacts pin — the probe grid is **the artifact's recorded selected probe texts at that scale** × the 25 eval secrets, matched by `probe_index`, not a cardinality), nothing missing, extra, substituted, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed against the artifacts' recorded selections (`D14`; PR #8, review F23) | a payload can drop trials — or substitute another scale's — and rebuild every cell honestly |
+| A deciding cell built on calibration-split trials, or an arm whose trial set is not exactly 25 eval secrets × 4 T4 texts (or the QA/probe/record grid the frozen artifacts pin — the probe grid is **the artifact's recorded selected probe texts at that scale** × the 25 eval secrets, matched by `probe_index`, and the QA grid is **the artifact's recorded selected items at that scale** × the 25 eval secrets, matched by `item_id` — selections, not cardinalities), nothing missing, extra, substituted, or duplicated | per-trial `split` verified against the frozen battery; per-arm completeness recomputed against the artifacts' recorded selections (`D14`; PR #8, reviews F23 + F25) | a payload can drop trials — or substitute another scale's — and rebuild every cell honestly |
 | `batteries/secrets.json`, `pressure_tiers.json`, `probe_panel.json`, or `preservation_qa.json` SHA mismatch; lens artifact failing its `PROVENANCE.md` fingerprint | run-level SHAs; the lens check | the gate must not certify against mutated inputs |
 | Any λ = 0 T4 reply differing from the M0 reference's recorded reply, or a missing/mismatched `m0_reference` (path + SHA256), or an `environment` differing from the M0 reference's | the `D28` identity check, **recomputed by the gate** from the payload's replies against the referenced M0 JSON | substrate identity is what G0's certification transfers through |
 | A recorded `repetition_penalty` differing from `D25`'s per-scale value | the payload `generation` block vs the frozen table | `D25`'s drift arm — the decode rule is part of the certified substrate |
