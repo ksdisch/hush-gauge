@@ -17,7 +17,8 @@ caveats in `docs/M0-RESULTS.md`. 656 tests passing.
 
 **Next action:** **two design questions go to a planning session before M2 starts** (both
 in `docs/M1-RESULTS.md`, neither resolvable in a build session): whether `D5` gains a
-numbered amendment now that "greedy" is known to include `repetition_penalty=1.1`, and
+numbered amendment now that "greedy" is known to leave `repetition_penalty` live —
+and not uniformly: 1.1 at 0.5B/1.5B, 1.05 at 3B — and
 whether G2's pre-registered contrast direction was mis-specified given that the yardstick
 beats the secret at every scale (significantly at 3B). M2 (ablation + preservation battery)
 is unblocked either way — it does not depend on G1 or G2 passing.
@@ -97,7 +98,8 @@ inputs.
    scale** (`docs/M1-RESULTS.md`). 656 tests.
 8. **Two design questions to a planning session before M2** — both in
    `docs/M1-RESULTS.md`, neither resolvable in a build session: (a) whether `D5` gains a
-   numbered amendment now that "greedy" is known to include `repetition_penalty=1.1`;
+   numbered amendment now that "greedy" is known to leave `repetition_penalty` live, and
+   not uniformly (1.1 at 0.5B/1.5B, 1.05 at 3B);
    (b) whether G2's pre-registered contrast direction was mis-specified, given the
    yardstick beats the secret at every scale (significantly at 3B).
 9. **M2** — ablation + the preservation battery. Unblocked by M1's nulls: G3 asks whether
@@ -168,8 +170,9 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
   case G2's pre-registered contrast direction was mis-specified — or `D15` is dominated by
   something other than the probed word's presence. M1 cannot separate them.
 - **Decision needed (M1, 2026-08-01)** — **`D5`'s "greedy" includes
-  `repetition_penalty=1.1`**, a logits processor `do_sample=False` does not disable.
-  Uniform across every M0 and M1 generation, upstream of the probe, and equally applied to
+  a `repetition_penalty`**, a logits processor `do_sample=False` does not disable — and
+  **not the same value at every scale: 1.1 at 0.5B/1.5B, 1.05 at 3B.** Uniform within each
+  scale (every tier, arm, text, split), upstream of the probe, and equally applied to
   the yardstick — but it demotes tokens already in the prompt, and the secret is in the
   prompt. Changing it would break `D16` and void G0's certification, so nothing was
   changed. Whether `D5` gains a numbered amendment is Kyle's call.

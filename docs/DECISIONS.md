@@ -845,11 +845,14 @@ half before any eval readout existed: G1 FAIL and G2 FAIL at 0.5B, 1.5B and 3B.*
 3,000 of 3,000 with-secret trials byte-identical to M0.
 
 **One property of `D5` was discovered during M1 and is NOT resolved here.** Qwen2.5-Instruct
-ships `repetition_penalty: 1.1` in its `generation_config`; a repetition penalty is a
+ships a `repetition_penalty` in its `generation_config`; a repetition penalty is a
 *logits processor*, not a sampling parameter, so `do_sample=False` does not disable it and
-neither runner overrides it. Every M0 and M1 generation was produced under it, uniformly.
-Measured on 36 real battery trials: 23 of 36 generations differ without it and 6 of 36
-emission verdicts flip. Probe scores are upstream of it and the yardstick is equally
+neither runner overrides it. Every M0 and M1 generation was produced under it. **The value
+is not the same at every scale — 1.1 at 0.5B and 1.5B, 1.05 at 3B** (read from the resolved
+configs, not assumed). It is uniform across every tier, arm, text and split *within* a
+scale, which is what every gated comparison needs since all of them are within-scale, but a
+cross-scale reading of emission rates carries the difference. Measured on 36 real battery
+trials at 0.5B: 23 of 36 generations differ without it and 6 of 36 emission verdicts flip. Probe scores are upstream of it and the yardstick is equally
 penalized, so `D15` and `D2`'s contrast are unaffected — but the penalty demotes tokens
 already in the prompt, and the secret is in the prompt, so G2's certified-silent population
 is partly a product of the decode rule. **Changing it would break `D16` and void G0's

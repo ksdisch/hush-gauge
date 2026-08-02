@@ -31,11 +31,13 @@ tests. **`D16` held completely: 3,000 of 3,000 with-secret trials byte-identical
 
 ### Two things that need Kyle, and neither is a build-session call
 
-1. **`D5`'s "greedy" includes `repetition_penalty=1.1`.** Qwen2.5-Instruct ships it in
-   `generation_config`; a repetition penalty is a *logits processor*, not a sampling
-   parameter, so `do_sample=False` does not disable it and neither runner overrides it.
-   Measured on 36 real battery trials: 23/36 generations differ without it, 6/36 emission
-   verdicts flip. Probe scores are upstream of it and the yardstick is equally penalized,
+1. **`D5`'s "greedy" leaves a `repetition_penalty` live — and not uniformly.** Qwen2.5
+   ships it in `generation_config`; a repetition penalty is a *logits processor*, not a
+   sampling parameter, so `do_sample=False` does not disable it and neither runner
+   overrides it. **The value differs by scale: 1.1 at 0.5B/1.5B, 1.05 at 3B** — uniform
+   within each scale, so every gated comparison (all within-scale) is unaffected, but
+   cross-scale emission readings carry it. Measured on 36 real battery trials at 0.5B:
+   23/36 generations differ without it, 6/36 emission verdicts flip. Probe scores are upstream of it and the yardstick is equally penalized,
    so `D15` and `D2`'s contrast are unaffected — but it demotes tokens already in the
    prompt, and **the secret is in the prompt**, so G2's certified-silent population is
    partly a product of the decode rule. **Nothing was changed**: changing it breaks `D16`
@@ -342,7 +344,9 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 **A planning session, not a build session.** Two questions M1 raised are design questions
 by the brief's own standing rule, and neither can be settled by more measurement:
 
-1. **Does `D5` gain a numbered amendment?** "Greedy" includes `repetition_penalty=1.1`.
+1. **Does `D5` gain a numbered amendment?** "Greedy" leaves a `repetition_penalty` live —
+   **1.1 at 0.5B/1.5B, 1.05 at 3B**, so the decode rule is not even constant across the
+   three subjects.
    Uniform, upstream of the probe, equally applied to the yardstick — but it demotes
    in-prompt tokens and the secret is in the prompt. Nothing was changed, because changing
    it breaks `D16` and voids G0. Options are (a) amend `D5` to record the decode rule as
