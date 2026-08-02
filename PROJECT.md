@@ -21,9 +21,15 @@ the shipped `generation_config`, `repetition_penalty` 1.1 / 1.1 / 1.05 per scale
 **`D26`** (G2's contrast direction stands — the yardstick's edge is licensed speech being
 spoken, not silent licensing; the FAIL is an honest null and no G2′ is pre-registered).
 
-**Next action:** **open M2 with `docs/M2-BRIEF.md`** (ablation + preservation battery),
-freezing its decisions before any run. The brief inherits `D26`'s causal framing and `D25`'s
-decode rule with its per-scale assertion. M2 does not depend on G1 or G2 having passed.
+**`docs/M2-BRIEF.md` is WRITTEN (2026-08-02, Proposed) and awaiting Kyle's approval** — it
+freezes `D27`–`D33` (the intervention, the λ = 0 identity arm, G3's contrast, the
+preservation battery, the random-direction control, the gate code, the secondaries),
+inheriting `D26`'s causal framing and `D25`'s decode rule with its per-scale assertion.
+
+**Next action:** Kyle reviews and approves the brief. Upon approval its status line flips,
+`D27`–`D33` mirror into `docs/DECISIONS.md`, and the build runs in a fresh Opus session per
+the brief's run-config note. **Nothing in M2 runs before that approval.** M2 does not
+depend on G1 or G2 having passed.
 
 ## Purpose
 
@@ -101,10 +107,13 @@ inputs.
 8. ~~Two design questions to a planning session before M2~~ — **done 2026-08-02**; both
    closed as `D25` (D5 amended — decode rule frozen as-run and owned) and `D26` (G2's
    direction stands — the yardstick's edge is licensed speech being spoken; no G2′).
-9. **Write `docs/M2-BRIEF.md`, then M2** — ablation + the preservation battery. Unblocked
-   by M1's nulls: G3 asks whether ablating `v_secret` reduces emission, which does not
-   depend on the probe grading as a detector. The brief inherits `D26`'s causal framing
-   and `D25`'s decode rule with its per-scale assertion.
+9. ~~Write `docs/M2-BRIEF.md`~~ — **written 2026-08-02 (Proposed)**; freezes `D27`–`D33`
+   (intervention, λ = 0 identity arm, G3 contrast, preservation battery, random control,
+   gate code, secondaries), inheriting `D26`'s causal framing and `D25`'s decode rule.
+   **Awaiting Kyle's approval — nothing in M2 runs before it.**
+10. **M2 build, after approval** — per the brief's deliverables list, in a fresh Opus 5
+   session per its run-config note. Unblocked by M1's nulls: G3 asks whether ablating
+   `v_secret` reduces emission, which does not depend on the probe grading as a detector.
 
 ## Boundaries
 
