@@ -829,3 +829,40 @@ recall; (4) per-tier recall; (5) the yardstick-excess distribution (median, IQR)
 (6) the yardstick-silent sensitivity; (7) sub-band thirds; (8) the neutral-corpus rates;
 (9) **arm (a) both ways** — uncertifiable trials excluded vs the gate's imputed form,
 `IMPUTATION-SENSITIVE` on verdict-sign disagreement (review F17).
+
+---
+
+## M1 execution record (2026-08-01) — no new decisions
+
+M1 ran to completion under `D15`–`D24` as frozen. **No decision was added, changed or
+re-tuned**, and `D21`'s calibration fallback never fired. `docs/M1-RESULTS.md` is the
+citable record of what the run found; this entry exists so the ledger says where M1's
+outcome lives and what it did *not* change.
+
+**Both gates decided once per scale, on held-out data, at a `θ*` frozen on the calibration
+half before any eval readout existed: G1 FAIL and G2 FAIL at 0.5B, 1.5B and 3B.** Per
+`KICKOFF.md` a pre-committed null on G1 or G2 is a passing v1. `D16` held at every scale —
+3,000 of 3,000 with-secret trials byte-identical to M0.
+
+**One property of `D5` was discovered during M1 and is NOT resolved here.** Qwen2.5-Instruct
+ships a `repetition_penalty` in its `generation_config`; a repetition penalty is a
+*logits processor*, not a sampling parameter, so `do_sample=False` does not disable it and
+neither runner overrides it. Every M0 and M1 generation was produced under it. **The value
+is not the same at every scale — 1.1 at 0.5B and 1.5B, 1.05 at 3B** (read from the resolved
+configs, not assumed). It is uniform across every tier, arm, text and split *within* a
+scale, which is what every gated comparison needs since all of them are within-scale, but a
+cross-scale reading of emission rates carries the difference. Measured on 36 real battery
+trials at 0.5B: 23 of 36 generations differ without it and 6 of 36 emission verdicts flip. Probe scores are upstream of it and the yardstick is equally
+penalized, so `D15` and `D2`'s contrast are unaffected — but the penalty demotes tokens
+already in the prompt, and the secret is in the prompt, so G2's certified-silent population
+is partly a product of the decode rule. **Changing it would break `D16` and void G0's
+certification, so nothing was changed.** Whether `D5` gains a numbered amendment is Kyle's
+call; recorded here as open, with the full write-up in `docs/M1-RESULTS.md`.
+
+**One question M1 raises about its own design, bounced rather than settled.** At all three
+scales the yardstick arm exceeds the secret arm on certified-silent trials — significantly
+at 3B (−0.455, Newcombe 95% [−0.654, −0.161], excludes zero). Either suppression genuinely
+makes a licensed word load the workspace more than a suppressed one, in which case G2's
+pre-registered contrast direction was mis-specified, or `D15` is dominated by something
+other than the probed word's presence. M1 cannot separate them, and `M1-BRIEF.md`'s standing
+rule sends a design question to a planning session rather than a build session. **Unresolved.**

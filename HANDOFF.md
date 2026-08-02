@@ -1,39 +1,96 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-01 (**M1 brief frozen — `D15`–`D24`**; the M1 build session is next)_
+_Last updated: 2026-08-01 (**M1 COMPLETE — G1 and G2 both FAIL at all three scales, both
+pre-committed nulls**; two design questions go to a planning session before M2)_
 
 ## What was just done
 
-- **Wrote, adversarially reviewed, and froze `docs/M1-BRIEF.md`** — M1's start-of-stage
-  brief, approved by Kyle 2026-08-01. `D15`–`D24` are frozen and mirrored into
-  `docs/DECISIONS.md`; the brief is now never edited (annotations only). Landed as **PR #5**,
-  merged after a **six-round adversarial review**: 21 findings (F1–F21), zero disputes (the
-  judge was never needed), zero critical, **seven should-fixes all fixed and verified
-  in-loop**. Rounds 4–6 ran past the 3-dispatch cap on Kyle's explicit per-decision
-  authorizations ("fix it re-review"; "Round 6, then stop"), recorded verbatim in the
-  mailbox: `~/.claude/reviews/hush-gauge/2026-07-30-docs-m1-brief.md` — **the authority per
-  finding**; no totals are hand-carried here beyond this bullet's, per the F7/F13 lesson
-  below.
-- **The review changed the design, not just the prose.** The load-bearing catches: **F1**
-  (the probe's scored-position set was self-contradictory under capture — pinned to the
-  produced-from alignment, `oracle.py`'s F9 contract applied to residuals); **F2+F10** (the
-  probe row was case-blind against a two-case oracle — capitalized companion block,
-  case-matched first); **F3+F8+F12+F16+F18** (the cross rotation's calibration→eval split
-  leak — owned and instrumented, after the first two diagnostics offered in its place were
-  themselves refuted in later rounds: `θ*_restricted` was signed by construction, the
-  split-half grouping was orthogonal to the leak); **F4+F11+F15+F17** (G2 arm (a)'s
-  denominator, the empty-cluster rule, and the imputation floor — one per-trial rule plus
-  `D24`.9's both-ways companion with `IMPUTATION-SENSITIVE` reporting).
-- **Three follow-ups remain open — F19–F21, all nice-to-have, none blocking, frozen-brief
-  annotation material** (full text in the mailbox and the PR #5 comment): **F19** — the F18
-  fix's "certified-null per `D17`, as everywhere" is falsified by arm (a)'s own one-rule
-  form, and the two cross-family companion families read 20 vs 10 cells; **F20** — `D24`.9
-  names *rates* but triggers on a *verdict-sign* disagreement (the Newcombe on the excluded
-  form is implied, not stated), and `IMPUTATION-SENSITIVE` has no home in G2's byte-frozen
-  wording, unlike `EXPOSURE-SENSITIVE`; **F21** — the `1−(1−u)⁸` floor is an i.i.d.
-  expectation and Jensen makes it an **upper** bound under per-word heterogeneity (measured:
-  spontaneous events concentrate in 2/2/1 words). All three err in the self-critical
-  direction; both `D24`.9 forms recompute post hoc from required fields.
+**M1 is COMPLETE. G1 and G2 were each decided once per scale and both FAIL at 0.5B, 1.5B
+and 3B — every one a pre-committed null**, which `KICKOFF.md` calls a passing v1. No bar
+was re-tuned; `D21`'s calibration fallback never fired. `docs/M1-RESULTS.md` is the citable
+record and carries every number, computed from the result JSONs rather than transcribed.
+
+| | 0.5B | 1.5B | 3B |
+|---|---|---|---|
+| `θ*` | 0.117655 | 0.074585 | 0.067114 |
+| G1 AUC 95% LB / precision / recall | 0.692 / 0.790 / 0.498 | 0.575 / 0.758 / 0.232 | 0.612 / 0.788 / 0.364 |
+| G2 secret vs no-secret vs yardstick | 8/25 · 9/25 · 13/25 | 8/25 · 5/25 · 13/25 | 5/22 · 9/22 · 15/22 |
+| **G1 / G2** | **FAIL / FAIL** | **FAIL / FAIL** | **FAIL / FAIL** |
+
+**The result in one line: the probe reads speech, not secrecy.** `D24`.3's stratified
+recall is 0.937 / 0.571 / 0.537 on emitting trials against 0.103 / 0.068 / 0.088 on
+non-emitting ones. G2 confirms it independently and *does not merely miss* — at 3B the
+yardstick arm beats the secret arm by 0.455 with a Newcombe interval of [−0.654, −0.161]
+that **excludes zero**. `D24`.5's continuous form agrees at every scale.
+
+**Everything the brief predicted before any M1 code existed reproduced exactly** — the
+certified-silent populations (71/86/50 trials from 25/25/22 secrets), their yardstick
+emissions (21/34/29), `D24`.1's T2 populations (78/81/26 from 25/25/21), `D17`'s cross-side
+exclusion (1/0/0 of 250), and `D24`.6's 21-of-50 restriction at 3B. Four are pinned as gate
+tests. **`D16` held completely: 3,000 of 3,000 with-secret trials byte-identical to M0.**
+
+### Two things that need Kyle, and neither is a build-session call
+
+1. **`D5`'s "greedy" leaves a `repetition_penalty` live — and not uniformly.** Qwen2.5
+   ships it in `generation_config`; a repetition penalty is a *logits processor*, not a
+   sampling parameter, so `do_sample=False` does not disable it and neither runner
+   overrides it. **The value differs by scale: 1.1 at 0.5B/1.5B, 1.05 at 3B** — uniform
+   within each scale, so every gated comparison (all within-scale) is unaffected, but
+   cross-scale emission readings carry it. Measured on 36 real battery trials at 0.5B:
+   23/36 generations differ without it, 6/36 emission verdicts flip. Probe scores are upstream of it and the yardstick is equally penalized,
+   so `D15` and `D2`'s contrast are unaffected — but it demotes tokens already in the
+   prompt, and **the secret is in the prompt**, so G2's certified-silent population is
+   partly a product of the decode rule. **Nothing was changed**: changing it breaks `D16`
+   and voids G0's certification. Whether `D5` gains a numbered amendment is Kyle's call.
+2. **Why the yardstick beats the secret — Unresolved, deliberately.** Either suppression
+   makes a licensed word *more* workspace-active than a suppressed one (so G2's
+   pre-registered contrast direction was mis-specified), or `D15` is dominated by something
+   other than the probed word's presence. `D17`'s dispersion readout is consistent with the
+   second. M1 cannot separate them, and the brief's standing rule sends a design question
+   to a planning session, not a build session.
+
+### What was built
+
+`probe.py`, `panel.py` + the frozen `batteries/probe_panel.json`, `detect.py`,
+`m1_probe_panel.py`, `m1_freeze_thresholds.py`, `m1_cells.py`, `m1_wikitext_rate.py`,
+`gates/g1.py`, `gates/g2.py`, `build_probe_panel.py`, and the sweep/decide scripts.
+**656 tests** (M0 left 412). All 97 gate `INVALID` arms proven against the runner's
+*unmodified* output per `D14`.
+
+**Three defects found by testing, not by reading:**
+
+- **The `D15` alignment had no other check.** `D16` compares generations and the hook does
+  not touch them; the length assertion rules out an off-by-N in the count, not a wrong-row
+  choice. Under a one-position shift every M1 number would be internally consistent and
+  uniformly wrong. `tests/test_capture_alignment.py` now proves it on a real model, through
+  the production context manager, by unembedding each captured row and requiring its argmax
+  to be the token that step emitted. **Writing that test is what surfaced the
+  repetition-penalty finding.**
+- **The gates never validated which word each probe block read.** A payload could label a
+  block `cross` while it carried the secret's own score, and the null class, the AUC and
+  arm (b) would all be self-consistent and wrong. Both gates now re-derive every role's word
+  from the frozen panel and battery.
+- **Capture overhead was ~4×, not the estimated ≤50%** — one device sync per band layer per
+  token. Moved to once per layer per turn; overhead then within noise.
+
+**`F19`/`F20`/`F21` are all disposed** (see `docs/M1-RESULTS.md`): F19 and F20 acted on in
+code, F21 **moot on the frozen data** — arm (a)'s uncertifiable count is 0 at every scale,
+so `u = 0` and `D23`'s imputation rule is inert everywhere.
+
+**One correction I published and then fixed.** An earlier run of the repetition-penalty
+comparison reported 9 emission flips and 30/36 M0 reproduction. Both were artifacts of the
+*measuring script*, which hardcoded `(lion, eagle)` where `D2`'s rotation gives
+`(lion, bear)`. Reading the yardstick from the frozen battery gives 6 flips and 36/36. The
+project's own lesson, self-inflicted in the tool built to check it: **compute from the
+artifact, never assume it.**
+
+### Earlier — the M1 brief (2026-08-01)
+
+Written, adversarially reviewed over six rounds (F1–F21, zero disputes, zero critical,
+seven should-fixes fixed and verified in-loop) and frozen as PR #5. `D15`–`D24` mirrored
+into `docs/DECISIONS.md`. The per-finding record is
+`~/.claude/reviews/hush-gauge/2026-07-30-docs-m1-brief.md` and **is the authority**;
+`F19`–`F21` were nice-to-have follow-ups and all three are now disposed (below).
 
 ### Earlier — M0 execution (2026-07-30)
 
@@ -216,12 +273,22 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
-**M1's brief is frozen (2026-08-01); nothing in M1 has run.** `docs/M1-BRIEF.md` is
-normative for M1 — the probe statistic (`D15`), the byte-for-byte re-generation contract
-(`D16`), the probe panel and its split-leak instrumentation (`D17`), the no-secret frame
-(`D18`), the threshold protocol (`D21`), and G1/G2's byte-frozen `GATE_WORDING` with their
-INVALID arms (`D22`/`D23`) — with `docs/DECISIONS.md` carrying the citable `D15`–`D24`
-mirror. The next session **builds**; every M0-certified module is read-only for it.
+**M1 is complete and both its gates are decided.** `docs/M1-RESULTS.md` is normative for
+what M1 found; `docs/M1-BRIEF.md` stays normative for how it was specified, and
+`docs/DECISIONS.md` carries `D15`–`D24` plus an execution-record entry that adds **no new
+decision**. On disk and tracked: `probe.py`, `panel.py`, `detect.py`, `m1_probe_panel.py`,
+`m1_freeze_thresholds.py`, `m1_cells.py`, `m1_wikitext_rate.py`, `gates/g1.py`,
+`gates/g2.py`, `build_probe_panel.py`, `batteries/probe_panel.json` (frozen),
+`lenses/wikitext-n100-prompts.json` (the verified fit corpus), and nine result JSONs.
+The `.npz` score sidecars are gitignored with their SHA256s in the tracked JSONs — **M2
+reuses them, so do not delete `results/*.npz`.**
+
+**M2 is unblocked by M1's nulls.** G3 asks whether ablating `v_secret` reduces emission
+under pressure while the model stays coherent. That does not depend on the probe grading
+as a detector — it is a causal question about a direction, not an instrument-quality one.
+What M1's result *does* change is the framing M2 should carry: a direction that fails to
+separate present from null trials may still be causally load-bearing, and if it is, that
+tension is itself the finding.
 
 **M0 is complete. G0 PASSES.** `D1`–`D14` are frozen (`docs/M0-BRIEF.md` is normative; `docs/DECISIONS.md` is the
 citable ledger). On disk and green: `oracle.py`, `encode.py`, `roster.py`,
@@ -274,22 +341,32 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**The M1 build session** — fresh, from the brief, never from this session's transcript, per
-the brief's own run-config note: `claude --model claude-opus-5 --effort high`. It builds, in
-order: `probe.py` → `batteries/probe_panel.json` → `m1_probe_panel.py` (cut from
-`m0_leak_curve.py`) → `m1_wikitext_rate.py` + the verified fit-corpus copy → `detect.py` →
-`m1_freeze_thresholds.py` → `gates/g1.py` + `gates/g2.py` (`GATE_WORDING` byte-identical to
-the brief, dry-run `INVALID` arms proven against the runner's real output) → the ≈6–7 h
-overnight sweep → thresholds → each gate decided once → `docs/M1-RESULTS.md`. The brief's
-two standing rules: a gate failure that questions the *design* bounces to a Fable session,
-and an oracle-class defect found in review is a design question, not a patch.
+**A planning session, not a build session.** Two questions M1 raised are design questions
+by the brief's own standing rule, and neither can be settled by more measurement:
 
-**Open follow-ups** — five, all nice-to-have, none blocking:
-- From PR #2: `F6` (the WikiText test `pytest.skip`s itself when the HF cache differs,
-  behind the load-bearing 849/1,729 anchor) and `F7` (`D12`'s justifying 252/960 and
-  510/4,320 have no artifact in the tree, while the conclusion they support is test-pinned).
-- From PR #5: `F19`–`F21` (see "What was just done" — frozen-brief annotation material; the
-  build session should read all three in the mailbox before cutting `gates/g2.py`).
+1. **Does `D5` gain a numbered amendment?** "Greedy" leaves a `repetition_penalty` live —
+   **1.1 at 0.5B/1.5B, 1.05 at 3B**, so the decode rule is not even constant across the
+   three subjects. Uniform *within* each scale, upstream of the probe, and equally applied
+   to the yardstick — but it demotes in-prompt tokens and the secret is in the prompt. Nothing was changed, because changing
+   it breaks `D16` and voids G0. Options are (a) amend `D5` to record the decode rule as
+   frozen-and-owned, (b) re-run M0 and M1 under plain argmax as a new milestone, or
+   (c) leave it as a recorded property. **(a) is the cheap honest one**; (b) costs another
+   ~6 h sweep plus a G0 re-decision and would invalidate the current certification chain.
+2. **Was G2's contrast direction mis-specified?** The yardstick beats the secret at every
+   scale. If licensed speech is *supposed* to load the workspace more, then G2 as written
+   can never pass and M2/M3 inherit a mis-signed hypothesis.
+
+Then **M2** — ablation and the preservation battery — opening with `docs/M2-BRIEF.md` and
+freezing its decisions before any run, per the house methodology.
+
+**Open follow-ups** — two, both from PR #2, both nice-to-have:
+- `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
+  load-bearing 849/1,729 oracle anchor.
+- `F7` — `D12`'s justifying 252/960 and 510/4,320 have no artifact in the tree, while the
+  conclusion they support is test-pinned.
+
+**PR #5's `F19`–`F21` are closed** — F19 and F20 acted on in M1's code, F21 moot on the
+frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 
 ## Open questions / blockers
 
@@ -325,21 +402,21 @@ and an oracle-class defect found in review is a design question, not a patch.
 
 ---
 
-**Run-config note:** **The M1 brief is frozen. The next session builds M1** from
-`docs/M1-BRIEF.md` — a fresh session, started from the brief, never from the planning
-session's transcript. Read the brief top to bottom first (it is normative and carries the
-byte-frozen `GATE_WORDING` blocks), then `docs/DECISIONS.md` `D15`–`D24` for the citable
-mirror, with the M0 reading order (`D12`/`D13`/`D14` before `D10`/`D11`) still in force.
-The three PR #5 follow-ups (`F19`–`F21`, in
-`~/.claude/reviews/hush-gauge/2026-07-30-docs-m1-brief.md`) should be read before cutting
-`gates/g2.py`.
+**Run-config note:** the next session is a **planning** session, not a build one — the two
+open questions are design calls with real tradeoffs (amend `D5` vs re-run under plain
+argmax; whether G2's contrast is mis-signed), and both feed `docs/M2-BRIEF.md`. Start it
+fresh from `docs/M1-RESULTS.md` and `docs/M1-BRIEF.md`, never from this session's
+transcript, with the M0 reading order (`D12`/`D13`/`D14` before `D10`/`D11`) still in force.
 
-Recommended model + effort: **Opus 5 at high** — the design calls are frozen, so what
-remains is well-specified build work. Launch: `claude --model claude-opus-5 --effort high`.
+Recommended model + effort: **Fable 5 at xhigh** — judgment-first work on two bounded but
+genuinely hard calls, one of which can invalidate a certification chain if decided
+carelessly. Launch: `claude --model claude-fable-5 --effort xhigh`.
 
-Two standing rules, both earned in M0 and restated in the brief: if a gate fails in a way
-that questions the design (the probe statistic, the threshold protocol, the set
-construction) rather than the models, bounce that decision to a Fable session rather than
-escalating effort in the build session; and if review turns up an oracle-class defect — a
-proxy standing in for the thing it approximates — that is a design question too, not a
-patch.
+The build that follows it — M2's ablation runners and G3 — is well-specified once the brief
+freezes, and belongs on **Opus 5 at high** in its own fresh session.
+
+Two standing rules carry forward, both earned in M0 and both used in M1: if a gate fails in
+a way that questions the *design* rather than the models, bounce that decision to a Fable
+session instead of escalating effort in the build session — M1 did exactly that with G2's
+contrast direction; and if review turns up an oracle-class defect, a proxy standing in for
+the thing it approximates, that is a design question too, not a patch.

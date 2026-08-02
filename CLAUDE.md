@@ -23,12 +23,31 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
+**M1 is COMPLETE as of 2026-08-01. `G1` and `G2` both FAIL on all three scales — every one a
+pre-committed null**, which `KICKOFF.md` calls a passing v1: the failure mode this project
+guards against is an *undecided* gate, not a negative one. `D15`–`D24` are frozen
+(`docs/M1-BRIEF.md` is normative, `docs/M1-RESULTS.md` holds the curves and the deviations).
+No bar was re-tuned, `D21`'s calibration fallback never fired, and `D16` held completely —
+3,000 of 3,000 with-secret trials byte-identical to M0. 656 tests pass.
+
 **M0 is COMPLETE as of 2026-07-30. `G0` PASSES on all three scales.** `D1`–`D14` are frozen
 (`docs/M0-BRIEF.md` is normative, `docs/DECISIONS.md` is the citable ledger, `docs/M0-RESULTS.md`
-holds the curves). 412 tests pass. The battery has dynamic range — `R1` is retired — and the
-single pre-declared battery revision was **not** used, so the battery re-freezes as built.
-Next action: **open M1 with `docs/M1-BRIEF.md`**, freezing its decisions before any run.
-**D1–D14 are settled — don't relitigate them.**
+holds the curves). The battery has dynamic range — `R1` is retired — and the single
+pre-declared battery revision was **not** used, so the battery re-freezes as built.
+**`D1`–`D24` are settled — don't relitigate them.**
+
+**Next action: a *planning* session, not a build session.** M1 raised two questions that are
+design calls by the brief's own standing rule, both in `docs/M1-RESULTS.md` and both feeding
+`docs/M2-BRIEF.md`: (a) whether `D5` gains a numbered amendment now that "greedy" is known to
+leave `repetition_penalty` live — and **not uniformly: 1.1 at 0.5B/1.5B, 1.05 at 3B**;
+(b) whether `G2`'s pre-registered contrast direction was mis-specified, since the yardstick
+beats the secret at every scale (significantly at 3B). Then M2 — ablation and the preservation
+battery — opening with its own start-of-stage brief.
+
+**What M1 found, in one line:** the probe reads the model **speaking** the secret, not holding
+it — recall 0.94 / 0.57 / 0.54 on emitting trials against 0.10 / 0.07 / 0.09 on non-emitting
+ones. On certified-silent trials the secret's direction sits **below** the licensed yardstick
+in the same session. Scale does not rescue it.
 
 **Read `D12`/`D13`/`D14` before `D10`/`D11`.** The earlier two say *why* the oracle's boundary
 rule exists; the later three say what the oracle and the gate actually do.

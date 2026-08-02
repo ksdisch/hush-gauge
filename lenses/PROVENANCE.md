@@ -54,6 +54,7 @@ above after any refit.
 
 | Input | Source |
 |---|---|
+| Lens **fit corpus** — `wikitext-n100-prompts.json` | dim-stage `wikitext-n100-prompts.json` at commit `43ff405`. SHA256 `72e260adda81404c77293f48c5b1f2d5ac2f6febe0a52d446ed1deb3a0bb5e56`, **verified identical to the source 2026-08-01**. The 100 WikiText-103-train records (stripped length ≥ 600, streamed in order) the three lenses were fitted on. Copied so `D19`'s fit-corpus **disjointness proof runs locally**: `m1_wikitext_rate.py` re-streams the corpus and requires the first 100 qualifying records to equal this file before scoring records 101–200. A mismatch is a stop condition — the neutral-corpus base rate would otherwise be read on text the lens was fitted on. |
 | 50-secret battery vocabulary | mute-map `items/m1-battery.json` (10-category / 60-concept M1 roster), 5 per category — see K2 |
 | Band arithmetic, sub-band thirds | dim-stage via mute-map `harness.proportional_band` / `sub_band_thirds` |
 | Ablation + dose operator | dim-stage `intervention.py` via mute-map (`h′ = h − λ(v̂ᵀh)v̂`) |

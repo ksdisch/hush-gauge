@@ -22,3 +22,8 @@ htmlcov/
 
 # OS
 .DS_Store
+
+# M1 score sidecars: per-(trial, probed word, layer, position) cosines (D16). Large
+# binary derived artifacts — the tracked result JSON carries their SHA256, the D15
+# aggregates, and everything either gate reads. M2 reuses the sidecars locally.
+*.npz
