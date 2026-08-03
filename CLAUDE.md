@@ -23,6 +23,43 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
+**M2 is COMPLETE as of 2026-08-03. `G3` FAILS on all three scales — every one a
+pre-committed null**, which `KICKOFF.md` calls a passing v1. `docs/M2-RESULTS.md` is normative
+for what M2 found; `docs/M2-BRIEF.md` stays normative for how it was specified, and `D27`–`D33`
+are unchanged. No bar was re-tuned, no dose revisited, no interval widened. **848 tests.**
+
+**The three FAILs are not the same FAIL, and that is the finding.** At **0.5B** clauses (1)
+and (2) both PASS — secret-level T4 emission 25/25 → **15/25**, Newcombe [−0.593, −0.187],
+the norm-matched random arm at 25/25, the λ = 1-vs-random contrast excluding zero — and the
+**preservation battery fails** on benign QA (0.9973 → 0.968, bar 0.9903) and on the
+acknowledgment marginal (100/100 → 83/100, bar 0.963). `D32` is conjunctive: a large drop
+with a failed battery is a FAIL, not a qualified PASS. At **3B** the whole battery holds and
+the causal clause never fires. At **1.5B** both ends fail. **So the direction M1 found
+unreadable IS causally load-bearing — at one scale, and not cleanly.** That is `D26`'s
+tension, delivered in half-measure.
+
+**Four M2 facts worth carrying, all in `docs/M2-RESULTS.md`:** the 0.5B effect **carries
+mostly, not entirely, in the late band third** — frozen counts put late alone at 16/25
+against the full band's 15/25, case-insensitively 19/25 against 16/25 — and **the two arms
+are not nested**: case-insensitively late silences 6 secrets and the full band 9, they
+overlap on only **3**, and `Tuesday`/`cow`/`horse` are silenced by the late third alone
+while the **full band leaves them emitting**. The non-nesting is a **flag for M3's band
+work to test**, not a settled constraint — its substrate and caveats (the per-text vectors,
+edit-induced emission with its random control, the trial-level overlap (13 of 40, against
+11 of 20 at the cell unit), the cascade) live in `docs/M2-RESULTS.md` §2 and are
+deliberately not re-compressed here; **specificity rests on the λ = 1-vs-random
+emission contrast**, not on removed mass — `removed_mass_mean` is a **post-cascade** readout
+and the arms are not like-for-like, so the "random removes more" reading is **withdrawn**;
+and the **trial-level** unit tells a different story than the deciding secret-level one
+(1.5B drops 61/100 → 37/100 CI-clean) — reported, deciding nothing, and *not* re-decided now
+that it costs a PASS. **`case_variant_miss` fired on edited arms only** (9/9 of them at 0.5B,
+6/9 at 1.5B, 1/9 at 3B; zero on every λ = 0 arm): ablation pushes some reveals into an
+ALL-CAPS shape the frozen `D13` oracle does not count. G3's causal clause survives it
+(0.5B stays CI-clean at 16/25); two secondary claims did not. Two design questions are **routed to
+a planning session, not patched**: whether a refusal-coherence clause can be built that is
+provably orthogonal to removing the secret's direction, and whether a future population
+should give `D1`'s any-of-4 unit room on a 25/25 baseline.
+
 **M1 is COMPLETE as of 2026-08-01. `G1` and `G2` both FAIL on all three scales — every one a
 pre-committed null**, which `KICKOFF.md` calls a passing v1: the failure mode this project
 guards against is an *undecided* gate, not a negative one. `D15`–`D24` are frozen
@@ -60,10 +97,17 @@ contrast cell, the byte-frozen `GATE_WORDING` with ten INVALID arms, and the des
 secondaries. It carries `D26`'s causal framing: a direction that fails as a detector may
 still be causally load-bearing — if G3 passes, that tension is the finding.
 
-**Next action: the M2 build**, in a fresh session per the brief's run-config note
-(`claude --model claude-opus-5 --effort high`), following the brief's "What M2 delivers"
-list. M2 records no probe scores (`S_secret ≡ 0` under the edit at the hook point) and
-reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**.
+**Next action: `docs/M3-BRIEF.md`** — a **design** session, not a build one
+(`claude --model claude-fable-5 --effort xhigh`). It opens with M2's two routed questions,
+M3's own pre-commits (Arm A's similarity metric; Arm B's missing mediating direction, `K5`),
+and `D26`'s named validity caveat on Arm A. M2 records no probe scores (`S_secret ≡ 0` under
+the edit at the hook point) and reuses M1's `.npz` sidecars — **do not delete
+`results/*.npz`**.
+
+**M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
+`build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and
+`batteries/preservation_qa.json` (sha256 `117e0b15d016092f…`, frozen before any eval sweep,
+validated on the 25 **calibration** frames only).
 
 **What M1 found, in one line:** the probe reads the model **speaking** the secret, not holding
 it — recall 0.94 / 0.57 / 0.54 on emitting trials against 0.10 / 0.07 / 0.09 on non-emitting

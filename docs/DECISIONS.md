@@ -1149,3 +1149,49 @@ random-arm FAIL is collateral, reportable. **No probe score can arbitrate any of
 the edit zeroes `v̂`'s projection at the hook point the lens reads, so `S_secret ≡ 0`
 at λ = 1 by construction — M2 records no probe scores, and the λ = 0 workspace state
 lives in M1's `.npz` sidecars (**do not delete `results/*.npz`**).
+
+---
+
+## M2 execution record (2026-08-03) — no new decisions
+
+**G3 was decided once per scale and FAILS at 0.5B, 1.5B and 3B — every one a
+pre-committed null**, which `KICKOFF.md` calls a passing v1. `docs/M2-RESULTS.md` is the
+citable record and carries every number, computed from the result JSONs rather than
+transcribed. `docs/M2-BRIEF.md` stays normative for how M2 was specified. **No bar was
+re-tuned, no dose revisited, no interval widened, and `D27`–`D33` are unchanged.**
+
+**The three FAILs differ, and the difference is the finding.** At **0.5B** clauses (1)
+and (2) both PASS — 25/25 → 15/25 secret-level, Newcombe [−0.593, −0.187], with the
+random arm at 25/25 and the λ = 1-vs-random contrast excluding zero — and the
+**preservation battery fails** on benign QA (0.9973 → 0.968 against a bar of 0.9903) and
+on the acknowledgment marginal (100/100 → 83/100 against 0.963). `D32`'s conjunctive
+rule makes that a FAIL, not a qualified PASS. At **3B** the whole battery holds and the
+causal clause has nothing to certify. At **1.5B** both ends fail.
+
+**What executed as pre-registered.** `D28`'s identity arm: 100/100 λ = 0 trials
+byte-identical to M0 at every scale. `D27`'s read-back: worst residual 6.5 × 10⁻⁸ against
+`READBACK_TOL` 10⁻⁴, so the licensed fp32-on-device path was used throughout and the
+CPU-float64 fallback never fired. `D25`'s per-scale `repetition_penalty` asserted in both
+runners at all three scales. `D29`'s indeterminate branch is **inert** — zero
+indeterminate-only trials in every arm at every scale, as the brief predicted — so no
+scale is `INDETERMINATE-SENSITIVE`, and `SPECIFICITY-UNRESOLVED` never fires because it
+attaches only to a PASS. Every number in the brief's substrate table reproduced exactly,
+including the NLL clause's realized 0.5B tolerance (predicted +0.074 nats ≈ ×1.077 at
+drafting time; measured +0.0735 nats ×1.0763).
+
+**`D30`.3's ladder ran to its frozen cap and the per-scale fallback decided the probe
+sets.** Twelve candidate texts left three all-scale survivors, so 0.5B/1.5B use
+`probe_index` [0, 4, 6, 7] and 3B uses [0, 1, 4, 5] — two scales sharing `T_s` = 4 while
+holding different texts, the case PR #8's review F23 anticipated. Both replacement batches
+were frozen in annotations to `M2-BRIEF.md` **before first use**, the channel `D30`.3
+names. No scale was `FLOOR-LIMITED`: every one was predicted `IN-REACH` before any eval
+spend and every λ = 0 arm cleared the 20-ack-true floor (100 · 98 · 91). `D30`.2's QA rule
+held under the **primary** all-scale form, 30 of 40 items surviving.
+
+**Two design questions are routed to a planning session, and neither is patched here**
+(`docs/M2-RESULTS.md` §"What this sends to a planning session"): whether a
+refusal-coherence clause can be built that is provably orthogonal to removing the secret's
+direction — the 0.5B acknowledgment marginal moved *with* the intervention, which is the
+shape `D30`.3 demoted the conjunction for — and whether a future milestone's population
+should be built to give `D1`'s secret-level any-of-4 unit room on a 25/25 baseline. **G3
+is decided; neither question re-opens it.**

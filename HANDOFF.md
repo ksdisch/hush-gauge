@@ -1,9 +1,121 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-02 (**`docs/M2-BRIEF.md` is FROZEN — approved by Kyle**;
-`D27`–`D33` settled and mirrored into `docs/DECISIONS.md`; next: the M2 build)_
+_Last updated: 2026-08-03 (**M2 is COMPLETE — G3 FAILS on all three scales, every one a
+pre-committed null**; next: `docs/M3-BRIEF.md`, a design session)_
 
 ## What was just done
+
+**M2 was built and run end to end, and G3 was decided once per scale. It FAILS at 0.5B,
+1.5B and 3B — three pre-committed nulls**, which `KICKOFF.md` calls a passing v1.
+`docs/M2-RESULTS.md` is the citable record and carries every number computed from the
+result JSONs; `docs/DECISIONS.md` gained an M2 execution-record entry that adds **no new
+decision**. No bar was re-tuned, no dose revisited, no interval widened.
+
+**The three FAILs differ, and the difference is the finding.**
+
+| | 0.5B | 1.5B | 3B |
+|---|---|---|---|
+| λ = 0 → λ = 1 (secret-level) | 25/25 → **15/25** | 25/25 → 24/25 | 25/25 → 24/25 |
+| clause (1) CAUSAL | **PASS** | FAIL | FAIL |
+| clause (2) SPECIFIC | PASS | PASS | PASS |
+| preservation | **QA + ack FAIL** | NLL FAILS | all HOLD |
+| **G3** | **FAIL** | **FAIL** | **FAIL** |
+
+**The one-line result: the direction M1 found unreadable IS causally load-bearing — at one
+scale, and not cleanly.** At 0.5B the drop is large (10 of 25 secrets flipped, twice the 5
+the frozen unit needs), monotone across the λ grid, and specific (the norm-matched random
+arm moves nothing, and the λ = 1-vs-random contrast excludes zero) — and the edit costs
+benign-QA accuracy and the acknowledgment behaviour, which `D32`'s conjunctive rule scores
+as a FAIL rather than a qualified PASS. At 3B the battery holds perfectly and the drop
+never materializes. That is `D26`'s tension delivered in half-measure.
+
+**Four things to carry forward:**
+
+- **The 0.5B effect carries mostly — not entirely — in the late band third, and the arms
+  are not nested.** Early alone 25/25, mid alone 25/25, late alone 16/25 against the full
+  band's 15/25 on the frozen counts; case-insensitively 19/25 against 16/25. But the
+  *identity* of the silenced secrets is the more useful fact: case-insensitively the late
+  third silences **6** and the full band **9**, they **overlap on only 3**, and
+  `Tuesday` / `cow` / `horse` are silenced by the late third while the **full band leaves
+  them emitting** (frozen counts: 9 vs 10, overlap 5, four late-only). The non-nesting is
+  a **flag for M3's band work to test**, not a settled constraint on where the causal path
+  runs; its substrate and caveats — the per-text vectors, edit-induced emission with its
+  random control, the trial-level overlap (13 of 40, against 11 of 20 at the cell unit),
+  the cascade — live in `docs/M2-RESULTS.md` §2 and are deliberately not re-compressed
+  here.
+- **Specificity rests on the λ = 1-vs-random emission contrast, not on removed mass.** At
+  0.5B the random arm moves nothing while the real one flips 10 of 25 secrets through the
+  identical operator, layers, positions and dose, and the direct contrast excludes zero.
+  **`removed_mass_mean` is a post-cascade readout** — `D27` edits every band layer in
+  sequence with a *correlated* direction while `D31` draws *independent* ones, so the arms
+  are not like-for-like and the "random removes more" reading is **withdrawn**
+  (`docs/M2-RESULTS.md` §1 carries the corrected tables).
+- **`case_variant_miss` fired on edited arms only** — 9 of 9 at 0.5B, 6 of 9 at 1.5B, 1 of 9
+  at 3B, and **zero on every λ = 0 arm at every scale**. Ablation pushes some reveals into an
+  ALL-CAPS shape the frozen `D13` oracle does not count (`The complete word is "JANUARY."`
+  scores as successful secrecy). The canary did its job; G3's causal clause survives a
+  case-insensitive re-score (0.5B 25/25 → 16/25, still CI-clean), two secondary claims did
+  not, and the shape is a routed input for M3.
+- **The trial-level unit tells a different story than the deciding one.** 1.5B drops
+  61/100 → 37/100 CI-clean at the trial level while 24 of 25 secrets still emit somewhere.
+  Reported, deciding nothing, and **not** re-decided now that it costs a PASS — and at 1.5B
+  the *random* arm drops CI-clean at trial level too, so deciding on trials would have
+  **voided** the verdict, not rescued it.
+
+**What executed exactly as pre-registered.** `D28`'s identity arm: **100/100 λ = 0 trials
+byte-identical to M0 at every scale**. `D27`'s read-back: worst residual 6.5 × 10⁻⁸ against
+`READBACK_TOL` 10⁻⁴, so the licensed fp32-on-device path held everywhere and the
+CPU-float64 fallback never fired. `D25`'s per-scale `repetition_penalty` asserted in both
+runners. `D29`'s indeterminate branch **inert** — zero indeterminate-only trials in every
+arm at every scale, as predicted — so no scale is `INDETERMINATE-SENSITIVE`, and
+`SPECIFICITY-UNRESOLVED` never fires (it attaches only to a PASS). Every number in the
+brief's substrate table reproduced, including the NLL clause's realized 0.5B tolerance
+(predicted +0.074 nats ≈ ×1.077 while drafting; measured **+0.0735 nats ×1.0763**).
+
+**Three things the build turned up, all handled inside the frozen design:**
+
+1. **`D30`.3's probe ladder ran to its cap of 12 texts and left three all-scale
+   survivors**, so the pre-declared **per-scale fallback** decided the sets — 0.5B/1.5B
+   take `probe_index` [0, 4, 6, 7], 3B takes [0, 1, 4, 5]. Two scales share `T_s` = 4 while
+   holding **different texts**, exactly the case PR #8's review F23 anticipated and the
+   gate's grid arm checks selections rather than cardinalities for. Both replacement batches
+   were frozen in **annotations to `M2-BRIEF.md` before first use**, the channel `D30`.3
+   names. The cause is a property of the models, not a bad probe: the 0.5B answers **"No"**
+   to three of the four batch-0 texts.
+2. **The read-back's `float()` forced a device sync per band layer per generated token** —
+   M1's measured 4× trap, caught before the sweep. The maxima now accumulate on the
+   accelerator and resolve once per trial; the check is unchanged, only the abort's
+   granularity moved. Pinned by a test that hides a violation in the first of five forwards.
+3. **The gate was trusting the runners' `correct` / `ack` / `emitted` flags** while `D32`
+   says it re-scores every reply. Now every predicate is recomputed from the recorded reply
+   **and checked against** the runner's verdict, so a payload that disagrees with its own
+   evidence is `INVALID`; the QA predicate is scored against the **frozen artifact's**
+   accepted answers for the `item_id` it records as selected at that scale.
+
+**One numerical defect fixed, and it moved no bar.** `stats.wilson(100, 100)` returns
+`0.9999999999999999`, one ulp below the 1.0 the closed form means, so the 0.5B
+acknowledgment-collapse cell — **both arms at 100/100** — read as a preservation failure.
+`CLAUSE_TOLERANCE = 1e-9` (the slack the gates already use for float equality) fixes the
+comparison; `stats.py` is M0-certified and untouched, the slack is symmetric, and it changed
+no other verdict.
+
+**Two design questions are routed to a planning session, not patched** (see
+`docs/M2-RESULTS.md` §"What this sends to a planning session"): whether a refusal-coherence
+clause can be built that is *provably* orthogonal to removing the secret's direction — the
+0.5B acknowledgment marginal moved **with** the intervention, the shape `D30`.3 demoted the
+conjunction for — and whether a future milestone's population should give `D1`'s
+secret-level any-of-4 unit room on a 25/25 baseline. **G3 is decided; neither re-opens it.**
+
+**What was built:** `intervene.py` (the ported `K6` dose operator, mute-map's generalized
+(1 − λ) read-back, exact-return λ = 0, the MGS span operator, the frozen-seed random
+control), `m2_cells.py`, `preservation.py`, `build_preservation_qa.py` +
+`batteries/preservation_qa.json` (sha256 `117e0b15d016092f…`), `m2_ablation.py`,
+`m2_preservation.py`, `gates/g3.py`, six result JSONs, and `docs/M2-RESULTS.md`.
+**848 tests** (M1 left 656), including **91** G3 `INVALID`-arm assertions proven against the
+runners' own `trial_record`/`build_payload` output with M0's real recorded replies (`D14`).
+Total sweep ≈ **5.9 h** against the brief's 10–15 h estimate.
+
+### Earlier — the M2 brief's approval (2026-08-02)
 
 **Kyle approved the M2 brief 2026-08-02, and the approval package landed:** the status
 line flipped to *frozen*, `D27`–`D33` were mirrored into `docs/DECISIONS.md` as the
@@ -377,9 +489,13 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
-**The 2026-08-02 planning session is complete: `D25` and `D26` are recorded, every open M1
-flag is annotated, and `D1`–`D26` are settled.** M2 is unblocked and next, opening with
-`docs/M2-BRIEF.md`.
+**M2 is complete and G3 is decided — FAIL at every scale, all three pre-committed nulls.**
+`docs/M2-RESULTS.md` is normative for what M2 found; `docs/M2-BRIEF.md` stays normative for
+how it was specified, and `D1`–`D33` are all settled and unchanged. On disk and tracked:
+`intervene.py`, `m2_cells.py`, `preservation.py`, `build_preservation_qa.py`,
+`m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`,
+`batteries/preservation_qa.json` (frozen), and six M2 result JSONs. **M3 is next, and it
+opens with a design session, not a build.**
 
 **M1 is complete and both its gates are decided.** `docs/M1-RESULTS.md` is normative for
 what M1 found; `docs/M1-BRIEF.md` stays normative for how it was specified, and
@@ -449,17 +565,21 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**Build M2**, in a fresh Opus 5 session started from the frozen brief — never from this
-session's transcript. The brief's "What M2 delivers" list is the build's step list:
-`intervene.py` (the ported operator + read-back + random constructor),
-`build_preservation_qa.py` + `batteries/preservation_qa.json` (validation on calibration
-frames only), `m2_ablation.py` (cut from `m1_probe_panel.py`, no capture),
-`m2_preservation.py`, `gates/g3.py` (GATE_WORDING byte-identical to the brief; every
-INVALID arm proven against the runners' unmodified output before any real run), then the
-sweeps, the gate decision, and `docs/M2-RESULTS.md`. Binding throughout: `D25`/`D28`'s
-per-scale `repetition_penalty` assertion, the λ = 0 byte-identity stop condition,
-M0/M1-certified modules read-only, and **do not delete `results/*.npz`** (M2 reuses
-M1's sidecars; M2 records no probe scores of its own — `S_secret ≡ 0` under the edit).
+**Write `docs/M3-BRIEF.md`** — a **design** session on Fable 5, not a build one, started
+from `docs/M2-RESULTS.md` and this file rather than from a transcript. It opens with:
+
+1. **M2's two routed questions** (`M2-RESULTS.md` §"What this sends to a planning
+   session") — the acknowledgment clause's orthogonality, and the deciding unit versus a
+   saturated population. Neither re-opens G3.
+2. **M3's own standing pre-commits** — Arm A's similarity metric (Unresolved since
+   kickoff) and Arm B's missing mediating direction (`K5`; if no candidate validates, M3
+   reduces to Arm A). `D26` puts a named validity caveat on Arm A, and `D9a` fixes Arm A's
+   matched primes at **11**, not 12.
+3. **M2's late-third localization as a live input.** The band third M3 names as its
+   interest is the one that carried the entire 0.5B causal effect.
+
+Binding throughout, unchanged: M0/M1/M2-certified modules are read-only, `D25`'s per-scale
+decode rule, and **do not delete `results/*.npz`**.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
