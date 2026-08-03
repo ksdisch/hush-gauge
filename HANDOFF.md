@@ -40,8 +40,9 @@ never materializes. That is `D26`'s tension delivered in half-measure.
   them emitting** (frozen counts: 9 vs 10, overlap 5, four late-only). The non-nesting is
   a **flag for M3's band work to test**, not a settled constraint on where the causal path
   runs; its substrate and caveats — the per-text vectors, edit-induced emission with its
-  random control, the trial-level overlap the cell unit understates, the cascade — live in
-  `docs/M2-RESULTS.md` §2 and are deliberately not re-compressed here.
+  random control, the trial-level overlap (13 of 40, against 11 of 20 at the cell unit),
+  the cascade — live in `docs/M2-RESULTS.md` §2 and are deliberately not re-compressed
+  here.
 - **Specificity rests on the λ = 1-vs-random emission contrast, not on removed mass.** At
   0.5B the random arm moves nothing while the real one flips 10 of 25 secrets through the
   identical operator, layers, positions and dose, and the direct contrast excludes zero.

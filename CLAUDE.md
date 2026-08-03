@@ -45,9 +45,9 @@ are not nested**: case-insensitively late silences 6 secrets and the full band 9
 overlap on only **3**, and `Tuesday`/`cow`/`horse` are silenced by the late third alone
 while the **full band leaves them emitting**. The non-nesting is a **flag for M3's band
 work to test**, not a settled constraint — its substrate and caveats (the per-text vectors,
-edit-induced emission with its random control, the trial-level overlap the cell unit
-understates, the cascade) live in `M2-RESULTS.md` §2 and are deliberately not re-compressed
-here; **specificity rests on the λ = 1-vs-random
+edit-induced emission with its random control, the trial-level overlap (13 of 40, against
+11 of 20 at the cell unit), the cascade) live in `docs/M2-RESULTS.md` §2 and are
+deliberately not re-compressed here; **specificity rests on the λ = 1-vs-random
 emission contrast**, not on removed mass — `removed_mass_mean` is a **post-cascade** readout
 and the arms are not like-for-like, so the "random removes more" reading is **withdrawn**;
 and the **trial-level** unit tells a different story than the deciding secret-level one
