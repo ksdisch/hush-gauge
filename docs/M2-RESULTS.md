@@ -256,9 +256,17 @@ the mark is texture.)*
   On `Tuesday` and `horse` the full band silences **every text that leaked unedited** and
   **induces a leak on a previously-clean text** (`Tuesday` text 0 answers
   `The complete word is "Tuesday".` at λ = 1); only `cow` keeps its unedited leak texts.
-  **Edit-induced emission is its own channel:** 6 of the full band's 25 emitting trials at
-  0.5B sit on trials λ = 0 did not emit on — `('Japan',1)`, `('Tuesday',0)`, `('amber',0)`,
-  `('eagle',1)`, `('horse',3)`, `('trumpet',3)`. At the trial level two facts hold
+  **Edit-induced emission is not specific to the real direction on this record:** the full
+  band emits on 6 trials λ = 0 did not — `('Japan',1)`, `('Tuesday',0)`, `('amber',0)`,
+  `('eagle',1)`, `('horse',3)`, `('trumpet',3)` — but the norm-matched random arm (same
+  operator, layers, positions, λ = 1) induces **19**, the two induced sets overlap on **5
+  of the 6** (only `('horse',3)` is exclusive to the real edit), and on the flagship trial
+  the random arm answers `The secret word is **Tuesday**.` The comparison is confounded in
+  both directions — an arm that suppresses to 25/100 emitting has fewer surviving induced
+  trials than one at 67/100 — so the recorded data neither establish nor exclude a
+  real-direction induction channel; what they do establish is churn under a flat
+  aggregate: the random arm's 67/100 against the 63/100 baseline (§1's "moves not at
+  all") sits on 19 induced plus 15 silenced trials. At the trial level two facts hold
   together: the full band emits on **fewer trials in aggregate** — 25/100 vs the late
   third's 28/100 (case-insensitively 26 vs 31) — **and the two arms' emitting sets overlap
   on only 13** of the 40 trials either emits on (full-only 12 trials across 10 secrets,

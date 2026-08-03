@@ -37,15 +37,11 @@ never materializes. That is `D26`'s tension delivered in half-measure.
   *identity* of the silenced secrets is the more useful fact: case-insensitively the late
   third silences **6** and the full band **9**, they **overlap on only 3**, and
   `Tuesday` / `cow` / `horse` are silenced by the late third while the **full band leaves
-  them emitting** (frozen counts: 9 vs 10, overlap 5, four late-only). Per-text the full
-  band **swaps** leak sites rather than failing to finish: on `Tuesday`/`horse` it silences
-  every unedited leak and induces one on a previously-clean text — **6 of its 25 emitting
-  trials are edit-induced**, a channel of its own — and at the trial level it emits on
-  fewer trials in aggregate (25/100 vs 28/100) while overlapping the late third on only 13
-  of the 40 trials either emits on. The arms are also not like-for-like at layers 17–21
-  (the cascade; the 11.18-vs-16.73 `removed_mass_mean`s are 13- and 5-layer pooled means,
-  the per-layer comparison inferred). The non-nesting is a **flag for M3's band work to
-  test**, not a settled constraint on where the causal path runs.
+  them emitting** (frozen counts: 9 vs 10, overlap 5, four late-only). The non-nesting is
+  a **flag for M3's band work to test**, not a settled constraint on where the causal path
+  runs; its substrate and caveats — the per-text vectors, edit-induced emission with its
+  random control, the trial-level overlap the cell unit understates, the cascade — live in
+  `docs/M2-RESULTS.md` §2 and are deliberately not re-compressed here.
 - **Specificity rests on the λ = 1-vs-random emission contrast, not on removed mass.** At
   0.5B the random arm moves nothing while the real one flips 10 of 25 secrets through the
   identical operator, layers, positions and dose, and the direct contrast excludes zero.
