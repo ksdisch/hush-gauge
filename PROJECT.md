@@ -73,8 +73,12 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**M0 and M1 both closed.** G0 PASSES (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as
-pre-committed nulls (`docs/M1-RESULTS.md`). Kicked off 2026-07-29 from
+**M0, M1 and M2 all closed.** G0 PASSES (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as
+pre-committed nulls (`docs/M1-RESULTS.md`); **G3 FAILS on all three scales**
+(`docs/M2-RESULTS.md`) — also pre-committed nulls, and not the same null three times: at
+0.5B the causal and specificity clauses both PASS (25/25 → 15/25) and the preservation
+battery fails, at 3B the battery holds and the causal clause does not fire, at 1.5B
+neither holds. Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
 J-lens audit brainstorm), picked at that day's backlog-hygiene pass once mute-map
 closed (M4 PASSED 2026-07-29) — the stated precondition for this project's M3 fusion
@@ -109,9 +113,17 @@ inputs.
    direction stands — the yardstick's edge is licensed speech being spoken; no G2′).
 9. ~~Write `docs/M2-BRIEF.md`~~ — **frozen 2026-08-02, approved by Kyle** after the PR #8
    adversarial review; `D27`–`D33` settled and mirrored into `docs/DECISIONS.md`.
-10. **M2 build** — per the brief's deliverables list, in a fresh Opus 5 session per its
-   run-config note. Unblocked by M1's nulls: G3 asks whether ablating `v_secret` reduces
-   emission, which does not depend on the probe grading as a detector.
+10. ~~**M2 build**~~ — **done 2026-08-03**; every deliverable built,
+   `batteries/preservation_qa.json` frozen before any eval sweep, `gates/g3.py` frozen
+   with `GATE_WORDING` byte-identical to the brief, the ~5.9 h sweep run on all three
+   subjects, **G3 decided once per scale and FAILS at every scale**
+   (`docs/M2-RESULTS.md`). 848 tests. `D28`'s identity arm held 100/100 everywhere.
+11. **Open `docs/M3-BRIEF.md`** — a design session (Fable 5), not a build one. It opens
+   with M2's two routed questions (the acknowledgment clause's orthogonality; the
+   deciding unit versus a saturated population), plus M3's own pre-commits: Arm A's
+   similarity metric and Arm B's missing mediating direction (`K5`), with `D26`'s named
+   validity caveat on Arm A. M2's late-third localization at 0.5B is a live input —
+   the band third M3 names as its interest carried the whole 0.5B effect.
 
 ## Boundaries
 

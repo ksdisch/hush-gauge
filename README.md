@@ -51,6 +51,16 @@ undecided gate, not a negative one.
 
 ## Status
 
+**M2 complete, 2026-08-03 — G3 FAILS at all three scales, and all three are
+pre-committed nulls.** Ablating the secret's own probed direction at every band layer
+produces a large, graded, specific emission drop at 0.5B (25/25 → 15/25 secrets, CI-clean,
+with a random norm-matched direction moving nothing) — and the pre-registered preservation
+battery catches the price: benign-QA accuracy and the acknowledgment behaviour both break
+there, which G3 scores as a FAIL rather than a qualified PASS. At 3B the battery holds
+perfectly and the drop never materializes; at 1.5B neither does. So the direction M1 found
+unreadable **is** causally load-bearing — at one scale, and not cleanly.
+`docs/M2-RESULTS.md` carries the full record.
+
 **M1 complete, 2026-08-01 — G1 and G2 both FAIL at all three scales, and both are
 pre-committed nulls.** `KICKOFF.md` calls that a passing v1: what this project guards
 against is an *undecided* gate, not a negative one. No bar was re-tuned, the threshold
