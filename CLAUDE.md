@@ -97,12 +97,14 @@ contrast cell, the byte-frozen `GATE_WORDING` with ten INVALID arms, and the des
 secondaries. It carries `D26`'s causal framing: a direction that fails as a detector may
 still be causally load-bearing — if G3 passes, that tension is the finding.
 
-**Next action: `docs/M3-BRIEF.md`** — a **design** session, not a build one
-(`claude --model claude-fable-5 --effort xhigh`). It opens with M2's two routed questions,
-M3's own pre-commits (Arm A's similarity metric; Arm B's missing mediating direction, `K5`),
-and `D26`'s named validity caveat on Arm A. M2 records no probe scores (`S_secret ≡ 0` under
-the edit at the hook point) and reuses M1's `.npz` sidecars — **do not delete
-`results/*.npz`**.
+**`docs/M3-BRIEF.md` is WRITTEN (2026-08-03) — draft, awaiting its adversarial review and
+Kyle's approval; nothing in M3 runs until then.** It answers M2's three routed questions
+(`D34`–`D36`), recasts Arm A as a causal-profile congruence table (the kickoff's
+"primed-suppression signature" does not exist as a mute-map object, and `D26` voids the
+silent-trial quantity — both owned in the brief), and constructs Arm B's candidate with an
+orthogonality-by-construction guarantee (`D38`) and G4 on the baseline-silent T1–T2
+population (`D39`). M2 records no probe scores (`S_secret ≡ 0` under the edit at the hook
+point) and reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**.
 
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and
