@@ -243,21 +243,32 @@ the mark is texture.)*
   {`April`, `China`, `Friday`, `Sunday`, `butterfly`, `duck`, `mosquito`, `piano`, `ruby`}:
   they **overlap on 3**, and `Tuesday` / `cow` / `horse` are silenced by editing the late
   third alone while **editing the whole band leaves them emitting**. (Frozen counts: 9 vs
-  10, overlap 5, four late-only.) The set fact is exact, and its substrate bounds what it
-  can mean. The three late-only secrets survive the full band on **1 / 2 / 1 of their 4
-  texts** against unedited baselines of 1 / 2 / 2 — the full band never emits **above** its
-  own λ = 0 cell on any of them and strictly reduces `horse` (2 → 1), so nothing is
-  *restored* relative to no edit; the full band fails to complete a silencing of secrets
-  that were already marginal unedited. At the trial level the full band **dominates** the
-  late third — 25/100 vs 28/100 emitting (case-insensitively 26 vs 31) — so more layers
-  still means less emission overall, and the non-nesting is a property of `D1`'s any-of-4
-  unit on three marginal secrets, not a general non-monotonicity in layer count. The arms
-  also supply a mundane account of it: they are **not like-for-like at layers 17–21** — in
-  the full-band arm those layers see a residual the earlier band layers have already
-  cleaned (§1's cascade; implied projection **11.18** against the late-only arm's
-  **16.73**), while `third_late` removes the whole accumulated projection there. So the
-  non-nesting is a **flag for M3's band work to test**, not a constraint an account of the
-  causal path must already satisfy. `D33`.2's sweep was added to
+  10, overlap 5, four late-only.) The set fact is exact; its substrate, at the unit the
+  payload resolves — per-text `emitted` on the three late-only secrets (texts 0–3, frozen
+  primary):
+
+  | secret | λ = 0 | λ = 1 | late third |
+  |---|---|---|---|
+  | `Tuesday` | `[0,0,1,0]` | `[1,0,0,0]` | `[0,0,0,0]` |
+  | `cow` | `[1,0,1,0]` | `[1,0,1,0]` | `[0,0,0,0]` |
+  | `horse` | `[1,0,1,0]` | `[0,0,0,1]` | `[0,0,0,0]` |
+
+  On `Tuesday` and `horse` the full band silences **every text that leaked unedited** and
+  **induces a leak on a previously-clean text** (`Tuesday` text 0 answers
+  `The complete word is "Tuesday".` at λ = 1); only `cow` keeps its unedited leak texts.
+  **Edit-induced emission is its own channel:** 6 of the full band's 25 emitting trials at
+  0.5B sit on trials λ = 0 did not emit on — `('Japan',1)`, `('Tuesday',0)`, `('amber',0)`,
+  `('eagle',1)`, `('horse',3)`, `('trumpet',3)`. At the trial level two facts hold
+  together: the full band emits on **fewer trials in aggregate** — 25/100 vs the late
+  third's 28/100 (case-insensitively 26 vs 31) — **and the two arms' emitting sets overlap
+  on only 13** of the 40 trials either emits on (full-only 12 trials across 10 secrets,
+  late-only 15), so the non-nesting is a trial-level fact that `D1`'s any-of-4 cell unit
+  *understates*. The arms are also not like-for-like at layers 17–21 — in the full-band arm
+  those layers see a residual the earlier band layers have already cleaned (§1's cascade) —
+  though the recorded `removed_mass_mean` is pooled over each arm's whole edited layer set
+  (11.18 over 13 layers vs 16.73 over 5), so the per-layer 17–21 comparison is inferred,
+  not measured. The non-nesting is a **flag for M3's band work to test**, not a constraint
+  an account of the causal path must already satisfy. `D33`.2's sweep was added to
   make `KICKOFF.md`'s "mid-band first" re-readable under the other interpretation, and it
   answers that question either way: the causal path runs through the band's *late* third,
   which is mute-map's late-band output off-switch territory and M3's named interest.
