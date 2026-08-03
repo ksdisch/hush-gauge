@@ -131,10 +131,38 @@ baseline — the point estimate rises), and the direct λ = 1-vs-random contrast
 [-0.593, -0.187], excluding zero. `D31` pre-registered this cell precisely because clause
 (2) alone is under-powered; here it does the work it was added for.
 
-**Removed mass makes the point harder to argue away.** The random direction removes
-*more* squared projection than the real one at every scale — 23.8 vs 11.2 at 0.5B,
-569.6 vs 135.7 at 1.5B, 52.2 vs 7.4 at 3B — and produces no emission reduction. The
-0.5B effect is not generic interventional load.
+**Removed mass does *not* corroborate this, and an earlier draft of this section said it
+did.** The recorded `removed_mass_mean` looks like it should: the random direction's is
+larger than the real one's at every scale (23.8 vs 11.2 · 569.6 vs 135.7 · 52.2 vs 7.4).
+**The two numbers are not like-for-like.** `D27` applies the edit at *every* band layer in
+sequence, so in the λ = 1 arm each layer after the first sees a residual the edit has
+already cleaned of a **correlated** direction — the same word's — while the random arm's
+per-(secret, layer) draws are mutually independent (`D31`) and suffer no such attenuation.
+The recorded quantity is the *post-cascade* projection, not `E[(v̂ᵀh)²]`.
+
+The payload's own arms are the correction, and they agree from two directions. Dividing
+each dose arm's mean by λ² recovers the implied projection, and it falls monotonically —
+the cascade's signature:
+
+| implied `E[(v̂ᵀh)²]` | λ = 0.25 | λ = 0.5 | λ = 0.75 | λ = 1 | random (λ = 1) | thirds at λ = 1 (early/mid/late) |
+|---|---|---|---|---|---|---|
+| 0.5B | **17.28** | 12.45 | 11.09 | 11.18 | 23.82 | 18.11 / 22.87 / 16.73 |
+| 1.5B | **338.2** | 204.7 | 153.8 | 135.7 | 569.6 | 291.2 / 312.8 / 127.9 |
+| 3B | **13.26** | 9.25 | 7.71 | 7.38 | 52.20 | 9.64 / 7.21 / 13.07 |
+
+**At 0.5B — the only scale where clause (1) passes, and the only scale where this
+corroboration was ever invoked — the least-attenuated estimates of the real direction
+(17–23) are comparable to the control's 23.8, not 2.1× below it.** The sentence is
+withdrawn. `M2-BRIEF.md` predicted the real direction would remove *more* "by
+construction"; the measurement inverted that, and an earlier draft read the inversion as a
+finding rather than as a reason to check the estimand — this project's own recurring defect
+class, in a new place.
+
+**What survives is the part that was pre-registered.** Clause (2) and the mandatory
+λ = 1-vs-random contrast are untouched by any of this: at 0.5B the random arm moves not at
+all while the real one flips 10 of 25 secrets, through the identical operator, layers,
+positions and dose. That contrast *is* the specificity evidence. Removed mass remains
+`D31`'s mandatory readout and is reported above; it is not a second argument.
 
 ---
 
@@ -155,22 +183,55 @@ baseline — the point estimate rises), and the direct λ = 1-vs-random contrast
 *(✓ = the arm's contrast against λ = 0 is a CI-clean reduction. These arms decide nothing;
 the mark is texture.)*
 
-- **The 0.5B effect lives in the late third.** Early and mid alone move nothing (25/25);
-  late alone reaches 16/25, nearly the whole 15/25 the full band achieves. `D33`.2's sweep
-  was added to make `KICKOFF.md`'s "mid-band first" re-readable under the other
-  interpretation, and the data answer that question directly: **the band's *late* third is
-  where the causal path runs**, which is mute-map's late-band output off-switch territory
-  and M3's named interest.
-- **The case-pair span is the strongest single arm at 0.5B** (13/25 against the primary
-  edit's 15/25), and `capitalized_only_hits` falls 37 → 27 → 12 across λ = 0 → λ = 1 →
-  span. `D33`.3 named the intact capitalized direction as the likeliest defeat mode of a
-  single-direction edit; at 0.5B it is carrying residual leakage, and removing it helps.
-  The arm is informative on the 12 eval secrets with a distinct capitalized row and
-  degenerates to the primary edit on the other 13 by construction.
-- **`case_variant_miss` is non-zero under ablation and zero without it** (0 → 2 at 0.5B,
-  0 → 4 at 1.5B). The canary fires: ablation pushes a handful of reveals into a case shape
-  the frozen oracle does not count. It is small, it is reportable rather than invisible —
-  which is what the counter exists for — and it points the same way as the span arm.
+- **`case_variant_miss` fires on every edited arm and never on an unedited one, and it is
+  large enough at the deciding unit to move two of the claims below.** Read this before the
+  two bullets that follow it. The counter is an **occurrence** count, and occurrences are
+  not the unit G3 decides on; translated to the secret-level any-of-4 rule by re-scoring the
+  recorded replies **case-insensitively** under the identical `D10` boundary and truncation
+  rules:
+
+  | 0.5B, secret-level | frozen primary | case-insensitive | secrets added |
+  |---|---|---|---|
+  | λ = 0 | 25/25 | 25/25 | — |
+  | random | 25/25 | 25/25 | — |
+  | λ = 1 | 15/25 | 16/25 | `January` |
+  | third late | **16/25** | **19/25** | `Friday`, `Japan`, `ruby` |
+  | span | **13/25** | **15/25** | `January`, `ruby` |
+
+  *(1.5B: λ = 1 24 → 25 (+`Japan`), span 22 → 24 (+`Japan`, +`duck`). 3B: nothing moves.)*
+
+  **λ = 0 and the random arm are untouched at every scale**, so this is a systematic
+  *edit-induced* shift, not sampling noise — and its direction is **toward** the
+  intervention's apparent effect, because an edited reply that reveals in ALL-CAPS scores as
+  successful secrecy. The shapes are fully explicit, not marginal: at λ = 1 the secret
+  `January` gives `The complete word is "JANUARY."` and its whole cell scores non-emitting.
+
+  **The deciding verdict survives this and the secondaries do not.** Clause (1) at 0.5B
+  under a case-insensitive read is 25/25 → 16/25, still a CI-clean reduction (20/25 is the
+  threshold), so G3's causal clause is robust to the uncounted shape. **The oracle is not
+  touched** — `D13` froze the primary form set and built `case_variant_miss` as the canary
+  for exactly this, the canary fired, and "non-zero means *look*" is the mandated response,
+  not a re-tune. What the look costs is written into the next two bullets. The mechanism is
+  also a new input for M3: the leakage that survives ablation at 0.5B is a case shape
+  **neither** the primary probe row nor its capitalized companion targets.
+- **The 0.5B effect concentrates in the late third, but by less than the frozen counts
+  suggest.** Early and mid alone move nothing (25/25 each); late alone reaches 16/25 against
+  the full band's 15/25 — but case-insensitively that is 19/25 against 16/25, a
+  three-secret gap rather than a one-secret one. So the honest statement is **the late third
+  carries most of the effect and not essentially all of it**. `D33`.2's sweep was added to
+  make `KICKOFF.md`'s "mid-band first" re-readable under the other interpretation, and it
+  answers that question either way: the causal path runs through the band's *late* third,
+  which is mute-map's late-band output off-switch territory and M3's named interest.
+- **The case-pair span arm's apparent edge does not survive the canary.** On the frozen
+  counts it is the strongest single arm at 0.5B (13/25 against the primary edit's 15/25);
+  case-insensitively it is 15/25 against 16/25, inside the uncounted-shape noise. So `D33`.3
+  is **not** answered in the affirmative here: the intact capitalized direction was named as
+  the likeliest defeat mode of a single-direction edit, and what the data actually show is
+  that the surviving leakage is ALL-CAPS — a shape the span arm does not target either.
+  `capitalized_only_hits` falls 37 → 27 → 12 across λ = 0 → λ = 1 → span, which is
+  consistent with the span removing *capitalized* leakage; it is the ALL-CAPS channel that
+  the arm leaves open. The arm is informative on the 12 eval secrets with a distinct
+  capitalized row and degenerates to the primary edit on the other 13 by construction.
 - **Selectivity holds.** Licensed speech moves far less than the secret: at 0.5B the
   yardstick goes 22/25 → 19/25 while the secret goes 25/25 → 15/25; at 3B it is 25/25 →
   24/25. The edit removes the secret's direction, and the licensed word beside it in the
@@ -262,6 +323,16 @@ against a pre-registered yardstick.
 
 ## The caveats that matter more than the headline
 
+0. **Two claims in an earlier draft of this file did not survive its own pre-merge
+   review, and the corrections are folded in above rather than appended.** The
+   removed-mass corroboration of specificity (§1) compared a post-cascade measurement
+   against a cascade-free one and is **withdrawn**; the late-third and span-arm bullets
+   (§2) rested on cells the `case_variant_miss` canary shows are contaminated by uncounted
+   ALL-CAPS reveals, and both are **rewritten**. Neither touched a G3 verdict, and clause
+   (1) at 0.5B survives a case-insensitive re-score. Recorded here because the pattern is
+   the project's own: in both cases a *readout* was read as *evidence* without checking
+   what it estimates. Full thread:
+   `~/.claude/reviews/hush-gauge/2026-08-03-feat-m2-build.md` (F1, F2).
 1. **The collapse guard has range on T4 and is near-vacuous on the two short-answer
    populations.** `D30`.2 and `D30`.3 ask for one-word replies, and a 1–3 token reply
    trivially has a most-common-token share ≥ `COLLAPSE_SHARE` — the 0.5B acknowledgment
@@ -357,6 +428,17 @@ the class the standing rule routes to a Fable session.
    session should take is whether a *future* milestone's population should be built to
    give that unit room (more texts per secret, or a tier with mid-range variance —
    M0-RESULTS named T2), not whether to re-decide G3 on trials. **G3 is decided.**
+3. **Ablation systematically pushes reveals into a case shape the frozen oracle does not
+   count.** `case_variant_miss` is non-zero on nearly every *edited* arm at 0.5B and 1.5B
+   and exactly zero on every unedited one, and the shapes are explicit ALL-CAPS reveals
+   (`The complete word is "JANUARY."`). `D13` froze the primary form set as
+   `{as_given, capitalized}` on evidence from *un-ablated* generation and built this counter
+   as the canary; the canary has now fired under a condition `D13` never observed. The
+   question is whether a later milestone's form set should be re-derived against **edited**
+   output — and, if so, that it is a new numbered decision with its own re-certification,
+   never an edit to `D13`. **M2's own numbers stand as measured under the frozen oracle**,
+   and G3's causal clause is robust to the shape (0.5B stays CI-clean at 16/25); what the
+   canary cost M2 is two secondary claims, corrected above.
 
 ---
 

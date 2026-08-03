@@ -96,10 +96,21 @@ class EditAttestation:
     they are accumulated here rather than reconstructed.
 
     `removed_mass_mean` is the mean of `λ²(v̂ᵀh)²` over edited layers × positions — the
-    squared norm of the vector the operator actually removes. At the deciding dose λ = 1
-    that is exactly the brief's `(v̂ᵀh)²`, which is where `D31`'s real-vs-random asymmetry
-    is read; at λ = 0 it is 0, which is the value the exact-return path makes true by
-    construction rather than a placeholder standing in for an uncomputed quantity.
+    squared norm of the vector the operator actually removes. At λ = 0 it is 0, which the
+    exact-return path makes true by construction rather than a placeholder standing in for
+    an uncomputed quantity.
+
+    **It is a post-cascade quantity, and is not `E[(v̂ᵀh)²]` on the unedited stream.**
+    `D27` edits at *every* band layer in sequence, so every layer after the first sees a
+    residual the edit has already cleaned of a **correlated** direction — the same word's —
+    and the recorded projection is attenuated accordingly. `D31`'s random arm draws
+    *independent* directions per (secret, layer), so it suffers no such attenuation. The two
+    arms' recorded means are therefore **not like-for-like**, and a smaller real-arm mean is
+    not evidence that the real direction carries less activation. The dose grid shows the
+    attenuation directly — dividing each arm's mean by λ² gives a monotonically falling
+    implied projection — and the sub-band-third arms measure the same direction with most of
+    the cascade removed. `docs/M2-RESULTS.md` §1 carries the measured tables and withdraws
+    the claim an earlier draft built on this field.
 
     **Accumulated on the accelerator, resolved once per trial.** The check is unchanged —
     still the max over **every** position of **every** edited layer of **every** forward
