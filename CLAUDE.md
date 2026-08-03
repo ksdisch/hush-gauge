@@ -44,7 +44,11 @@ against the full band's 15/25, case-insensitively 19/25 against 16/25 — and **
 are not nested**: case-insensitively late silences 6 secrets and the full band 9, they
 overlap on only **3**, and `Tuesday`/`cow`/`horse` are silenced by the late third alone
 while the **full band leaves them emitting**. Editing more layers is not a superset of
-editing one third, which is the input M3's band work actually needs; **specificity rests on the λ = 1-vs-random
+editing one third — a **flag for M3's band work to test**, not a settled constraint: the
+three survive the full band on 1/2/1 of 4 texts against λ = 0 baselines of 1/2/2, the full
+band still dominates at trial level (25/100 vs 28/100), and its late layers see a
+cascade-cleaned residual (implied projection 11.18 vs the late-only arm's 16.73), so the
+arms are not like-for-like at layers 17–21; **specificity rests on the λ = 1-vs-random
 emission contrast**, not on removed mass — `removed_mass_mean` is a **post-cascade** readout
 and the arms are not like-for-like, so the "random removes more" reading is **withdrawn**;
 and the **trial-level** unit tells a different story than the deciding secret-level one

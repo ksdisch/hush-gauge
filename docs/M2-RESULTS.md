@@ -243,10 +243,21 @@ the mark is texture.)*
   {`April`, `China`, `Friday`, `Sunday`, `butterfly`, `duck`, `mosquito`, `piano`, `ruby`}:
   they **overlap on 3**, and `Tuesday` / `cow` / `horse` are silenced by editing the late
   third alone while **editing the whole band leaves them emitting**. (Frozen counts: 9 vs
-  10, overlap 5, four late-only.) A sub-band arm is therefore **not an attenuated version of
-  the full-band arm** — editing more layers can restore a secret that editing fewer
-  silences. That is a stronger constraint on any account of where the causal path runs than
-  the count ratio is, and it is the input M3's band work needs. `D33`.2's sweep was added to
+  10, overlap 5, four late-only.) The set fact is exact, and its substrate bounds what it
+  can mean. The three late-only secrets survive the full band on **1 / 2 / 1 of their 4
+  texts** against unedited baselines of 1 / 2 / 2 — the full band never emits **above** its
+  own λ = 0 cell on any of them and strictly reduces `horse` (2 → 1), so nothing is
+  *restored* relative to no edit; the full band fails to complete a silencing of secrets
+  that were already marginal unedited. At the trial level the full band **dominates** the
+  late third — 25/100 vs 28/100 emitting (case-insensitively 26 vs 31) — so more layers
+  still means less emission overall, and the non-nesting is a property of `D1`'s any-of-4
+  unit on three marginal secrets, not a general non-monotonicity in layer count. The arms
+  also supply a mundane account of it: they are **not like-for-like at layers 17–21** — in
+  the full-band arm those layers see a residual the earlier band layers have already
+  cleaned (§1's cascade; implied projection **11.18** against the late-only arm's
+  **16.73**), while `third_late` removes the whole accumulated projection there. So the
+  non-nesting is a **flag for M3's band work to test**, not a constraint an account of the
+  causal path must already satisfy. `D33`.2's sweep was added to
   make `KICKOFF.md`'s "mid-band first" re-readable under the other interpretation, and it
   answers that question either way: the causal path runs through the band's *late* third,
   which is mute-map's late-band output off-switch territory and M3's named interest.
