@@ -38,11 +38,13 @@ the causal clause never fires. At **1.5B** both ends fail. **So the direction M1
 unreadable IS causally load-bearing — at one scale, and not cleanly.** That is `D26`'s
 tension, delivered in half-measure.
 
-**Three M2 facts worth carrying, all in `docs/M2-RESULTS.md`:** the 0.5B effect **carries
+**Four M2 facts worth carrying, all in `docs/M2-RESULTS.md`:** the 0.5B effect **carries
 mostly, not entirely, in the late band third** — frozen counts put late alone at 16/25
-against the full band's 15/25, but a case-insensitive re-score puts them at 19/25 against
-16/25, so late flips 6 of the 9 secrets the full band flips (M3's named interest, and that
-19-vs-16 pair is the input its band work needs); **specificity rests on the λ = 1-vs-random
+against the full band's 15/25, case-insensitively 19/25 against 16/25 — and **the two arms
+are not nested**: case-insensitively late silences 6 secrets and the full band 9, they
+overlap on only **3**, and `Tuesday`/`cow`/`horse` are silenced by the late third alone
+while the **full band leaves them emitting**. Editing more layers is not a superset of
+editing one third, which is the input M3's band work actually needs; **specificity rests on the λ = 1-vs-random
 emission contrast**, not on removed mass — `removed_mass_mean` is a **post-cascade** readout
 and the arms are not like-for-like, so the "random removes more" reading is **withdrawn**;
 and the **trial-level** unit tells a different story than the deciding secret-level one

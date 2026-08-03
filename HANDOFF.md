@@ -29,13 +29,17 @@ benign-QA accuracy and the acknowledgment behaviour, which `D32`'s conjunctive r
 as a FAIL rather than a qualified PASS. At 3B the battery holds perfectly and the drop
 never materializes. That is `D26`'s tension delivered in half-measure.
 
-**Three things to carry forward:**
+**Four things to carry forward:**
 
-- **The 0.5B effect carries mostly — not entirely — in the late band third.** Early alone
-  25/25, mid alone 25/25, late alone 16/25 against the full band's 15/25 on the frozen
-  counts; **case-insensitively that is 19/25 against 16/25**, so late flips 6 of the 9
-  secrets the full band flips. That is M3's named interest, and the 19-vs-16 pair is the
-  input its band work needs.
+- **The 0.5B effect carries mostly — not entirely — in the late band third, and the arms
+  are not nested.** Early alone 25/25, mid alone 25/25, late alone 16/25 against the full
+  band's 15/25 on the frozen counts; case-insensitively 19/25 against 16/25. But the
+  *identity* of the silenced secrets is the more useful fact: case-insensitively the late
+  third silences **6** and the full band **9**, they **overlap on only 3**, and
+  `Tuesday` / `cow` / `horse` are silenced by the late third while the **full band leaves
+  them emitting** (frozen counts: 9 vs 10, overlap 5, four late-only). **Editing more layers
+  is not a superset of editing one third** — that non-nesting, not the ratio, is what M3's
+  band work needs.
 - **Specificity rests on the λ = 1-vs-random emission contrast, not on removed mass.** At
   0.5B the random arm moves nothing while the real one flips 10 of 25 secrets through the
   identical operator, layers, positions and dose, and the direct contrast excludes zero.

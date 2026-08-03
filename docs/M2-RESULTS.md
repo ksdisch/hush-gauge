@@ -237,7 +237,16 @@ the mark is texture.)*
   suggest.** Early and mid alone move nothing (25/25 each); late alone reaches 16/25 against
   the full band's 15/25 — but case-insensitively that is 19/25 against 16/25, a
   three-secret gap rather than a one-secret one. So the honest statement is **the late third
-  carries most of the effect and not essentially all of it**. `D33`.2's sweep was added to
+  carries most of the effect and not essentially all of it** — and, more usefully, **the two
+  arms are not nested.** Case-insensitively the late third silences
+  {`April`, `China`, `Tuesday`, `cow`, `duck`, `horse`} and the full band silences
+  {`April`, `China`, `Friday`, `Sunday`, `butterfly`, `duck`, `mosquito`, `piano`, `ruby`}:
+  they **overlap on 3**, and `Tuesday` / `cow` / `horse` are silenced by editing the late
+  third alone while **editing the whole band leaves them emitting**. (Frozen counts: 9 vs
+  10, overlap 5, four late-only.) A sub-band arm is therefore **not an attenuated version of
+  the full-band arm** — editing more layers can restore a secret that editing fewer
+  silences. That is a stronger constraint on any account of where the causal path runs than
+  the count ratio is, and it is the input M3's band work needs. `D33`.2's sweep was added to
   make `KICKOFF.md`'s "mid-band first" re-readable under the other interpretation, and it
   answers that question either way: the causal path runs through the band's *late* third,
   which is mute-map's late-band output off-switch territory and M3's named interest.
