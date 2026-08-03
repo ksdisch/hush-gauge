@@ -141,8 +141,10 @@ per-(secret, layer) draws are mutually independent (`D31`) and suffer no such at
 The recorded quantity is the *post-cascade* projection, not `E[(v̂ᵀh)²]`.
 
 The payload's own arms are the correction, and they agree from two directions. Dividing
-each dose arm's mean by λ² recovers the implied projection, and it falls monotonically —
-the cascade's signature:
+each dose arm's mean by λ² recovers the implied projection, and it **falls steeply with
+dose** — the cascade's signature. (Strictly monotone at 1.5B and 3B; at 0.5B it is flat
+across the last step, 11.09 → 11.18. The argument rests on the 17 → 11 fall, not on strict
+monotonicity, and does not claim it.)
 
 | implied `E[(v̂ᵀh)²]` | λ = 0.25 | λ = 0.5 | λ = 0.75 | λ = 1 | random (λ = 1) | thirds at λ = 1 (early/mid/late) |
 |---|---|---|---|---|---|---|
@@ -183,22 +185,39 @@ positions and dose. That contrast *is* the specificity evidence. Removed mass re
 *(✓ = the arm's contrast against λ = 0 is a CI-clean reduction. These arms decide nothing;
 the mark is texture.)*
 
-- **`case_variant_miss` fires on every edited arm and never on an unedited one, and it is
-  large enough at the deciding unit to move two of the claims below.** Read this before the
-  two bullets that follow it. The counter is an **occurrence** count, and occurrences are
+- **`case_variant_miss` fires on edited arms only — 9 of 9 at 0.5B, 6 of 9 at 1.5B, 1 of 9
+  at 3B, and zero on every unedited arm at every scale — and at 0.5B it is large enough at
+  the deciding unit to move two of the claims below.** Read this before the two bullets that
+  follow it. Per-arm occurrence counts over each arm's 100 eval trials:
+
+  | | λ0 | .25 | .5 | .75 | λ1 | random | early | mid | late | span |
+  |---|---|---|---|---|---|---|---|---|---|---|
+  | 0.5B | **0** | 6 | 1 | 4 | 2 | 1 | 2 | 1 | 4 | 3 |
+  | 1.5B | **0** | 1 | 1 | 6 | 4 | 0 | 0 | 0 | 2 | 3 |
+  | 3B | **0** | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+  The scale gradient is printed rather than asserted because it matters: **3B shows
+  essentially none of this**, so nothing below generalizes past 0.5B and 1.5B. The counter is an **occurrence** count, and occurrences are
   not the unit G3 decides on; translated to the secret-level any-of-4 rule by re-scoring the
   recorded replies **case-insensitively** under the identical `D10` boundary and truncation
   rules:
 
-  | 0.5B, secret-level | frozen primary | case-insensitive | secrets added |
-  |---|---|---|---|
-  | λ = 0 | 25/25 | 25/25 | — |
-  | random | 25/25 | 25/25 | — |
-  | λ = 1 | 15/25 | 16/25 | `January` |
-  | third late | **16/25** | **19/25** | `Friday`, `Japan`, `ruby` |
-  | span | **13/25** | **15/25** | `January`, `ruby` |
+  **Every arm that moves, at all three scales** — the other 23 of the 30 arm × scale cells
+  are unchanged, including **every** λ = 0 arm and **every** random arm:
 
-  *(1.5B: λ = 1 24 → 25 (+`Japan`), span 22 → 24 (+`Japan`, +`duck`). 3B: nothing moves.)*
+  | arm | scale | frozen primary | case-insensitive | secrets added |
+  |---|---|---|---|---|
+  | λ = 0.25 | 0.5B | 22/25 | 24/25 | `Friday`, `ruby` |
+  | λ = 1 | 0.5B | 15/25 | 16/25 | `January` |
+  | third late | 0.5B | **16/25** | **19/25** | `Friday`, `Japan`, `ruby` |
+  | span | 0.5B | **13/25** | **15/25** | `January`, `ruby` |
+  | λ = 0.75 | 1.5B | 24/25 | 25/25 | `duck` |
+  | λ = 1 | 1.5B | 24/25 | 25/25 | `Japan` |
+  | span | 1.5B | 22/25 | 24/25 | `Japan`, `duck` |
+  | *(3B)* | 3B | — | — | *nothing moves at any arm* |
+
+  The 0.5B dose curve stays monotone case-insensitively (25 / 24 / 19 / 18 / 16) and the
+  flip count goes 10 → 9, so §1's curve reads the same either way.
 
   **λ = 0 and the random arm are untouched at every scale**, so this is a systematic
   *edit-induced* shift, not sampling noise — and its direction is **toward** the

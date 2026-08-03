@@ -31,12 +31,24 @@ never materializes. That is `D26`'s tension delivered in half-measure.
 
 **Three things to carry forward:**
 
-- **The 0.5B effect lives entirely in the late band third** — early alone 25/25, mid alone
-  25/25, **late alone 16/25** against the full band's 15/25. That is M3's named interest,
-  and it is where the causal path runs.
-- **The random direction removes MORE squared projection than the real one at every scale**
-  (23.8 vs 11.2 · 569.6 vs 135.7 · 52.2 vs 7.4) and reduces nothing. The 0.5B effect is not
-  generic interventional load.
+- **The 0.5B effect carries mostly — not entirely — in the late band third.** Early alone
+  25/25, mid alone 25/25, late alone 16/25 against the full band's 15/25 on the frozen
+  counts; **case-insensitively that is 19/25 against 16/25**, so late flips 6 of the 9
+  secrets the full band flips. That is M3's named interest, and the 19-vs-16 pair is the
+  input its band work needs.
+- **Specificity rests on the λ = 1-vs-random emission contrast, not on removed mass.** At
+  0.5B the random arm moves nothing while the real one flips 10 of 25 secrets through the
+  identical operator, layers, positions and dose, and the direct contrast excludes zero.
+  **`removed_mass_mean` is a post-cascade readout** — `D27` edits every band layer in
+  sequence with a *correlated* direction while `D31` draws *independent* ones, so the arms
+  are not like-for-like and the "random removes more" reading is **withdrawn**
+  (`docs/M2-RESULTS.md` §1 carries the corrected tables).
+- **`case_variant_miss` fired on edited arms only** — 9 of 9 at 0.5B, 6 of 9 at 1.5B, 1 of 9
+  at 3B, and **zero on every λ = 0 arm at every scale**. Ablation pushes some reveals into an
+  ALL-CAPS shape the frozen `D13` oracle does not count (`The complete word is "JANUARY."`
+  scores as successful secrecy). The canary did its job; G3's causal clause survives a
+  case-insensitive re-score (0.5B 25/25 → 16/25, still CI-clean), two secondary claims did
+  not, and the shape is a routed input for M3.
 - **The trial-level unit tells a different story than the deciding one.** 1.5B drops
   61/100 → 37/100 CI-clean at the trial level while 24 of 25 secrets still emit somewhere.
   Reported, deciding nothing, and **not** re-decided now that it costs a PASS — and at 1.5B

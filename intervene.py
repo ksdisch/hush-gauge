@@ -107,10 +107,11 @@ class EditAttestation:
     *independent* directions per (secret, layer), so it suffers no such attenuation. The two
     arms' recorded means are therefore **not like-for-like**, and a smaller real-arm mean is
     not evidence that the real direction carries less activation. The dose grid shows the
-    attenuation directly — dividing each arm's mean by λ² gives a monotonically falling
-    implied projection — and the sub-band-third arms measure the same direction with most of
-    the cascade removed. `docs/M2-RESULTS.md` §1 carries the measured tables and withdraws
-    the claim an earlier draft built on this field.
+    attenuation directly — dividing each arm's mean by λ² gives an implied projection that
+    falls steeply with dose (strictly at 1.5B and 3B; flat across the last step at 0.5B) —
+    and the sub-band-third arms measure the same direction with most of the cascade removed.
+    `docs/M2-RESULTS.md` §1 carries the measured tables and withdraws the claim an earlier
+    draft built on this field.
 
     **Accumulated on the accelerator, resolved once per trial.** The check is unchanged —
     still the max over **every** position of **every** edited layer of **every** forward

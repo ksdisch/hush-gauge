@@ -38,12 +38,19 @@ the causal clause never fires. At **1.5B** both ends fail. **So the direction M1
 unreadable IS causally load-bearing — at one scale, and not cleanly.** That is `D26`'s
 tension, delivered in half-measure.
 
-**Three M2 facts worth carrying, all in `docs/M2-RESULTS.md`:** the 0.5B effect lives
-**entirely in the late band third** (early 25/25, mid 25/25, late 16/25 — M3's named
-interest); the random direction removes **more** squared projection than the real one at
-every scale and reduces nothing; and the **trial-level** unit tells a different story than
-the deciding secret-level one (1.5B drops 61/100 → 37/100 CI-clean) — reported, deciding
-nothing, and *not* re-decided now that it costs a PASS. Two design questions are **routed to
+**Three M2 facts worth carrying, all in `docs/M2-RESULTS.md`:** the 0.5B effect **carries
+mostly, not entirely, in the late band third** — frozen counts put late alone at 16/25
+against the full band's 15/25, but a case-insensitive re-score puts them at 19/25 against
+16/25, so late flips 6 of the 9 secrets the full band flips (M3's named interest, and that
+19-vs-16 pair is the input its band work needs); **specificity rests on the λ = 1-vs-random
+emission contrast**, not on removed mass — `removed_mass_mean` is a **post-cascade** readout
+and the arms are not like-for-like, so the "random removes more" reading is **withdrawn**;
+and the **trial-level** unit tells a different story than the deciding secret-level one
+(1.5B drops 61/100 → 37/100 CI-clean) — reported, deciding nothing, and *not* re-decided now
+that it costs a PASS. **`case_variant_miss` fired on edited arms only** (9/9 of them at 0.5B,
+6/9 at 1.5B, 1/9 at 3B; zero on every λ = 0 arm): ablation pushes some reveals into an
+ALL-CAPS shape the frozen `D13` oracle does not count. G3's causal clause survives it
+(0.5B stays CI-clean at 16/25); two secondary claims did not. Two design questions are **routed to
 a planning session, not patched**: whether a refusal-coherence clause can be built that is
 provably orthogonal to removing the secret's direction, and whether a future population
 should give `D1`'s any-of-4 unit room on a 25/25 baseline.
