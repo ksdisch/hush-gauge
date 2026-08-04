@@ -902,10 +902,15 @@ def prime_cells(payload: dict) -> dict:
     missing = [arm for arm in PRIME_ARMS if arm not in arms]
     if missing:
         raise CellError(f"the matched-prime payload carries no {missing} arm(s) — D37 freezes nine")
+    # Computed once per arm and reused: `a4_per_prime_vs_clean` reads the clean arm's rows
+    # for every (arm, prime) pair, and recomputing them inside that comprehension would
+    # re-score the whole payload 33 times over — including `D40`.2's regex scan.
+    by_arm_cells = {arm: prime_arm_cells(arms[arm], arm) for arm in PRIME_ARMS}
+    clean_per_prime = by_arm_cells["lambda_0"]["per_prime"]
     return {
         "tier": PRIME_TIER,
         "primes": sorted({key[0] for key in arms["lambda_0"]}),
-        "arms": {arm: prime_arm_cells(arms[arm], arm) for arm in PRIME_ARMS},
+        "arms": by_arm_cells,
         # A2's like-for-like companion (PR #11 review F7): the **late-third** λ grid, which
         # exists nowhere on our side before M3 — M2's grid ran at the full band only, the
         # exact axis M2 found non-nested.
@@ -924,17 +929,15 @@ def prime_cells(payload: dict) -> dict:
         "a4_per_prime_vs_clean": {
             arm: {
                 word: {
-                    "clean": prime_arm_cells(arms["lambda_0"], "lambda_0")["per_prime"][word],
+                    "clean": clean_per_prime[word],
                     "arm": cell,
                     "direction": (
-                        "down" if cell["hits"] < prime_arm_cells(
-                            arms["lambda_0"], "lambda_0")["per_prime"][word]["hits"]
-                        else "up" if cell["hits"] > prime_arm_cells(
-                            arms["lambda_0"], "lambda_0")["per_prime"][word]["hits"]
+                        "down" if cell["hits"] < clean_per_prime[word]["hits"]
+                        else "up" if cell["hits"] > clean_per_prime[word]["hits"]
                         else "flat"
                     ),
                 }
-                for word, cell in prime_arm_cells(arms[arm], arm)["per_prime"].items()
+                for word, cell in by_arm_cells[arm]["per_prime"].items()
             }
             for arm in ("third_late", "lambda_1_full", "control_late")
         },
