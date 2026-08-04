@@ -259,8 +259,9 @@ files' SHAs differ, docstrings only), same scales, same decode discipline on our
 **2. The congruence table, pre-registered as to *rows*, retrospective as to already-known
 cells — labeled row by row.** Much of the substrate is already recorded (our M2; their
 M2), so those rows are honest **retrospective comparisons** and the table says so; the
-new measurements are the `m3_matched_primes.py` cells — the 7 calibration primes' full
-arm set, plus the control-direction arm at all 11 primes. The frozen rows:
+new measurements are the `m3_matched_primes.py` cells — the six non-dose arms on the 7
+calibration primes, the control-direction arm on the 4 eval primes, and the late-third
+dose arms on all 11 (`D37`.5's sourcing rule). The frozen rows:
 
 | row | ours | theirs | congruence readout |
 |---|---|---|---|
