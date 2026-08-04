@@ -51,6 +51,13 @@ undecided gate, not a negative one.
 
 ## Status
 
+**Post-M3 planning, 2026-08-04:** the routed design questions are closed as **D41–D44**
+([`docs/DECISIONS.md`](docs/DECISIONS.md)) — M2's non-nesting flag becomes **M4**, a
+small gateless characterization milestone on the certified `v_secret`; a second candidate
+family is declined (banked); a composition-preserving flip sham is pre-registered for any
+future attempt; and the arc closes as answered — **not unified at these scales with this
+instrument**, no v2. Next: the M4 brief, then the write-up.
+
 **M3 complete, 2026-08-04 — Arm B dropped at all three scales, G4 never decided, and that
 is the pre-committed fallback.** M3 constructed a candidate off-switch direction from the
 with-secret-minus-no-secret residual contrast, and it passed both structural checks
@@ -120,8 +127,8 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
   frozen decisions, the design-extraction pre-commit, and its gates' byte-frozen
   `GATE_WORDING` and INVALID arms.
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design), **D1–D14** (M0), **D15–D24** (M1) and **D25–D26**
-  (the 2026-08-02 planning session). Read
+  bars and the battery/split design) and **D1–D44** (M0 through the 2026-08-04 post-M3
+  planning session). Read
   **D12/D13 before D10/D11** — the older two say why the oracle's boundary rule exists, the
   newer two say what it does.
 - **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that

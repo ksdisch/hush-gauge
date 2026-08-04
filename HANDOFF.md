@@ -1,10 +1,56 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-04 (**M3 built and run. Arm B dropped at all three scales by
-`D38`.4's own ladder — G4 never decided, `NOT-RUN` everywhere; Arm A delivered in full.
-All four milestones are closed. Next: a planning session, not a build**)_
+_Last updated: 2026-08-04 (**post-M3 planning session complete: `D41`–`D44` settled and
+recorded. M4 — the gateless non-nesting characterization on `v_secret` — is next; then
+the write-up. No v2: `D44` closes the unification question against at these scales**)_
 
-## What was just done (2026-08-04, later) — the M3 build and sweep
+## What was just done (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
+
+**The planning session M3 routed its design questions to ran 2026-08-04. All four are
+settled by Kyle ("I approve all of your recommendations") and recorded in
+`docs/DECISIONS.md` §"Post-M3 planning (2026-08-04)":**
+
+- **`D41` — M2's non-nesting flag gets its own milestone.** M4: a small, **gateless**
+  characterization milestone on the already-certified `v_secret` — `D40`.3's coupling
+  (the flag test behind a candidate's survival) is undone by running the band comparison
+  on a direction that needs no ladder. Core content: the layer-set lattice M2 never ran
+  ({mid+late}, {early+late}, {early+mid} beside the recorded single thirds and full
+  band), plus the same lattice under a fresh `D31`-protocol random direction — which
+  carries `D40`.3's generalization question (generic edit churn vs
+  content-direction-specific, with a pre-registered `DEGENERATE` rule for empty or
+  singleton silenced sets — the realized prior at 0.5B/3B — and a mandatory trial-level
+  companion row) with zero candidate risk. Both oracle readings
+  pre-registered per row; 0.5B is deciding-interest; fresh tier texts named-and-declined
+  (bankable). The M4 brief freezes the rest before any run.
+- **`D42` — a second candidate family is declined, banked.** Three conjunctive revisit
+  conditions: a frame-length-matched construction (the `D18` two-sentence confound
+  removed by design), `D43`'s sham as the deciding null, and a scoped consumer question
+  surviving `D44`. The 1.5B sham cell (23/25) is recorded as a named risk — against a
+  null that potent no candidate wins at n = 25 (even 25/25 vs 23/25 is CI-null,
+  [−0.065, +0.250]), so the revisit condition that binds is a less potent null (`D43`),
+  not a stronger candidate. `K5`'s status stays *unknown, not absent*.
+- **`D43` — the composition-preserving within-triple flip sham is pre-registered now**,
+  while no candidate is pending and nothing can be tuned against it: per-triple label
+  flip stratified within tier at ⌈n/2⌉ / ⌊n/2⌋ with odd-stratum residues alternated so
+  the overall balance stays exact (per-tier exact iff the stratum is even — at 3B both
+  strata are odd, 13/23), composition-matched exactly, expected retained contrast zero,
+  and the `sham.composition` block records the realized per-tier split. It does **not**
+  fix the frame confound — a sham cannot control for what it does not contain. **Barred from retroactive verdict-bearing use on M3's recorded
+  candidate**; first permissible use is a future `D42`-admitted brief.
+- **`D44` — the arc closes as answered: not unified at these scales with this
+  instrument.** G4 undecided plus A3 incongruent is the fusion premise's outcome, and no
+  design on the table moves A3 (M2's recorded sweeps at 1.5B/3B — full band, single
+  thirds, dose — never fired the causal clause; a *gate-bearing* mute-map effect at 0.5B
+  is excluded by their settled record; 7B is dead in both repos), with one stated
+  conditional: a CI-clean union-arm reduction at 1.5B/3B in M4's lattice re-opens the A3
+  premise. **No v2.** The kickoff's arc goal itself succeeded — the two repos read as one
+  arc whose conclusion is negative. Routing: M4, then the write-up; the LoRA-trained
+  "organism arc" is a successor kickoff, not a hush-gauge v2.
+
+`docs/KICKOFF.md` §Milestone 3 carries the `D44` outcome annotation (annotation only, the
+`D9a` pattern); `CLAUDE.md` / `PROJECT.md` / `README.md` are propagated.
+
+### Earlier — the M3 build and sweep (2026-08-04)
 
 **M3 is COMPLETE. Arm B was dropped at all three scales, so `G4` was never decided** —
 `NOT-RUN (V-ladder: V3)` at 0.5B and 1.5B, `NOT-RUN (V-ladder: no gate-capable V3 pass)` at
@@ -610,6 +656,13 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
+**The post-M3 planning session is complete (2026-08-04): `D41`–`D44` are settled and
+recorded.** M4 — the gateless non-nesting characterization on `v_secret` — is the only
+outstanding measurement debt; after it lands the project routes to the write-up. A second
+candidate family is declined (banked, `D42`), the within-triple flip sham is
+pre-registered for any future attempt (`D43`), and the unification question is closed
+**against** at these scales with this instrument (`D44`).
+
 **M3 is complete: Arm B dropped at every scale, G4 never decided, Arm A delivered in full.**
 `docs/M3-RESULTS.md` is normative for what M3 found; `docs/M3-BRIEF.md` stays normative for
 how it was specified, and `D34`–`D40` are settled and unchanged. On disk and tracked:
@@ -624,8 +677,8 @@ and M3's new residual sidecars alike — do not delete them.**
 how it was specified, and `D1`–`D33` are all settled and unchanged. On disk and tracked:
 `intervene.py`, `m2_cells.py`, `preservation.py`, `build_preservation_qa.py`,
 `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`,
-`batteries/preservation_qa.json` (frozen), and six M2 result JSONs. **M3 is next, and it
-opens with a design session, not a build.**
+`batteries/preservation_qa.json` (frozen), and six M2 result JSONs. *(M3 followed and is
+closed; see above.)*
 
 **M1 is complete and both its gates are decided.** `docs/M1-RESULTS.md` is normative for
 what M1 found; `docs/M1-BRIEF.md` stays normative for how it was specified, and
@@ -695,24 +748,20 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**A planning session, not a build.** All four milestones are closed and every gate is
-decided or reported. The three items in `docs/M3-RESULTS.md` §"What M3 sends forward" are
-design questions of exactly the class the standing rule routes to a Fable session:
+**Write `docs/M4-BRIEF.md`** — the start-of-stage brief for the milestone `D41`
+establishes: the layer-set lattice on `v_secret` plus the random-direction companion
+lattice, the M2 eval T4 population with the λ = 0 arm byte-asserted against M0 (`D28`),
+both oracle readings pre-registered per row, gateless with the deviation owned (`D37`.3
+is the precedent). The brief freezes arms, populations and rows before any run, then goes
+through the usual adversarial review and Kyle's approval before a build session runs the
+sweep. After M4: the write-up (`D44`'s routing), with the negative unification as the
+arc's honest headline.
 
-1. **M2's non-nesting flag is still open**, and M3 showed why the design coupled it to a
-   risk it need not have been coupled to. A milestone that wants it answered should run the
-   band comparison on an already-certified direction rather than behind a new candidate's
-   survival.
-2. **Whether a mediating direction exists is untouched.** `K5` said mute-map hands over
-   none; M3 constructed one family and it does not mediate. The honest status is *unknown*,
-   not *absent* — and V1/V2 passing while V3 fails is an informative shape for anyone who
-   tries again.
-3. **A3's scale incongruence argues against unification** and is the fusion-relevant result
-   the kickoff set out to test.
-
-**Run-config note:** **Fable 5 at `xhigh`** — `claude --model claude-fable-5 --effort xhigh`
-— started fresh from `docs/M3-RESULTS.md` and `docs/M3-BRIEF.md`, never from a build
-transcript.
+**Run-config note:** the M4 brief is design-freezing work with `D41`'s scope calls
+pre-made — **Fable 5 at `high`**: `claude --model claude-fable-5 --effort high`, started
+fresh from `docs/DECISIONS.md` §"Post-M3 planning" (`D41`), `docs/M2-RESULTS.md` §2 (the
+substrate), and `docs/M3-RESULTS.md`. The build session that follows the brief's approval
+is Opus 5 at `high`, per the standing pattern.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
@@ -725,13 +774,20 @@ frozen data (`u = 0` at every scale). See `docs/M1-RESULTS.md`.
 
 ## Open questions / blockers
 
-- **M3 Arm A's similarity metric** — Unresolved; not needed until M3.
-- **M3 Arm B has no inherited direction to ablate (K5).** Not a blocker now; it becomes
-  M3's first pre-commit, and if no candidate direction validates, M3 reduces to Arm A.
-  M0–M2 stand alone regardless.
+- ~~M3 Arm A's similarity metric~~ — retired by `D37` (2026-08-03): no defensible scalar
+  exists; Arm A is a pre-registered congruence table, delivered in `docs/M3-RESULTS.md`.
+- ~~M3 Arm B has no inherited direction to ablate (K5)~~ — exercised as designed: the
+  constructed candidate failed its own ladder and Arm B dropped. `D42`/`D43` now govern
+  any future attempt; `K5`'s status is *unknown, not absent*.
 - **No blockers.** Nothing external is waiting on anything.
 
 ## Files touched recently
+
+**The post-M3 planning session's deliverable set (2026-08-04, evening):**
+
+- `docs/DECISIONS.md` — new "Post-M3 planning (2026-08-04)" section: `D41`–`D44`.
+- `docs/KICKOFF.md` — §Milestone 3 outcome annotation → `D44` (annotation only).
+- `HANDOFF.md`, `CLAUDE.md`, `PROJECT.md`, `README.md` — propagated.
 
 **The approval package (2026-08-02, after Kyle's approval):**
 
