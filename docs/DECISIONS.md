@@ -1195,3 +1195,126 @@ direction — the 0.5B acknowledgment marginal moved *with* the intervention, wh
 shape `D30`.3 demoted the conjunction for — and whether a future milestone's population
 should be built to give `D1`'s secret-level any-of-4 unit room on a 25/25 baseline. **G3
 is decided; neither question re-opens it.**
+
+---
+
+# M3 — Off-switch unification: Arm A recast causal, Arm B constructed
+
+*The start-of-stage brief `docs/M3-BRIEF.md` is normative for M3, as `M2-BRIEF.md` is for
+M2. `D34`–`D40` were frozen there before any M3 code or run; approved by Kyle 2026-08-04
+("I approve the brief") after the adversarial review on hush-gauge PR #11, with the
+review's nice-to-have follow-ups folded in at approval on that recorded agreement. The
+per-finding record is `~/.claude/reviews/hush-gauge/2026-08-03-docs-m3-brief.md` and
+**is the authority** — no round or finding totals are restated here, per the M0 lesson.
+Entries below are the citable summaries; the brief carries the full reasoning, the
+predicted-population tables, and the named INVALID arms.*
+
+## D34 — Orthogonality moves into the intervention; behavioral coherence is reported, never conjunctive
+
+**Decided 2026-08-04.** Closes M2's first routed question: **no behavioral clause can be
+provably orthogonal to removing the secret's direction** — any readout of the generation
+is downstream of the edited residual, and M2's 0.5B acknowledgment marginal moved with
+the intervention. The guarantee M2 wanted moves into the operator: Arm B's deployed
+direction is orthogonalized against the session secret's `v̂_s` per layer (`D38`.2), and
+the read-back asserts both the (1 − λ) survival of the removed component **and** the
+preservation of the `v_secret` projection (`D38`.5) — scoped **at the hook point**; the
+downstream cascade is unconstrained (M2's post-cascade lesson) and its direction runs
+against a rise. G4 carries **no conjunctive behavioral-coherence clause**; WikiText NLL
+and benign QA (the `D30` machinery and artifacts, unchanged) are computed and reported,
+deciding nothing.
+
+## D35 — G4's population is the baseline-silent T1–T2 eval trials; no battery expansion
+
+**Decided 2026-08-04.** Closes M2's second routed question. A *rise* is undecidable on a
+saturated baseline (T1 secret-level is 25/25 at every scale), so G4 decides on the
+population where saturation is impossible: the eval T1–T2 trials whose λ = 0 arm does
+not emit, with the λ = 0 arm re-run and **byte-asserted against M0's recorded trials**
+(the `D28` pattern; a mismatch is `INVALID`, never a new baseline). Predicted from M0's
+record and rejected on disagreement: **94 / 151 / 43** trials over **25 / 25 / 24**
+headroom secrets, zero boundary-indeterminate. The deciding unit stays secret-level
+(`D1`'s clustering argument); trial-level is reported, deciding nothing. Battery
+expansion is declined for M3; a future milestone that needs it freezes its own text set
+under `D1`'s rules as a new numbered decision.
+
+## D36 — The oracle's form set stays frozen; the case-insensitive re-score becomes deciding via `D39`.7
+
+**Decided 2026-08-04.** Closes M2's third routed question. The ALL-CAPS blind spot sits
+on **edited arms** (M2: 9/9 · 6/9 · 1/9, including 1 on the norm-matched random arm),
+and G4's deciding contrast is real-vs-**sham** with *both* arms edited — so the net bias
+direction is not pre-determined, and no conservatism claim is made. `D13` is untouched;
+the protection is structural: **a PASS requires the CI-clean rise under both the frozen
+primary and the case-insensitive re-score of the same cells** — a rise clean under
+exactly one carries `CASE-SHAPE-SENSITIVE` and is not a PASS. Re-deriving the form set
+against edited output is named, declined for M3, and bankable — as a new numbered
+decision with its own re-certification, never an edit to `D13`.
+
+## D37 — Arm A recast: a pre-registered causal-profile congruence table, descriptive, gateless
+
+**Decided 2026-08-04.** The kickoff's "primed-suppression signature" **does not exist as
+a mute-map object** — extraction-verified: mute-map records no trajectory of any
+internal quantity over layers or positions, and defines no similarity metric — and
+`D26` voids the silent-trial quantity on our side, so the trajectory wording is retired
+as unimplementable and Arm A compares **causal profiles** through the shared instrument:
+localization (thirds at λ = 1) and dose–response (λ grids, including the new
+like-for-like **late-third grid on the 11 matched primes** — M2's grid was full-band
+only). Five frozen rows (A1–A5), retrospective cells labeled as such, per-prime rows
+never verdict-bearing. A5 is the **pooled specificity contrast** — primed-late vs
+control-direction-late (each prime's frozen `cross` word) on baseline-emitting trials,
+predicted population 26 / 26 / 31 of 44 (10 of 11 primes at 1.5B — `silver` has no
+baseline-emitting trial there, stated) — against mute-map's m2-depth contrast pooled
+over the same 11 primes (0/25 vs 17/25 · 0/31 vs 27/31 · 1/29 vs 27/29). Recorded cells
+are **read from the M0/M2 records, never re-run** (`m0_reference`/`m2_reference`
+SHA256s in the payload); the `D31` random arm is excluded from the primes runner (its
+draws are order-keyed; the cross-milestone comparison stays at M2's pooled level). Arm A
+has **no gate and no similarity scalar** — the unification claim is congruence of causal
+profiles, bounded as such.
+
+## D38 — Arm B's candidate: constructed on calibration, orthogonalized, sham-matched, ladder-validated
+
+**Decided 2026-08-04.** `w(l) = normalize(mean[h | with-secret, S] − mean[h |
+no-secret, S])`, with `S` the baseline-silent (secret, text, tier) session set applied
+to **both** arms (matched composition; `D18`'s two-sentence frame residue is owned — the
+label-permuted sham **cannot** bound it, and V3/G4's behavioral contrast is the only
+in-M3 filter, with the reading limit pre-declared: a G4 PASS licenses "ablating this
+constructed direction raises emission vs sham", not "the direction is purely the
+suppression state"). Deployed as `w⊥` — the session secret's `v̂_s` projected out per
+layer. **Deciding sham:** the label-permuted construction, norm-matched, `S` fixed
+before permutation. **Reported sham:** the `D31` *protocol* applied fresh (late-band
+draws, M3's own frozen seed and recorded draw order — nothing inherited from M2's
+vectors). **Validation ladder on calibration** (predicted 80 / 154 / 36 trials over
+25 / 25 / 19 headroom secrets): V1 split-half cosine ≥ 0.5 (new constant, owned
+lenient); V2 median |cos(v̂_s, ŵ)| ≤ 0.5 pre-orthogonalization; V3 a CI-clean paired
+rise vs the deciding sham by G4's own machinery. **Drop semantics per scale:** V1/V2
+failing drops Arm B at that scale; V3 gates at 0.5B/1.5B (3B's cell is 19, under the
+floor by construction — computed, reported, cannot gate); 3B's eval run proceeds iff its
+own V1/V2 admit and ≥ 1 gate-capable scale passes V3; dropped scales read
+`NOT-RUN (V-ladder: <reason>)` and reduce to Arm A. **Exactly one candidate family, no
+post-hoc variants** — every drop is `K5`'s pre-committed reportable null.
+
+## D39 — G4 frozen as code: the paired secret-level rise on the baseline-silent population
+
+**Decided 2026-08-04.** Real (`w⊥`, λ = 1, late third) vs the deciding sham, paired by
+(secret, text, tier), on `D35`'s population. A secret **rises** in an arm iff ≥ 1 of its
+baseline-silent trials emits there; G4 PASSES at a scale iff the Newcombe interval on
+(real − sham) risen-secrets rates over the headroom secrets excludes zero positively,
+**under both oracle readings** (`D39`.7). `COLLAPSE-CARRIED` (a rise carried only by
+collapse-share ≥ 0.5 trials) and `CASE-SHAPE-SENSITIVE` are voiding tags — each names a
+rise clearing some but not all PASS conditions. **Ten INVALID arms are named in the
+brief** and dry-run proven against unmodified runner output (`D14`), every predicate
+recomputed from recorded replies (`D32`). `UNDERPOWERED` below 20 headroom secrets;
+verdict precedence `INVALID > UNDERPOWERED > the contrast`; a failed rise is
+**`not shown`**, never "no mediator exists". **Population membership everywhere is
+fixed by the frozen `D13` primary** — the re-score changes verdicts on those cells,
+never membership.
+
+## D40 — Pre-declared secondaries and reporting rules — all descriptive, none decide
+
+**Decided 2026-08-04.** (1) Preservation readouts under the real edit — WikiText NLL and
+benign QA, `D30` artifacts unchanged, tolerances printed. (2) Oracle canary reporting —
+`case_variant_miss` per arm with decoded contexts (the re-score itself is deciding, per
+`D36`/`D39`.7). (3) **The non-nesting flag test** — the full-band companion arm beside
+the deciding late-third arm, per-secret emitting-set overlap at both units against M2
+§2's substrate: nested or not, an input to future band work, never a verdict. (4) The
+per-session pre-orthogonalization cosine table. (5) Exposure texture: T1/T2 are
+single-turn; the tier composition of every rise is reported. (6) Arm A's congruence
+table lands in `M3-RESULTS.md` with every row labeled retrospective or new.

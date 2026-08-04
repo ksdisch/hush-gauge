@@ -97,14 +97,21 @@ contrast cell, the byte-frozen `GATE_WORDING` with ten INVALID arms, and the des
 secondaries. It carries `D26`'s causal framing: a direction that fails as a detector may
 still be causally load-bearing — if G3 passes, that tension is the finding.
 
-**`docs/M3-BRIEF.md` is WRITTEN (2026-08-03) — draft, awaiting its adversarial review and
-Kyle's approval; nothing in M3 runs until then.** It answers M2's three routed questions
-(`D34`–`D36`), recasts Arm A as a causal-profile congruence table (the kickoff's
-"primed-suppression signature" does not exist as a mute-map object, and `D26` voids the
-silent-trial quantity — both owned in the brief), and constructs Arm B's candidate with an
-orthogonality-by-construction guarantee (`D38`) and G4 on the baseline-silent T1–T2
-population (`D39`). M2 records no probe scores (`S_secret ≡ 0` under the edit at the hook
-point) and reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**.
+**`docs/M3-BRIEF.md` is FROZEN — approved by Kyle 2026-08-04** after the adversarial
+review on PR #11 (the review mailbox is the per-finding authority). **`D34`–`D40` are
+settled** and mirrored into `docs/DECISIONS.md`: the three routed questions closed —
+orthogonality moves into the operator (Arm B's edit is projected ⊥ `v_secret` per
+session per layer, with a dual read-back), G4 decides on the **baseline-silent T1–T2
+eval population** (predicted 94/151/43 trials over 25/25/24 headroom secrets), and the
+frozen oracle stays deciding with the case-insensitive re-score a conjunctive PASS
+component (`CASE-SHAPE-SENSITIVE` voids). Arm A is recast as a **gateless
+causal-profile congruence table** — the kickoff's "primed-suppression signature" exists
+nowhere in mute-map (extraction finding). Arm B constructs its mediator candidate on
+calibration with a label-permuted deciding sham and a per-scale validation ladder;
+every drop is `K5`'s pre-committed null. **Next action: the M3 build**
+(`claude --model claude-opus-5 --effort high`), started fresh from the brief. M2 records
+no probe scores and reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**
+(M3's capture writes new sidecar files and never touches M1's).
 
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and

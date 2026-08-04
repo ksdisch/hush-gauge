@@ -1,10 +1,23 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-03 (**M2 is COMPLETE and merged (PR #10, `a964878`); G3 FAILS on
-all three scales, every one a pre-committed null. `docs/M3-BRIEF.md` is WRITTEN — draft,
-awaiting adversarial review + Kyle's approval**)_
+_Last updated: 2026-08-04 (**M2 merged (PR #10, `a964878`); `docs/M3-BRIEF.md` FROZEN —
+approved by Kyle 2026-08-04 after the PR #11 review; `D34`–`D40` settled. Next: the M3
+build**)_
 
-## What was just done
+## What was just done (2026-08-04)
+
+**PR #10 (the M2 build) merged** as `a964878` after its continuation review run closed
+CLEAR (the mailbox is the per-finding authority). **`docs/M3-BRIEF.md` was written,
+reviewed on PR #11, and approved-frozen by Kyle 2026-08-04** ("I approve the brief");
+`D34`–`D40` are mirrored into `docs/DECISIONS.md` and the review's F7–F10 folded in at
+approval on that recorded agreement. Two extraction findings shaped the design: the
+kickoff's "primed-suppression signature" exists nowhere in mute-map, and mute-map has
+no sham-control precedent — so Arm A is recast as a gateless causal-profile congruence
+table, and Arm B constructs its mediator candidate with orthogonality-by-construction,
+a label-permuted deciding sham, and a per-scale validation ladder whose failure drops
+it per `K5`.
+
+### Earlier — the M2 build, and G3 decided (2026-08-03)
 
 **M2 was built and run end to end, and G3 was decided once per scale. It FAILS at 0.5B,
 1.5B and 3B — three pre-committed nulls**, which `KICKOFF.md` calls a passing v1.
@@ -566,21 +579,20 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**Write `docs/M3-BRIEF.md`** — a **design** session on Fable 5, not a build one, started
-from `docs/M2-RESULTS.md` and this file rather than from a transcript. It opens with:
+**The M3 build** — well-specified from `docs/M3-BRIEF.md` (frozen) plus
+`docs/M2-RESULTS.md`; no design calls are left open. The deliverables and their order
+are the brief's: `m3_capture.py` (the construction capture, streamed accumulators) →
+`construct_switch.py` (the `D38` candidate + shams; the V-ladder on calibration decides
+per scale whether Arm B lives) → `m3_arm_b.py` + `gates/g4.py` (ten INVALID arms
+dry-run proven before any real run) → `m3_matched_primes.py` (nine arms; recorded cells
+read from the M0/M2 records, never re-run) → `docs/M3-RESULTS.md` with the `D37`
+congruence table. Binding throughout, unchanged: `D25`'s per-scale decode assertion,
+the frozen oracle, M0/M1/M2-certified modules read-only, and **do not delete
+`results/*.npz`**.
 
-1. **M2's two routed questions** (`M2-RESULTS.md` §"What this sends to a planning
-   session") — the acknowledgment clause's orthogonality, and the deciding unit versus a
-   saturated population. Neither re-opens G3.
-2. **M3's own standing pre-commits** — Arm A's similarity metric (Unresolved since
-   kickoff) and Arm B's missing mediating direction (`K5`; if no candidate validates, M3
-   reduces to Arm A). `D26` puts a named validity caveat on Arm A, and `D9a` fixes Arm A's
-   matched primes at **11**, not 12.
-3. **M2's late-third localization as a live input.** The band third M3 names as its
-   interest is the one that carried the entire 0.5B causal effect.
-
-Binding throughout, unchanged: M0/M1/M2-certified modules are read-only, `D25`'s per-scale
-decode rule, and **do not delete `results/*.npz`**.
+**Run-config note:** the build session is **Opus 5 at `high`** —
+`claude --model claude-opus-5 --effort high` — started fresh from the brief, never from
+a planning transcript.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the

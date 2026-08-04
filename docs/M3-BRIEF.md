@@ -1,10 +1,14 @@
 # M3-BRIEF — Off-switch unification: Arm A recast causal, Arm B constructed
 
-*Written 2026-08-03 · start-of-stage brief · status: **draft — awaiting Kyle's approval.**
-Nothing in M3 runs until Kyle approves this brief. Upon approval: the status line flips to
-*frozen* with the approval date, and `D34`–`D40` are mirrored into `DECISIONS.md` as the
-citable ledger entries — those two edits are pre-authorized here; after them the brief is
-never edited (annotations only), matching the M0/M1/M2 convention.*
+*Written 2026-08-03 · start-of-stage brief · status: **frozen — approved by Kyle
+2026-08-04** ("I approve the brief"), after the adversarial review on PR #11; the
+review's nice-to-have follow-ups (F7–F10) are folded in at approval on that recorded
+agreement, the M2 precedent. The per-finding record is
+`~/.claude/reviews/hush-gauge/2026-08-03-docs-m3-brief.md` and **is the authority** —
+no round or finding totals are restated here, per the M0 lesson. `D34`–`D40` are
+mirrored into `DECISIONS.md` as the citable ledger entries (both edits were
+pre-authorized); after them the brief is never edited (annotations only), matching the
+M0/M1/M2 convention.*
 
 This brief freezes M3's open calls (`D34`–`D40`) before any M3 code is written or any run
 is made. `KICKOFF.md` §Milestone 3 remains the source of truth for scope: Arm A
@@ -91,7 +95,10 @@ different layer: **the intervention itself.** Arm B's deployed edit direction is
 edit, per layer, per session, and the read-back asserts both the (1 − λ) survival of the
 removed component **and** the preservation of the `v_secret` projection itself
 (`D38`.5). Under that construction, "the rise came from deleting the secret's content
-direction" is excluded *by the operator*, not argued from a behavioral proxy.
+direction" is excluded **at the hook point by the operator** rather than argued from a
+behavioral proxy — the cascade downstream of the edited layers remains unconstrained
+(M2's post-cascade lesson), and its direction runs against a rise, which is why the
+scope suffices for G4.
 
 Consequently M3's verdict machinery carries **no conjunctive behavioral-coherence
 clause.** G4 keeps `KICKOFF.md`'s exact shape (a rise CI-clean vs sham) plus the validity
@@ -160,9 +167,16 @@ bankable.
 
 1. `m3_capture.py` — cut from `m1_probe_panel.py` (house runner rule): the Arm B
    **construction capture** — late-band residuals at response positions on calibration
-   T1–T2 sessions, with-secret and matched no-secret arms, written to new gitignored
-   `.npz` sidecars with SHA256s recorded in the tracked result JSON (M1's sidecar
-   pattern, new files only).
+   T1–T2 sessions, with-secret and matched no-secret arms, accumulated as
+   **per-(session, layer) sums and counts** — a session is one (secret, text, tier, arm)
+   generation; its sidecar row is the sum vector over its response positions plus the
+   count — and written to new gitignored `.npz` sidecars with SHA256s recorded in the
+   tracked result JSON (new files only; ~tens of MB per scale). Deliberately *not* raw
+   per-position residuals — that dump at 3B would run ~4 GB/scale, ~165× M1's 24 MB
+   score sidecar. **Session granularity is the coarsest that still supports `D38`.3's
+   deciding sham**: the label permutation acts on sessions, so arm-level totals cannot
+   reconstruct the permuted means; every other ladder quantity streams from the same
+   rows.
 2. `construct_switch.py` — the candidate-direction builder: the `D38` contrast
    construction, the per-layer orthogonalization against `v_secret`, the norm-matched
    label-permuted sham construction (frozen seeds), split-half diagnostics, and
@@ -171,12 +185,15 @@ bankable.
    candidate at late third; deciding sham; `D31`-protocol random secondary; full-band
    descriptive arm), T1–T2 sessions, eval split, per-scale `repetition_penalty`
    assertion, read-back with the `D38`.5 dual assertion.
-4. `m3_matched_primes.py` — cut from `m2_ablation.py`: the Arm A cells — **six arms**:
-   λ = 0, λ = 1 full band, the three thirds, and the same-category **control-direction**
+4. `m3_matched_primes.py` — cut from `m2_ablation.py`: the Arm A cells — **nine arms**:
+   λ = 0, λ = 1 full band, the three thirds, the same-category **control-direction**
    arm (each prime's frozen `cross` word from `batteries/probe_panel.json`, λ = 1 at the
-   late third — mute-map's control protocol mirrored), T4 battery. New generation
-   happens only where no record exists: the six arms on the **7 calibration primes**,
-   and the control-direction arm on the **4 eval primes**. The eval primes' other cells
+   late third — mute-map's control protocol mirrored), and the **late-third dose arms
+   λ ∈ {.25, .5, .75}** (PR #11 review F7 — A2's like-for-like cell: M2's grid ran at
+   the full band only, so a late-third λ-grid exists nowhere on our side), T4 battery.
+   New generation happens only where no record exists: the six non-dose arms on the
+   **7 calibration primes**, the control-direction arm on the **4 eval primes**, and the
+   late-third dose arms on **all 11 primes**. The eval primes' other cells
    are **recomputed from M2's recorded trials** (`results/m2-ablation-*.json`) — read
    from the record, never re-run, so no drift is possible — and the calibration primes'
    λ = 0 arm is byte-asserted against **M0's recorded T4 trials** (the `D28` identity
@@ -242,13 +259,14 @@ files' SHAs differ, docstrings only), same scales, same decode discipline on our
 **2. The congruence table, pre-registered as to *rows*, retrospective as to already-known
 cells — labeled row by row.** Much of the substrate is already recorded (our M2; their
 M2), so those rows are honest **retrospective comparisons** and the table says so; the
-new measurements are the `m3_matched_primes.py` cells — the 7 calibration primes' full
-arm set, plus the control-direction arm at all 11 primes. The frozen rows:
+new measurements are the `m3_matched_primes.py` cells — the six non-dose arms on the 7
+calibration primes, the control-direction arm on the 4 eval primes, and the late-third
+dose arms on all 11 (`D37`.5's sourcing rule). The frozen rows:
 
 | row | ours | theirs | congruence readout |
 |---|---|---|---|
 | A1 localization, pooled | thirds at λ = 1 vs λ = 0, per scale (recorded: 0.5B early 25/25, mid 25/25, late 16/25) | tier cells (recorded: late 0/28 · 0/34 · 3/32, early/mid high) | same *ordering* (late strictest) — per scale, CI-clean or not, stated |
-| A2 dose shape, pooled | λ grid at the deciding set (recorded) | λ grid at late third (recorded) | monotone non-increasing in both — per scale; plus the honest magnitude gap stated (their λ = 0.25 halves naming; ours moves 0–3 secrets) |
+| A2 dose shape, pooled | λ grid at the deciding set (recorded — **full band**, a different layer set than theirs; owned in the caption) plus the **like-for-like companion**: the late-third λ grid on the 11 matched primes (new; review F7) | λ grid at late third (recorded) | monotone non-increasing in both — per scale; the honest magnitude gap (their λ = 0.25 halves naming; ours moves 0–3 secrets) read on the like-for-like cell where the layer sets match |
 | A3 scale pattern | which scales show any CI-clean effect (recorded: 0.5B only) | which scales gate (theirs: 1.5B/3B, with 0.5B never gate-bearing) | stated as the **strongest incongruence** if it holds — the two effects live at opposite ends of the scale range |
 | A4 per-prime rows, matched | per-prime late-third, full-band and **control-direction** cells on the 11 primes | per-prime `primed_late` **and `control_late`** cells, plus window/dose cells (recorded, n ≤ 3) | per-prime direction-of-effect agreement on both the primed and the control side, each read against that prime's λ = 0 cell, n ≤ 4 vs n ≤ 3, **never verdict-bearing** (both houses' rule) |
 | A5 the specificity contrast, pooled | primed-late vs **control-direction-late** on the **baseline-emitting** T4 trials of the 11 primes — predicted population **26 / 26 / 31** of 44 per scale, computed from M0's record; the M0-recorded λ = 0 pooled cell is the sparing reference; each prime's control is its frozen `cross` word (`batteries/probe_panel.json`, e.g. `silver → platinum`) | the m2-depth contrast **pooled over the same 11 primes**: `primed_late` vs `control_late` = **0/25 vs 17/25 · 0/31 vs 27/31 · 1/29 vs 27/29** (recorded; mute-map's M1 specificity clause is the cited precedent for the *object*, not the comparison cell), with `silver` the known **non-specific** member (`primed_late` 0/1 · 0/3 · 0/1, `control_late` 0 everywhere) | the table's sham dimension: a congruence method must reproduce the *contrast* — suppression under the own direction, sparing under the sibling's, both read against λ = 0 — not merely suppression. `silver`'s per-prime row (n ≤ 4; T4 baseline 3/4 · **0/4** · 3/4, degenerate at 1.5B, stated) is **reported beside** the pooled cell and never read alone — at 1.5B it contributes zero baseline-emitting trials, so our restricted pool there carries **10 of the 11** primes while the `theirs` gate admits `silver` (0/3 vs 0/3); the one-member mismatch is stated wherever the two cells are compared |
@@ -267,16 +285,19 @@ task difference (instructed secrecy under pressure vs clue-elicited naming); the
 population difference; the 0.5B inversion — our only causal signal sits at the scale
 mute-map reads only under an any-direction-damage frame, and their gate-bearing scales
 are exactly where our effect is absent; and the M2 flag — our late-vs-full non-nesting —
-which row A4 confronts with per-prime data and `D40`.3 tests directly; and the
-clustering honesty clause — a prime's 4 trials share one direction and one secret, so a
-trial-pooled Newcombe overstates independence (mute-map owns the same in its M1 stats
-row), one more reason no A-row decides anything.
+which row A4 confronts with per-prime data and `D40`.3 tests directly; the pooled A2
+row's **layer-set mismatch** — our recorded grid is full-band, theirs late-third, the
+exact axis M2 found non-nested — which is what the new like-for-like late-third grid
+exists to repair (review F7); and the clustering honesty clause — a prime's 4 trials
+share one direction and one secret, so a trial-pooled Newcombe overstates independence
+(mute-map owns the same in its M1 stats row), one more reason no A-row decides anything.
 
 **5. Split handling and sourcing.** Recorded cells are **read**, new cells are **run**,
-and nothing is re-run against an order-sensitive constructor. The 4 eval primes' λ-grid,
-thirds and `D31` random cells are recomputed from M2's recorded trials; their
-control-direction cells, and the 7 calibration primes' six-arm set, are new generation
-in `m3_matched_primes.py`; the calibration primes' λ = 0 arm is byte-asserted against
+and nothing is re-run against an order-sensitive constructor. The 4 eval primes' **full-band**
+λ-grid, thirds and `D31` random cells are recomputed from M2's recorded trials; their
+control-direction **and late-third dose** cells, and the 7 calibration primes' **six
+non-dose arms plus the three late-third dose arms** (review F7 — M2's record holds no
+late-third dose cell for any prime), are new generation in `m3_matched_primes.py`; the calibration primes' λ = 0 arm is byte-asserted against
 M0's recorded T4 trials (`D28`'s identity pattern — an assertion with no order-sensitive
 constructor behind it). The result JSON records **`m0_reference` and `m2_reference`** —
 path + SHA256 of each record it read cells from, M2's `m0_reference` precedent — so
@@ -306,8 +327,13 @@ no-secret sessions for the same triples (same text, same tier, same yardstick, u
 `D18`'s frozen no-secret frame), so the two means share text and tier composition exactly
 and differ only in the frame's secret sentences. **"Baseline-silent" is the one term this
 brief uses for that set.** Emitting trials are excluded so the contrast is not a speech
-direction (`D24`.3's lesson), and `S` is fixed **before** the `D38`.3 label permutation,
-which permutes with-secret/no-secret labels within the `S`-matched session pool.
+direction (`D24`.3's lesson) — "emitting" here, as everywhere, is the frozen `D13`
+primary's verdict, whose known case-shape blind spot means a case-shifted reveal can sit
+inside `S` (the one recorded instance: 3B calibration `gold` at T1, `GOLD`,
+primary-silent, canary fired — an owned edge; the eval-side counter is 0/0/0 and
+`D40`.2's per-arm reporting is the watch). `S` is fixed **before** the `D38`.3 label
+permutation, which permutes with-secret/no-secret labels within the `S`-matched session
+pool.
 Per-layer, per-scale; secret-pooled (one `w(l)` per layer per scale, not per secret — a
 *mediator* should be secret-general; a per-secret direction would be indistinguishable
 from content).
@@ -402,19 +428,24 @@ rise survives **only** when collapse-share ≥ 0.5 trials are included, the verd
 carries `COLLAPSE-CARRIED` and the PASS is void by pre-declared rule. Degenerate
 emission is not a blurt.
 
-**5. INVALID arms (dry-run proven against unmodified runner output, `D14`):** wrong-split
-payload; missing or non-identical λ = 0 arm; a payload whose recomputed emission verdicts
-disagree with its recorded flags (`D32`'s lesson — every predicate recomputed from
-replies); wrong-direction payload (sham and real arms swapped — caught by the recorded
-per-arm direction SHA256s against `switch_directions/PROVENANCE.md`); dropped-trial
-payload (population completeness recomputed); a candidate reaching an eval payload at a
-scale the `D38` drop semantics do not authorize — V1/V2-failed at that scale, V3-failed
-at that gate-capable scale, or 3B without ≥ 1 gate-capable V3 pass. Ten arms minimum,
-enumerated in the gate tests.
+**5. INVALID arms (dry-run proven against unmodified runner output, `D14`) — the ten,
+named:** (1) wrong-split payload — any calibration trial in the deciding set; (2)
+wrong-tier payload — any trial outside T1–T2; (3) missing or non-byte-identical λ = 0
+arm; (4) realized baseline-silent population disagreeing with the predicted `D35` table;
+(5) dropped-trial payload — population completeness recomputed; (6) a payload whose
+recomputed emission verdicts disagree with its recorded flags (`D32`'s lesson — every
+predicate recomputed from replies); (7) real/sham direction SHA256s absent or not
+matching `switch_directions/PROVENANCE.md`, a swapped pair included; (8) a candidate
+reaching an eval payload at a scale the `D38` drop semantics do not authorize —
+V1/V2-failed at that scale, V3-failed at that gate-capable scale, or 3B without ≥ 1
+gate-capable V3 pass; (9) a recorded `repetition_penalty` differing from `D25`'s
+per-scale figure; (10) a λ > 0 arm missing its read-back attestation (the `D38`.5 dual
+maxima). Enumerated one-for-one in the gate tests.
 
 **6. `GATE_WORDING` is byte-frozen with the artifact** at freeze time, prints every
 tolerance and count it uses, and follows the house labels: a failed rise is
-**`not shown`**, never "no mediator exists"; `UNDERPOWERED` attaches below N = 20;
+**`not shown`**, never "no mediator exists"; `UNDERPOWERED` attaches below N = 20
+**headroom secrets**;
 verdict precedence `INVALID > UNDERPOWERED > the contrast`. `COLLAPSE-CARRIED`
 (`D39`.4) and `CASE-SHAPE-SENSITIVE` (`D39`.7) are **voiding tags**: each names a rise
 that clears some but not all of the PASS conditions, and a verdict carrying either is
@@ -425,7 +456,10 @@ frozen primary **and** under the pre-registered case-insensitive re-score of the
 cells; a PASS requires the CI-clean positive exclusion under **both**. A rise CI-clean
 under exactly one reading carries **`CASE-SHAPE-SENSITIVE`** in the verdict string and is
 not a PASS. `D13` is untouched — the primary remains the deciding oracle; this clause
-only prevents its known blind spot, on either arm, from deciding alone.
+only prevents its known blind spot, on either arm, from deciding alone. **Population
+membership is oracle-fixed:** every population in this brief — `D38`.1's `S`, the
+baseline-silent sets, the headroom secrets — is defined once, by the frozen `D13`
+primary; the re-score changes verdicts on those cells, never membership.
 
 ### D40 — Pre-declared secondaries and reporting rules — all descriptive, none decide
 
@@ -453,14 +487,16 @@ only prevents its known blind spot, on either arm, from deciding alone.
 
 ## Cost
 
-Rough, wall-clock-bound (the M2 pattern; no dollar cost): the capture run is
-forward-only over ~400 calibration sessions × 3 scales (M1-panel-like; hours);
+Rough, wall-clock-bound (the M2 pattern; no dollar cost): the capture run is a
+generation sweep over ~400 calibration sessions × 3 scales, riding the generation's own
+forward passes (M1's `D16` pattern; hours);
 construction and validation are CPU-side linear algebra plus one calibration-side
 generation sweep (V3: 3 arms × ~200 trials × 3 scales); the G4 sweep is 4 generation
 arms (λ = 0, real, deciding sham, `D31` random) × 200 eval T1–T2 trials × 3 scales plus
-the full-band descriptive arm; `m3_matched_primes.py` generates ~184 new trials × 3
-scales (six arms × 28 trials on the 7 calibration primes + the control arm × 16 trials
-on the 4 eval primes); everything else in Arm A is read from the M0/M2 records.
+the full-band descriptive arm; `m3_matched_primes.py` generates ~316 new trials × 3
+scales (six non-dose arms × 28 on the 7 calibration primes + the control arm × 16 on
+the 4 eval primes + the three late-third dose arms × 44 on all 11 primes); everything
+else in Arm A is read from the M0/M2 records.
 Estimate **8–14 h** end-to-end, dominated by the G4 sweep and capture. If V3 kills the
 candidate, everything after the validation ladder is skipped and M3 completes as Arm A
 alone in **≤ 4 h** of new compute.
@@ -480,8 +516,10 @@ alone in **≤ 4 h** of new compute.
 ## Risks
 
 - **The candidate is noise** (most likely). M1 showed per-trial silent-trial readouts at
-  FPR; the construction bets that *mean* contrasts over ~10⁴ positions extract what
-  per-trial readouts cannot. If wrong, V1/V3 kill it and M3 reduces to Arm A — a
+  FPR; the construction bets that *mean* contrasts pooled over the baseline-silent
+  response positions — ceilings 5,120 / 9,856 / 2,304 per scale from M0's recorded
+  counts (80 / 154 / 36 trials × 64), most replies shorter — extract what per-trial
+  readouts cannot. If wrong, V1/V3 kill it and M3 reduces to Arm A — a
   pre-committed, reportable null (`K5`).
 - **The candidate is content in disguise.** Caught twice: V2 before orthogonalization,
   and `D38`.2's projection makes the deployed edit provably `v_secret`-preserving either
