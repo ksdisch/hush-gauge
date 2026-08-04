@@ -1407,10 +1407,17 @@ rule):
 - **`D40`.3's generalization question survives via the random direction, not a
   candidate.** The same lattice runs under the `D31`-protocol norm-matched
   random-direction control — certified machinery, fresh frozen draws recorded in the
-  payload (M2's record holds the random arm at the full band only). If the random lattice
-  also non-nests, the flag is generic edit churn; if it nests, the flag is specific to
-  content-direction editing. That is the routed question's content, recovered with zero
-  candidate risk.
+  payload (M2's record holds the random arm at the full band only). The reading is
+  pre-registered with its degenerate case named: if the random lattice's silenced sets
+  non-nest, the flag is generic edit churn; if they nest **non-trivially**, the flag is
+  specific to content-direction editing; and if they are empty or singletons at a scale —
+  the realized prior at 0.5B and 3B, where M2's recorded random full-band arm silences
+  **zero** secrets — the row reports `DEGENERATE` and licenses neither branch. Because
+  the secret-level unit can degenerate exactly there, the **trial-level**
+  silenced/induced companion is a mandatory row for the random lattice (at 0.5B M2's
+  random arm silences 15 trials and induces 19 on a 63/100 baseline — churn with no set
+  structure); secret-level stays the deciding-interest unit for the real direction, per
+  `D1`. That is the routed question's content, recovered with zero candidate risk.
 - **Gateless, the `D37`.3 precedent.** Under `D25`'s deterministic decode a set-structure
   fact has no sampling variance for a CI to bound, and manufacturing a gate would invite
   the bar-shaping the house forbids. M4 is the project's first gateless *milestone*; its
@@ -1451,11 +1458,15 @@ second candidate family is briefed now. Four reasons, in decreasing order of wei
    the free-permutation sham inherits the three-axis mismatch PR #13 established
    (triple composition, label balance, non-orthogonality to the candidate).
 3. **The 1.5B sham cell (23/25) is a warning about the design template's ceiling, not
-   just this candidate.** If a freely-relabelled pooled-geometry direction flips 23 of 25
-   secrets, a real candidate must run at ~25/25 to win the contrast there. Whether a
-   composition-matched null would be less potent is not knowable from M3's data; the
-   possibility that rise-vs-sham at the late third is near-unwinnable at 1.5B is a named
-   risk any revisit must address before committing compute.
+   just this candidate.** Against a 23/25 sham no candidate wins at n = 25: even a
+   perfect 25/25 arm gives a Newcombe interval of [−0.065, +0.250] (`stats.py`, the same
+   ruler V3 decided with), and the null would have to fall to **≤ 20/25** before a 25/25
+   candidate clears zero. So rise-vs-sham at the late third is not merely hard at 1.5B —
+   under a null that potent it is unwinnable at this n, and the revisit condition that
+   binds is a *less potent null* (`D43`'s composition-matched object), not a stronger
+   candidate. Whether the composition-matched null is in fact less potent is not knowable
+   from M3's data; establishing that is the first thing any revisit must do before
+   committing compute.
 4. **Two independent negative looks already exist** — M1's silent-trial readout at FPR
    (`D26`), and M3's candidate at no advantage over sham — and under `D44` there is no
    scoped consumer for a mediator claim.
@@ -1478,14 +1489,19 @@ to a future brief, it would be chosen by an author with a candidate at stake.
 
 **The object.** For each `(secret, tier, text)` triple in the construction set `S`, both
 matched sessions (with-secret and no-secret) enter the pool. A frozen-seeded assignment
-**flips, per triple, which side receives the with-secret member**, with the flip pattern
-drawn so exactly half the triples send their with-secret member to each side — exact
-where `|S|` is even (at M3's realized 80 / 154 / 36, that is every scale) — and
-stratified within tier so the balance holds per tier as well as overall. Both sides then
-hold exactly one session per triple. By construction: composition-matched on
-`(secret, tier, text)` **exactly**; label-balanced **exactly**; expected retained
-fraction of the real contrast **zero**. The emitted `sham.composition` block (the PR #13
-fix) must prove the matching as recorded data, never assert it in prose.
+**flips, per triple, which side receives the with-secret member**, stratified within
+tier: each tier stratum of `n` triples is split ⌈n/2⌉ / ⌊n/2⌋, and each odd stratum's
+residue side is assigned in alternation over the frozen tier order, so the overall split
+stays exact wherever `|S|` is even. Per-tier balance is therefore exact **iff the stratum
+is even** — at M3's realized composition that is both strata at 0.5B (T1/T2 = 12/68) and
+1.5B (70/84), while at 3B **both strata are odd** (13/23), so per-tier balance there is
+off by one triple per stratum with the two residues cancelling overall (`|S|` = 36,
+even). Both sides hold exactly one session per triple. By construction:
+composition-matched on `(secret, tier, text)` **exactly**; label-balanced exactly overall
+wherever `|S|` is even (all three realized scales qualify) and to within one triple per
+odd tier stratum; expected retained fraction of the real contrast **zero**. The emitted
+`sham.composition` block (the PR #13 fix) must record the realized per-tier split and
+prove the matching as recorded data, never assert it in prose.
 
 **What it does not fix, stated here so no one reads it as the complete repair:** the
 frame confound. A within-triple flip still removes the frame contrast from the sham in
@@ -1527,12 +1543,19 @@ is **"not unified at these scales, with this instrument"** — never "different 
 proven."
 
 **Why no v2 — the decisive test.** A v2 is worth scoping only if some design available to
-this instrument could move A3, and none can: moving it requires either a causal effect at
-1.5B/3B on our side — M2 searched exactly that, with the full preservation battery
-holding at 3B, and the causal clause never fired — or a mute-map effect at 0.5B, which
-their settled record excludes. The 7B escape is dead-not-deferred in both repos. More
-candidate families re-ask `G4`, and `D42` declines that on its own merits. Every
-remaining direction is a different phenomenon, not a sharper test of this one.
+this instrument could move A3. Moving it requires either a causal effect at 1.5B/3B on
+our side — M2 searched the full band and the single thirds under the dose grid there,
+with the full preservation battery holding at 3B, and the causal clause never fired — or
+a **gate-bearing** mute-map effect at 0.5B, which their settled record excludes. One
+bounded residual is open on our side and is commissioned in this same section: `D41`'s
+pairwise-union arms were never run at any scale, and `D41`'s own motivating fact is that
+the edited layer set behaves non-monotonically, so an unrun union arm is not a priori
+weaker than the full band. **The conditional is therefore stated now:** if M4 runs its
+lattice at 1.5B or 3B and a union arm shows a CI-clean secret-level reduction, `D44`'s A3
+premise re-opens — without re-deciding G3 — and that stake is a named input to the M4
+brief's call on companion scales. Short of that, the 7B escape is dead-not-deferred in
+both repos, more candidate families re-ask `G4` (declined on its own merits in `D42`),
+and every remaining direction is a different phenomenon, not a sharper test of this one.
 
 **The declaration.** The arc closes as **answered**. The kickoff wanted M3 to "make
 mute-map and this repo read as one arc rather than two disconnected repos" — that

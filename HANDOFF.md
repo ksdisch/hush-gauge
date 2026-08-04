@@ -17,27 +17,33 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   ({mid+late}, {early+late}, {early+mid} beside the recorded single thirds and full
   band), plus the same lattice under a fresh `D31`-protocol random direction — which
   carries `D40`.3's generalization question (generic edit churn vs
-  content-direction-specific) with zero candidate risk. Both oracle readings
+  content-direction-specific, with a pre-registered `DEGENERATE` rule for empty or
+  singleton silenced sets — the realized prior at 0.5B/3B — and a mandatory trial-level
+  companion row) with zero candidate risk. Both oracle readings
   pre-registered per row; 0.5B is deciding-interest; fresh tier texts named-and-declined
   (bankable). The M4 brief freezes the rest before any run.
 - **`D42` — a second candidate family is declined, banked.** Three conjunctive revisit
   conditions: a frame-length-matched construction (the `D18` two-sentence confound
   removed by design), `D43`'s sham as the deciding null, and a scoped consumer question
-  surviving `D44`. The 1.5B sham cell (23/25) is recorded as a named risk — rise-vs-sham
-  at the late third may be near-unwinnable there regardless of candidate quality. `K5`'s
-  status stays *unknown, not absent*.
+  surviving `D44`. The 1.5B sham cell (23/25) is recorded as a named risk — against a
+  null that potent no candidate wins at n = 25 (even 25/25 vs 23/25 is CI-null,
+  [−0.065, +0.250]), so the revisit condition that binds is a less potent null (`D43`),
+  not a stronger candidate. `K5`'s status stays *unknown, not absent*.
 - **`D43` — the composition-preserving within-triple flip sham is pre-registered now**,
   while no candidate is pending and nothing can be tuned against it: per-triple label
-  flip, balance exact (`|S|` is even at every realized scale) and stratified within tier,
-  composition-matched exactly, expected retained contrast zero, `sham.composition` block
-  mandatory. It does **not** fix the frame confound — a sham cannot control for what it
-  does not contain. **Barred from retroactive verdict-bearing use on M3's recorded
+  flip stratified within tier at ⌈n/2⌉ / ⌊n/2⌋ with odd-stratum residues alternated so
+  the overall balance stays exact (per-tier exact iff the stratum is even — at 3B both
+  strata are odd, 13/23), composition-matched exactly, expected retained contrast zero,
+  and the `sham.composition` block records the realized per-tier split. It does **not**
+  fix the frame confound — a sham cannot control for what it does not contain. **Barred from retroactive verdict-bearing use on M3's recorded
   candidate**; first permissible use is a future `D42`-admitted brief.
 - **`D44` — the arc closes as answered: not unified at these scales with this
   instrument.** G4 undecided plus A3 incongruent is the fusion premise's outcome, and no
-  design available to this instrument can move A3 (M2 already searched 1.5B/3B and the
-  causal clause never fired; mute-map's settled record excludes 0.5B; 7B is dead in both
-  repos). **No v2.** The kickoff's arc goal itself succeeded — the two repos read as one
+  design on the table moves A3 (M2's recorded sweeps at 1.5B/3B — full band, single
+  thirds, dose — never fired the causal clause; a *gate-bearing* mute-map effect at 0.5B
+  is excluded by their settled record; 7B is dead in both repos), with one stated
+  conditional: a CI-clean union-arm reduction at 1.5B/3B in M4's lattice re-opens the A3
+  premise. **No v2.** The kickoff's arc goal itself succeeded — the two repos read as one
   arc whose conclusion is negative. Routing: M4, then the write-up; the LoRA-trained
   "organism arc" is a successor kickoff, not a hush-gauge v2.
 
