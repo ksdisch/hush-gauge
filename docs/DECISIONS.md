@@ -1366,3 +1366,185 @@ non-increasing at every scale, A5's specificity contrast reproduces in direction
 and CI-cleanly at 1.5B only — and **A3 does not agree at all**, our single CI-clean causal
 signal sitting at 0.5B while mute-map's gate-bearing scales are 1.5B and 3B. `D26`'s
 validity caveat is discharged by redesign: no A-row reads a silent-trial workspace quantity.
+
+---
+
+# Post-M3 planning (2026-08-04)
+
+`D41`–`D44` close the three questions `docs/M3-RESULTS.md` §"What M3 sends forward"
+routed here, plus the arc question standing behind them. Settled in the 2026-08-04
+planning session; recommendations approved by Kyle in-session ("I approve all of your
+recommendations"). Nothing below re-opens a decided gate, re-runs anything, or edits
+`D1`–`D40`; `G4` stays `NOT-RUN` as recorded.
+
+## D41 — M2's non-nesting flag gets its own milestone: M4, on `v_secret`, decoupled from any candidate
+
+**Decided 2026-08-04 by Kyle.** `D40`.3 attached M2's routed late-third/full-band
+non-nesting flag test to the eval-only full-band arm of Arm B, so a candidate failing its
+own ladder took an unrelated band question down with it (`docs/M3-RESULTS.md` §"What the
+drop cost"). The fix is the one that results doc names: run the band comparison on a
+direction that is already certified.
+
+**The decision.** The flag test becomes **M4** — a small, dedicated characterization
+milestone on **`v_secret`** (the direction M2 used and certified). Its precondition is
+that M2's certified artifacts exist, which is already true: no construction, no
+validation ladder, no candidate whose failure can couple to it.
+
+**Scope-level commitments** (the M4 brief freezes the rest before any run, per house
+rule):
+
+- **Population and identity discipline.** The M2 eval T4 population; the λ = 0 arm
+  byte-asserted against M0's recorded trials (`D28`'s identity pattern). Tier texts,
+  battery, oracle and decode rule all frozen as they stand; `D25`'s per-scale
+  `repetition_penalty` assertion carries.
+- **The layer-set lattice.** M2 recorded the three single-third arms and the full band,
+  and the non-nesting sits between {late} and {full}: sets of silenced secrets that
+  overlap on 3 while `Tuesday`/`cow`/`horse` are silenced by the late third alone and
+  left emitting by the whole band. M4 adds the pairwise unions — {mid+late},
+  {early+late}, {early+mid} — so the fact can be read as what it structurally is: a
+  monotonicity question over the edited layer set (does adding the early/mid edits to the
+  late third produce the full band's departures?).
+- **`D40`.3's generalization question survives via the random direction, not a
+  candidate.** The same lattice runs under the `D31`-protocol norm-matched
+  random-direction control — certified machinery, fresh frozen draws recorded in the
+  payload (M2's record holds the random arm at the full band only). If the random lattice
+  also non-nests, the flag is generic edit churn; if it nests, the flag is specific to
+  content-direction editing. That is the routed question's content, recovered with zero
+  candidate risk.
+- **Gateless, the `D37`.3 precedent.** Under `D25`'s deterministic decode a set-structure
+  fact has no sampling variance for a CI to bound, and manufacturing a gate would invite
+  the bar-shaping the house forbids. M4 is the project's first gateless *milestone*; its
+  brief owns that as a deviation, citing Arm A. Runner discipline is unchanged —
+  populations recomputed from trials, payload-completeness checks, every row computed
+  from recorded replies.
+- **Both oracle readings, pre-registered.** Every row reports the frozen `D13` primary
+  and the case-insensitive re-score — the M2 fact was sharpest case-insensitively
+  (overlap 3 of 6-vs-9 against the frozen counts' 5 of 9-vs-10), so a primary-only
+  reading would under-report the thing under test. `D36` stands: the form set is
+  untouched.
+- **0.5B is deciding-interest.** The non-nesting is a 0.5B fact — at 1.5B and 3B the
+  late-third and full-band cells do not separate. Companion arms at the other scales are
+  the M4 brief's call on cost.
+
+**Named and declined, bankable:** fresh tier texts (would answer text-generality, but
+requires a new `D1`-rule roster-disjoint certification and has no scoped consumer); any
+oracle change (`D36`); any re-decision of G3 (its verdicts are unchanged by anything M4
+can find).
+
+## D42 — A second candidate family: declined, banked behind three conjunctive revisit conditions
+
+**Decided 2026-08-04 by Kyle.** `K5`'s status line stays exactly as `docs/M3-RESULTS.md`
+wrote it — whether a mediating direction exists is **unknown, not absent** — and no
+second candidate family is briefed now. Four reasons, in decreasing order of weight:
+
+1. **The likeliest identity of `w` is already named, and a second family that does not
+   remove it re-runs the same ambiguity.** `D38`'s deviations row pre-declared that the
+   contrast carries frame-composition structure the sham cannot bound (`D18`'s frame is
+   two sentences shorter; any label permutation removes the frame contrast from the sham
+   in expectation). V1/V2 passing while V3 fails is the signature that identity predicts:
+   stable, non-content, not an off-switch. A family worth trying must remove the confound
+   **by construction** — e.g. a matched-length frame pair differing only in the secrecy
+   instruction (both words present; one forbidden vs both licensed). That is a new frame
+   design with its own numbered decisions — new capture, new certification, a full
+   milestone — not a variant of `D38`.1.
+2. **The deciding null is broken until `D43`'s object exists.** Any family judged against
+   the free-permutation sham inherits the three-axis mismatch PR #13 established
+   (triple composition, label balance, non-orthogonality to the candidate).
+3. **The 1.5B sham cell (23/25) is a warning about the design template's ceiling, not
+   just this candidate.** If a freely-relabelled pooled-geometry direction flips 23 of 25
+   secrets, a real candidate must run at ~25/25 to win the contrast there. Whether a
+   composition-matched null would be less potent is not knowable from M3's data; the
+   possibility that rise-vs-sham at the late third is near-unwinnable at 1.5B is a named
+   risk any revisit must address before committing compute.
+4. **Two independent negative looks already exist** — M1's silent-trial readout at FPR
+   (`D26`), and M3's candidate at no advantage over sham — and under `D44` there is no
+   scoped consumer for a mediator claim.
+
+**Revisit conditions — all three, conjunctive:** (a) a frame-length-matched construction
+that removes the `D18` confound by design; (b) `D43`'s composition-preserving flip sham
+as the deciding null; (c) a scoped consumer question that survives `D44`. A future brief
+that meets all three may re-open this; anything less is the post-hoc variant hunting
+`D38`.4 forbade.
+
+## D43 — The composition-preserving within-triple flip sham: pre-registered now, barred from retroactive use
+
+**Decided 2026-08-04 by Kyle.** PR #13's review established that M3's deciding sham is
+unmatched on three axes (triple composition, label balance, orthogonality to the
+candidate), and `docs/M3-RESULTS.md` names the composition-preserving permutation as "a
+different object that would need its own numbered decision." This is that decision. It is
+taken **now** — with no candidate pending and M3's verdicts recorded and immune — because
+a null should be fixed at the moment nothing exists that could be tuned against it; left
+to a future brief, it would be chosen by an author with a candidate at stake.
+
+**The object.** For each `(secret, tier, text)` triple in the construction set `S`, both
+matched sessions (with-secret and no-secret) enter the pool. A frozen-seeded assignment
+**flips, per triple, which side receives the with-secret member**, with the flip pattern
+drawn so exactly half the triples send their with-secret member to each side — exact
+where `|S|` is even (at M3's realized 80 / 154 / 36, that is every scale) — and
+stratified within tier so the balance holds per tier as well as overall. Both sides then
+hold exactly one session per triple. By construction: composition-matched on
+`(secret, tier, text)` **exactly**; label-balanced **exactly**; expected retained
+fraction of the real contrast **zero**. The emitted `sham.composition` block (the PR #13
+fix) must prove the matching as recorded data, never assert it in prose.
+
+**What it does not fix, stated here so no one reads it as the complete repair:** the
+frame confound. A within-triple flip still removes the frame contrast from the sham in
+expectation — a sham cannot control for what it does not contain (`D38`'s deviations row,
+carried forward verbatim). Only a frame-matched construction (`D42`(a)) addresses that
+axis.
+
+**The retroactivity bar.** This object must **not** be applied to M3's recorded candidate
+as a verdict-bearing or verdict-reinterpreting act. V3's verdicts stand under the null
+pre-registered for them; running a new null against a candidate after watching it fail is
+the rebuild-the-null move this project forbids everywhere else, which
+`docs/M3-RESULTS.md` already declined once ("corrected in the claims rather than by
+rebuilding the sham"). First permissible use: as the deciding null of a future brief
+admitted under `D42`'s revisit conditions.
+
+## D44 — The arc verdict: not unified at these scales with this instrument; no v2; route to M4, then the write-up
+
+**Decided 2026-08-04 by Kyle.** Closes the question `KICKOFF.md` left standing behind
+M3: what the fusion premise's outcome means for the arc, and whether a v2 is scoped.
+
+**What the premise was, and what came back.** The kickoff's fusion bet had two
+pre-registered tests: `G4` ("disable the off-switch and the model blurts" — the "would be
+amazing") and Arm A's congruence table. `G4` was never decided — the single
+pre-registered candidate family failed its own ladder — and **A3**, the row that compares
+where the causal effects live, landed on the outcome the M3 brief pre-declared as "a
+reportable finding against unification": our only CI-clean causal signal is at 0.5B;
+mute-map's gate-bearing scales are 1.5B and 3B. The partial congruence elsewhere
+(localization ordering, dose monotonicity, specificity direction) is consistent with both
+phenomena being generic properties of late-band rank-one content-direction ablation; it
+is not evidence of a shared mechanism object, and after M1 (workspace readout at FPR on
+silent trials, `D26`) and M3 (no mediator advantage over sham) no positive evidence for
+one survives.
+
+**Bounds, owned.** A3 is a pattern comparison across two studies, not itself a CI on a
+pooled contrast. Our 0.5B signal is direction-specific (`D31`'s λ = 1-vs-random contrast
+excludes zero) but carries a failed preservation battery; mute-map reads 0.5B only under
+an any-direction-damage frame — differently caveated, not identical. The licensed claim
+is **"not unified at these scales, with this instrument"** — never "different mechanisms
+proven."
+
+**Why no v2 — the decisive test.** A v2 is worth scoping only if some design available to
+this instrument could move A3, and none can: moving it requires either a causal effect at
+1.5B/3B on our side — M2 searched exactly that, with the full preservation battery
+holding at 3B, and the causal clause never fired — or a mute-map effect at 0.5B, which
+their settled record excludes. The 7B escape is dead-not-deferred in both repos. More
+candidate families re-ask `G4`, and `D42` declines that on its own merits. Every
+remaining direction is a different phenomenon, not a sharper test of this one.
+
+**The declaration.** The arc closes as **answered**. The kickoff wanted M3 to "make
+mute-map and this repo read as one arc rather than two disconnected repos" — that
+succeeded: they read as one arc whose conclusion is that the phenomena do not co-localize
+in scale. The unification failed; the arc did not. By the kickoff's own criteria
+(pre-committed nulls on G1–G3 are a passing v1; M3 detachable by construction) v1 is
+complete and passing, with zero re-tuned bars across four milestones — which is the
+audit-template demonstration the project was for.
+
+**Routing.** M4 (`D41`) is the only outstanding measurement debt. After it lands, the
+terminal deliverable is the write-up, where the negative unification is the arc's honest
+headline. The banked LoRA-trained-secrecy "organism arc" is the named successor —
+sharpened by this result into "does *trained-in* secrecy produce the workspace and causal
+signatures instructed secrecy lacked?" — and it is a **new kickoff with its own brief,
+not a hush-gauge v2**.

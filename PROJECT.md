@@ -32,8 +32,17 @@ intervention, the λ = 0 identity arm, G3's contrast, the preservation battery, 
 random-direction control, the gate code, and the secondaries — inheriting `D26`'s causal
 framing and `D25`'s decode rule with its per-scale assertion.
 
-**Next action:** a **planning** session, not a build — the three design questions in
-`docs/M3-RESULTS.md` §"What M3 sends forward". Fable 5 at `xhigh`.
+**Post-M3 planning session COMPLETE, 2026-08-04** — all four routed questions closed and
+recorded in `docs/DECISIONS.md`: **`D41`** (M2's non-nesting flag becomes M4, a gateless
+characterization milestone on the certified `v_secret`, decoupled from any candidate),
+**`D42`** (a second candidate family declined, banked behind three conjunctive revisit
+conditions), **`D43`** (the composition-preserving within-triple flip sham
+pre-registered; barred from retroactive use on M3's recorded candidate), and **`D44`**
+(the arc verdict: not unified at these scales with this instrument; no v2; route to M4,
+then the write-up).
+
+**Next action:** write `docs/M4-BRIEF.md` — the start-of-stage brief for `D41`'s
+milestone. Fable 5 at `high`.
 
 ## Purpose
 
@@ -77,7 +86,9 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**All four milestones closed. The project is complete as scoped.** G0 PASSES
+**All four milestones closed; `D41` (2026-08-04) adds M4 — a small gateless
+characterization milestone on `v_secret` — as the one outstanding measurement debt before
+the write-up.** G0 PASSES
 (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as pre-committed nulls
 (`docs/M1-RESULTS.md`); **G3 FAILS on all three scales** (`docs/M2-RESULTS.md`) — also
 pre-committed nulls, and not the same null three times: at 0.5B the causal and specificity
@@ -146,12 +157,14 @@ inputs.
    (`S` 80/154/36 over 25/25/19; A5 26/26/31 of 44) and the capture was byte-identical to
    M0 200/200 at every scale.
 
-**Next: a planning session, not a build.** The three items in `docs/M3-RESULTS.md`
-§"What M3 sends forward" are design questions — whether M2's non-nesting flag gets its own
-milestone on an already-certified direction (M3 could not answer it, because `D40`.3's test
-was coupled to Arm B's survival), whether a second candidate family is worth a brief given
-that `K5`'s status is *unknown* rather than *absent*, and what A3's scale incongruence means
-for the fusion story the kickoff set out to test. Fable 5 at `xhigh`.
+13. ~~Post-M3 planning session~~ — **done 2026-08-04**; `D41`–`D44` settled and recorded:
+   the non-nesting flag re-homed as M4 on `v_secret`, a second candidate family declined
+   (banked), the within-triple flip sham pre-registered with a retroactivity bar, and the
+   arc closed — not unified at these scales with this instrument, no v2.
+
+**Next: write `docs/M4-BRIEF.md`**, freezing `D41`'s milestone (lattice arms,
+populations, pre-registered rows, the gateless deviation owned) before any run; after M4
+lands, the write-up (`D44`'s routing).
 
 ## Boundaries
 
@@ -209,7 +222,9 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
   so the T4-turn-1 rate and the T1/T2/T3-vs-T0 contrasts are pre-declared as the
   exposure-matched evidence, and `GATE_WORDING` makes an exposure-only PASS reportable as
   `EXPOSURE-CONFOUNDED`.
-- **Unresolved** — M3 Arm A's pre-registered similarity metric.
+- ~~Unresolved — M3 Arm A's pre-registered similarity metric~~ — retired by **D37**
+  (2026-08-03): no defensible scalar exists; Arm A is a pre-registered congruence table,
+  delivered in `docs/M3-RESULTS.md`.
 - **Decision (D26, 2026-08-02)** — **why the yardstick beats the secret: licensed speech
   being spoken.** G2's pre-registered contrast direction was *not* mis-specified; the FAIL
   stands as an honest null. Evidence (Inference, frozen data): the secret never separates
@@ -227,13 +242,16 @@ M0's three are now closed; see `docs/M0-BRIEF.md` and D1–D14.
 - **Fact (K5)** — mute-map hands over **no** off-switch mediating direction; every one
   of its interventions deletes `v_concept` itself. M3 Arm B must construct and validate
   a candidate (e.g. a primed − control late-band contrast vector) with a sham-ablation
-  control, or reduce to Arm A.
+  control, or reduce to Arm A. *(Exercised 2026-08-04: the candidate failed its own
+  ladder and Arm B dropped — `D42`/`D43` now govern any future attempt; the status is
+  unknown, not absent.)*
 
 ## Decisions
 
 Recorded in **`docs/DECISIONS.md`** (K1–K6 from kickoff, D1–D14 from the M0 brief,
-D15–D24 from the M1 brief, D25–D26 from the 2026-08-02 planning session), not in a root
-`Decisions.md` — this
+D15–D24 from the M1 brief, D25–D26 from the 2026-08-02 planning session, D27–D33 from
+the M2 brief, D34–D40 from the M3 brief, D41–D44 from the 2026-08-04 post-M3 planning
+session), not in a root `Decisions.md` — this
 repo follows the dim-stage/mute-map convention of keeping the decision ledger inside
 `docs/`. Append there; never edit a settled entry in place.
 
@@ -242,7 +260,7 @@ repo follows the dim-stage/mute-map convention of keeping the decision ledger in
 | Source | Location | Type | Authoritative for |
 |---|---|---|---|
 | Kickoff brief | `docs/KICKOFF.md` | brief | scope, milestones, gates, risks, deviations |
-| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff), D1–D14 (M0), D15–D24 (M1), D25–D26 (planning 2026-08-02) |
+| Decision ledger | `docs/DECISIONS.md` | ledger | the frozen calls — K1–K6 (kickoff) and D1–D44 (M0 through the 2026-08-04 post-M3 planning session) |
 | M0 results | `docs/M0-RESULTS.md` | measurement | the three emission curves, G0 decided, and the caveats that bound how they may be read |
 | M1 results | `docs/M1-RESULTS.md` | measurement | G1 and G2 decided per scale, the detection tables, every `D24`/`D17` readout, the deviations M1 owns, and the `D5` repetition-penalty finding |
 | M0 start-of-stage brief | `docs/M0-BRIEF.md` | brief | M0's frozen decisions, the design-extraction pre-commit, G0's byte-frozen `GATE_WORDING` and its INVALID arms |

@@ -205,6 +205,15 @@ Project out v_secret (mid-band first; graded α; band sweep secondary).
   it. Cliff-collapse or collateral damage voids the claim by rule.
 
 ### Milestone 3 — Off-switch unification (the mute-map fusion; detachable)
+> **⚠ Outcome recorded in `DECISIONS.md` D44 (2026-08-04):** M3 ran 2026-08-04
+> (`docs/M3-RESULTS.md`). Arm B was dropped at all three scales by its own pre-registered
+> validation ladder, so G4 was never decided — the detachability fallback below, exercised
+> as written. Arm A landed partial congruence with one strong incongruence: our only
+> CI-clean causal signal sits at 0.5B, mute-map's gate-bearing scales are 1.5B/3B. `D44`
+> closes the unification question **against** at these scales with this instrument; no v2
+> is scoped, and the flag test `D40`.3 lost with Arm B is re-homed by `D41` as M4 on
+> `v_secret`. *(Annotation only — the brief's own text is left as approved.)*
+
 Parameterized by mute-map's outputs (band map, dose curves, M3/M4 direction set);
 exact gate spec frozen at M3 start-of-stage, before any M3 run.
 - **Arm A (signature):** on matched concepts, compare late-band v_secret trajectories

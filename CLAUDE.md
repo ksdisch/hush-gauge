@@ -141,6 +141,22 @@ and M3's new `m3-residuals-*.npz` are both there, and M3's capture never touched
 `switch_directions/*.pt` are gitignored with their SHA256s in the tracked
 `switch_directions/PROVENANCE.md` (`K6`/`K3` pattern).
 
+**The post-M3 planning session ran 2026-08-04 and closed M3's routed questions plus the
+arc (`D41`–`D44` in `docs/DECISIONS.md`, all approved by Kyle):** **`D41`** — M2's
+non-nesting flag gets **M4**, a small **gateless** characterization milestone on the
+already-certified `v_secret`: the layer-set lattice ({mid+late}, {early+late},
+{early+mid} beside the recorded single thirds and full band) plus the same lattice under
+a fresh `D31`-protocol random direction, which carries `D40`.3's generalization question
+with zero candidate risk; both oracle readings per row; 0.5B deciding-interest; fresh
+texts named-and-declined. **`D42`** — a second candidate family is **declined, banked**
+behind three conjunctive revisit conditions (frame-matched construction, `D43`'s sham, a
+consumer question surviving `D44`). **`D43`** — the composition-preserving,
+label-balanced **within-triple flip sham** is pre-registered as the deciding null for any
+future construction candidate — and **barred from retroactive verdict-bearing use** on
+M3's recorded candidate. **`D44`** — the arc closes as answered: **not unified at these
+scales with this instrument**; no v2; M4 is the only outstanding measurement debt, then
+the write-up; the LoRA organism arc is a successor kickoff, not a hush-gauge v2.
+
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and
 `batteries/preservation_qa.json` (sha256 `117e0b15d016092f…`, frozen before any eval sweep,
