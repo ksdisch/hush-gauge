@@ -340,3 +340,60 @@ def test_the_direction_digest_is_of_the_matrix_not_the_container():
     moved = matrix.copy()
     moved[0, 0] += 1.0
     assert construct_switch.direction_sha256(moved) != construct_switch.direction_sha256(matrix)
+
+
+def test_the_sham_records_its_composition_rather_than_asserting_it_is_matched():
+    """PR #13, review F1. `construct()`'s two sides are composition-matched by construction;
+    `permuted_sham()`'s free shuffle does **not** preserve `(secret, tier, text)` composition,
+    and the artifact must measure that rather than claim its absence in prose.
+
+    Built so the asymmetry is visible: two triples, and a hand-chosen split that puts both of
+    one triple's sessions on side A. `composition_matched` must report False, and the tier
+    counts must show the imbalance.
+    """
+    keys = [("gold", "T1", 0), ("iron", "T2", 0)]
+    index = {
+        ("with_secret", "gold", "T1", 0): 0,
+        ("no_secret", "gold", "T1", 0): 1,
+        ("with_secret", "iron", "T2", 0): 2,
+        ("no_secret", "iron", "T2", 0): 3,
+    }
+    cell = construct_switch._side_composition(index, keys, [0, 1], [2, 3])
+    assert cell["composition_matched"] is False
+    assert cell["triples_on_both_sides"] == 0 and cell["n_triples"] == 2
+    assert cell["side_a"]["tiers"] == {"T1": 2, "T2": 0}
+    assert cell["side_b"]["tiers"] == {"T1": 0, "T2": 2}
+    assert cell["side_a"]["arms"] == {"with_secret": 1, "no_secret": 1}
+
+
+def test_a_composition_matched_split_is_reported_as_matched():
+    """The other direction, so the flag means something: one session per triple per side —
+    what `construct()` does, and what a within-triple flip would do — reports True."""
+    keys = [("gold", "T1", 0), ("iron", "T2", 0)]
+    index = {
+        ("with_secret", "gold", "T1", 0): 0,
+        ("no_secret", "gold", "T1", 0): 1,
+        ("with_secret", "iron", "T2", 0): 2,
+        ("no_secret", "iron", "T2", 0): 3,
+    }
+    cell = construct_switch._side_composition(index, keys, [0, 3], [1, 2])
+    assert cell["composition_matched"] is True
+    assert cell["triples_on_both_sides"] == 2
+    assert cell["side_a"]["tiers"] == cell["side_b"]["tiers"] == {"T1": 1, "T2": 1}
+
+
+def test_the_recorded_sham_rule_no_longer_claims_composition_matching():
+    """The claim the review corrected, pinned so it cannot drift back. The emitted rule must
+    state what the shuffle does **and** what it does not preserve."""
+    keys = [("gold", "T1", 0), ("iron", "T1", 0)]
+    index = {
+        ("with_secret", "gold", "T1", 0): 0,
+        ("no_secret", "gold", "T1", 0): 1,
+        ("with_secret", "iron", "T1", 0): 2,
+        ("no_secret", "iron", "T1", 0): 3,
+    }
+    data = sidecar([block(4.0), block(1.0), block(2.0), block(3.0)], [1, 1, 1, 1])
+    _, note = construct_switch.permuted_sham(data, index, keys, seed=m3_cells.PERMUTATION_SEED)
+    assert "does NOT match (secret, tier, text) composition" in note["rule"]
+    assert "differs only in the labels" not in note["rule"]
+    assert "composition" in note and "composition_matched" in note["composition"]

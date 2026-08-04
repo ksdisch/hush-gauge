@@ -253,3 +253,73 @@ def test_a_trial_without_a_source_label_is_refused():
     del payload["trials"][0]["source"]
     with pytest.raises(m3_cells.CellError, match="source"):
         m3_cells.prime_cells(payload)
+
+
+# ------------------------------------------- the results doc's hand-laid tables, pinned
+
+
+DOC = ROOT / "docs" / "M3-RESULTS.md"
+SCALES = ("qwen2.5-0.5b-instruct", "qwen2.5-1.5b-instruct", "qwen2.5-3b-instruct")
+
+pytestmark_doc = pytest.mark.skipif(
+    not all((ROOT / "results" / f"m3-primes-{slug}.json").exists() for slug in SCALES)
+    or not DOC.exists(),
+    reason="needs the three matched-prime payloads and the results doc",
+)
+
+
+def _doc_rows(header: str) -> dict[str, list[str]]:
+    """The `| prime | 0.5B | 1.5B | 3B |` rows of the section under `header`."""
+    import re
+
+    body = DOC.read_text().split(header, 1)[1]
+    rows = {}
+    for line in body.splitlines():
+        if not line.startswith("|"):
+            if rows:
+                break
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        name = re.sub(r"\*", "", cells[0]).strip()
+        if len(cells) == 4 and name not in ("prime", "---"):
+            rows[name] = [re.sub(r"\*", "", c).strip() for c in cells[1:]]
+    return rows
+
+
+@pytestmark_doc
+def test_the_a4_table_in_the_results_doc_regenerates_from_the_payloads():
+    """PR #13, review F2. The A4 table is eleven hand-laid rows × three scales and nothing
+    generated it — which is exactly how the 3B `violin` row ended up carrying 1.5B's numbers.
+    The doc opens by promising every number is computed and never transcribed; this is the
+    check that makes the promise enforceable rather than aspirational.
+
+    The error was self-detecting from the doc alone (its own column totals were each off by
+    one), so this test also re-derives the arm totals and requires the per-prime column to
+    sum to them — the cross-check that would have caught it without the payloads.
+    """
+    rows = _doc_rows("### A4 — per-prime, `n ≤ 4`, never verdict-bearing")
+    assert len(rows) == 11, sorted(rows)
+
+    for position, slug in enumerate(SCALES):
+        payload = json.loads((ROOT / "results" / f"m3-primes-{slug}.json").read_text())
+        cells = m3_cells.prime_cells(payload)
+        per = {arm: cells["arms"][arm]["per_prime"]
+               for arm in ("lambda_0", "third_late", "lambda_1_full", "control_late")}
+        for prime, columns in rows.items():
+            expected = (
+                f"{per['lambda_0'][prime]['hits']} → {per['third_late'][prime]['hits']} / "
+                f"{per['lambda_1_full'][prime]['hits']} / {per['control_late'][prime]['hits']}"
+            )
+            assert columns[position] == expected, (
+                f"{slug} {prime}: doc says {columns[position]!r}, payload gives {expected!r}"
+            )
+        # the doc-internal cross-check: the per-prime column must sum to the arm totals
+        for offset, arm in enumerate(("lambda_0", "third_late", "lambda_1_full", "control_late")):
+            total = 0
+            for columns in rows.values():
+                clean, edited = columns[position].split(" → ")
+                total += int(clean) if offset == 0 else int(edited.split(" / ")[offset - 1])
+            assert total == cells["arms"][arm]["trial_level"]["hits"], (
+                f"{slug} {arm}: doc rows sum to {total}, payload cell is "
+                f"{cells['arms'][arm]['trial_level']['hits']}"
+            )

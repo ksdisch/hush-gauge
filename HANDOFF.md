@@ -27,11 +27,20 @@ pre-registers exactly one and no post-hoc variants. **966 tests** (M2 left 848).
 The construction is **reproducible** — recovered from disjoint calibration halves at
 `cos` up to 0.958 — and **provably not the secret's content**, sitting at `|cos|` ≈ 0.02
 against `v̂_s` before anything is projected out. Then V3 asks whether ablating it raises
-emission more than ablating a direction built the *identical* way with the
-with-secret/no-secret labels scrambled, and the answer is no at every scale — **exactly tied
-at 0.5B, and CI-cleanly against the candidate at 1.5B, where the sham flips 23 of 25 secrets
-to the real candidate's 15.** Ablating *something* at the late third does produce blurts; the
-label contributes nothing to that, and at 1.5B contributes negatively.
+emission more than ablating a direction built by the same pipeline over the same session
+pool with the labels freely re-dealt, and the answer is no at every scale — **exactly tied at
+0.5B, and CI-cleanly against the candidate at 1.5B, where the sham flips 23 of 25 secrets to
+the real candidate's 15.** Ablating *something* at the late third does produce blurts, and
+the candidate has no advantage over the sham at doing it.
+
+**Read that under the sham's own limit (PR #13, review F1).** The sham is **not**
+composition-matched to the real contrast: `construct()` gives each side exactly one session
+per `(secret, tier, text)` triple, while `permuted_sham()` deals rows out of a shuffled bag,
+so at 3B only 14 of 36 triples appear on both sides. So the licensed claim is *the candidate
+has no advantage over this null*, **not** *the label contributes nothing* — part of the
+sham's effect may be composition noise, and M3 cannot separate the two. It was corrected in
+the claims rather than by rebuilding the sham, because the V3 verdicts were already recorded
+and swapping the null after seeing the result is the re-tuning this project forbids.
 
 **Four things to carry forward:**
 

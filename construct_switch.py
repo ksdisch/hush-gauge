@@ -20,8 +20,12 @@ One subject per invocation, after `m3_capture.py`:
   content.
 * `w_sham(l)` — `D38`.3's **deciding** sham: the identical pipeline with the
   with-secret/no-secret session labels permuted inside the `S`-matched pool. It matches
-  construction-induced structure (pooling, position weighting, normalization) and differs
-  only in the labels carrying the contrast, which a random direction cannot do.
+  the construction-induced structure a random direction cannot — pooling, position
+  weighting, normalization, layer geometry. **It does not match `(secret, tier, text)`
+  composition**, and `permuted_sham`'s docstring says why and by how much; the brief's
+  "differs only in the labels" is the characterisation of a *composition-preserving*
+  permutation, not of the free one `D38`.3's operative instruction specifies (PR #13,
+  review F1).
 * `V1` and `V2` — `D38`.4's two construction-side ladder rungs, whose bars are **new and
   uncalibrated and owned as such** in `m3_cells`.
 
@@ -465,11 +469,29 @@ def permuted_sham(
     session labels permuted inside the `S`-matched pool.
 
     The pool is the `2|S|` sessions `construct` uses; the permutation deals `|S|` of them to
-    each side. What survives the permutation is every construction-induced structure —
-    pooling, position weighting, normalization, the layer geometry — and what does not is
-    the label carrying the contrast. That is what a norm-matched *random* direction cannot
-    match, and why `D31`'s random arm is retained only as the reported cross-milestone
+    each side. What survives is the construction-induced structure a norm-matched *random*
+    direction cannot match — pooling, position weighting, normalization, the layer geometry
+    — which is why `D31`'s random arm is retained only as the reported cross-milestone
     comparison.
+
+    **What does NOT survive, and is an owned limit rather than a property (PR #13, review
+    F1):** the free permutation deals rows without regard to which `(secret, tier, text)`
+    triple they came from, so the two sham sides are **not** matched on composition the way
+    `construct`'s two sides are. `construct` gives each side exactly one session per triple
+    by iterating the triples; this deals `|S|` rows out of a shuffled bag, so a triple can
+    land twice on one side and not at all on the other. Measured on the frozen artifacts: at
+    3B side A is T1 16 / T2 20 against side B's T1 10 / T2 26, and only **14 of 36** triples
+    appear on both sides (0.5B 38 of 80, 1.5B 72 of 154).
+
+    So the sham differs from the real contrast in **two** ways, not one: the label that
+    carries the contrast, and the text/tier composition of the two pooled means. `D38`.3's
+    operative instruction — *"the identical pipeline with the with-secret/no-secret session
+    labels permuted (seed frozen per scale in the artifact)"* — is what this implements; the
+    brief's accompanying "differs only in the labels carrying the contrast" describes a
+    **composition-preserving** permutation (a within-triple flip), which is a different
+    object. Building that instead would be a new numbered decision, not an edit — and
+    swapping it in after V3's verdicts are recorded is exactly the re-tuning this project
+    forbids. `docs/M3-RESULTS.md` reads the V3 cells under this limit.
 
     **Frame length is confounded with the label by construction, and the sham does not
     bound it** — permuting the labels removes the frame contrast from the sham in
@@ -490,12 +512,63 @@ def permuted_sham(
         "pool_size": len(pool),
         "side_a_rows": side_a,
         "side_b_rows": side_b,
+        "composition": _side_composition(index, keys, side_a, side_b),
         "rule": (
             "D38.3: the identical D38.1 pipeline with the with-secret/no-secret session "
             "labels permuted inside the S-matched pool (random.Random(seed).shuffle of the "
-            "row list in S's frozen key order, first half vs second half). Matches "
-            "construction-induced structure; differs only in the labels carrying the "
-            "contrast."
+            "row list in S's frozen key order, first half vs second half). Matches the "
+            "construction-induced structure a random direction cannot — pooling, position "
+            "weighting, normalization, layer geometry. It does NOT match (secret, tier, "
+            "text) composition: the shuffle is free, so a triple can land twice on one side "
+            "and not at all on the other, and the recorded `composition` block measures the "
+            "realized imbalance. The sham therefore differs from the real contrast in two "
+            "ways — the label AND the composition — not one. A composition-preserving "
+            "within-triple flip is a different object and would be a new numbered decision "
+            "(PR #13, review F1)."
+        ),
+    }
+
+
+def _side_composition(index: dict, keys: Sequence[tuple[str, str, int]], side_a, side_b) -> dict:
+    """The realized composition of the sham's two sides, recorded in the artifact.
+
+    `permuted_sham`'s free shuffle does not preserve `(secret, tier, text)` composition the
+    way `construct` does. That is an owned limit rather than a defect, but a limit nobody can
+    measure from the payload is prose — so the imbalance ships **as data** beside the row
+    lists, on the same principle as `D40`.2's decoded contexts and `panel.split_crossing_counts`.
+    """
+    by_row = {row: key for key in keys for row in
+              (index[("with_secret", *key)], index[("no_secret", *key)])}
+    arm_of = {index[(arm, *key)]: arm for key in keys for arm in ("with_secret", "no_secret")}
+
+    def side(rows) -> dict:
+        triples = [by_row[row] for row in rows]
+        return {
+            "n_rows": len(rows),
+            "tiers": {t: sum(1 for k in triples if k[1] == t) for t in sorted({k[1] for k in keys})},
+            "text_index": {str(i): sum(1 for k in triples if k[2] == i)
+                           for i in sorted({k[2] for k in keys})},
+            "arms": {a: sum(1 for row in rows if arm_of[row] == a)
+                     for a in ("with_secret", "no_secret")},
+            "n_distinct_triples": len(set(triples)),
+        }
+
+    a_triples = {by_row[row] for row in side_a}
+    b_triples = {by_row[row] for row in side_b}
+    return {
+        "side_a": side(side_a),
+        "side_b": side(side_b),
+        "triples_on_both_sides": len(a_triples & b_triples),
+        "n_triples": len(keys),
+        "composition_matched": (
+            side(side_a)["tiers"] == side(side_b)["tiers"]
+            and side(side_a)["text_index"] == side(side_b)["text_index"]
+            and len(a_triples & b_triples) == len(keys)
+        ),
+        "note": (
+            "construct()'s two sides are composition-matched by construction (one session "
+            "per triple per side); permuted_sham()'s are not. Recorded so the limit is "
+            "measurable from the artifact rather than asserted in prose (PR #13, review F1)."
         ),
     }
 

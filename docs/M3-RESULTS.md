@@ -38,15 +38,17 @@ the with-secret-minus-no-secret contrast recovers nearly the same direction from
 halves of the calibration set (up to `cos = 0.958`), and that direction sits almost
 orthogonal to every secret's own `v̂_s` before anything is projected out (median `|cos|`
 ≈ 0.02–0.03 against a 0.5 bar). Then V3 asks the only question that matters — *does ablating
-it raise emission more than ablating a direction built the same way with the labels
-scrambled?* — and the answer is **no at every scale**: exactly tied at 0.5B (7/25 vs 7/25),
+it raise emission more than ablating a direction built by the same pipeline over the same
+session pool with the labels freely re-dealt?* — and the answer is **no at every scale**: exactly tied at 0.5B (7/25 vs 7/25),
 CI-clean *against* the candidate at 1.5B (15/25 vs 23/25), and below the sham but CI-null at
 3B (3/19 vs 8/19, which could not gate in any case).
 
 Ablating *something* at the late third does raise emission on baseline-silent trials — the
 λ = 0 arm is 0/25 · 0/25 · 0/19 there by construction, and both edited arms move off it. What
-M3 shows is that **the with-secret/no-secret label contributes nothing to that rise**, and at
-1.5B contributes negatively.
+M3 shows is that **the constructed candidate has no advantage over that sham**, and at 1.5B
+is CI-cleanly worse. The stronger reading — *the label contributes nothing* — is **not**
+supported, because the sham is not composition-matched to the real contrast; §1's
+"deciding sham is not composition-matched" subsection measures the gap and bounds the claim.
 
 ---
 
@@ -142,13 +144,50 @@ The λ = 0 row is 0 everywhere **by construction** — the population is defined
 where the un-edited model kept the secret — and it is printed as a self-check on the
 population arithmetic, not as a finding.
 
-**The 1.5B cell is the informative one.** The sham is not "nothing": it is a direction built
-by the *identical* pipeline — same sessions, same pooling, same position weighting, same
-normalization, same per-session orthogonalization against `v̂_s` — differing only in which
-sessions carry the "with-secret" label. Ablating that direction flips 23 of 25 secrets into
-emitting; ablating the real candidate flips 15. The difference excludes zero. Whatever makes
-this edit produce blurts, it survives destroying the label structure and is *damaged* by
-keeping it.
+**The 1.5B cell is the informative one, and it must be read under the sham's own limit.**
+The sham is not "nothing": it is built by the same pipeline over the same session pool —
+same pooling, same position weighting, same normalization, same per-session orthogonalization
+against `v̂_s`. Ablating it flips 23 of 25 secrets into emitting; ablating the real candidate
+flips 15; the difference excludes zero. But the sham differs from the real contrast in
+**two** ways, not one, and an earlier draft of this document claimed only the first.
+
+### The deciding sham is not composition-matched (PR #13, review F1)
+
+`construct()` builds the real candidate from two sides that are **exactly matched** on
+`(secret, tier, text)`: it iterates `S`'s triples and takes one with-secret and one no-secret
+session from each, so the two pooled means share text and tier composition exactly.
+`permuted_sham()` deals `|S|` rows out of a shuffled bag of all `2|S|`, which permutes the
+labels **and** lets a triple land twice on one side and not at all on the other. Measured
+from the recorded `side_a_rows` / `side_b_rows`:
+
+| | side A tiers | side B tiers | triples on both sides |
+|---|---|---|---|
+| 0.5B | T1 10 / T2 70 | T1 14 / T2 66 | 38 of 80 |
+| 1.5B | T1 66 / T2 88 | T1 74 / T2 80 | 72 of 154 |
+| 3B | T1 16 / T2 20 | T1 10 / T2 26 | **14 of 36** |
+
+The real construction's equivalent table is exact equality in every cell, by construction.
+
+**What this costs the reading.** `D38`.3's operative instruction is *"the identical pipeline
+with the with-secret/no-secret session labels permuted (seed frozen per scale in the
+artifact)"*, and that is what was built; the brief's accompanying phrase *"differs only in
+the labels carrying the contrast"* describes a **composition-preserving** permutation — a
+within-triple flip — which is a different object. So the honest statement of the V3 result is
+narrower than "the label contributes nothing": **ablating a freely-relabelled,
+composition-unmatched direction from the same session pool raises emission at least as much
+as ablating the constructed candidate, and CI-cleanly more at 1.5B.** Part of the sham's
+effect may be composition noise rather than label-scrambling, and M3 cannot separate the two.
+
+**Why this was not fixed by rebuilding the sham.** The V3 verdicts are recorded. Swapping in
+a differently-constructed sham after seeing the candidate fail is the re-tuning this project
+forbids everywhere else, and a composition-preserving permutation is a new object that would
+need its own numbered decision rather than an edit. The claims were corrected instead; the
+code, the emitted `sham.rule` string and this section now state what the artifact is. **The
+three frozen `results/m3-switch-*.json` files still carry the superseded `rule` string** —
+they were written before the correction and are not rewritten, the same annotate-never-rewrite
+convention this project applies to superseded brief passages. `construct_switch.py` is the
+current text, and any future run also emits a `sham.composition` block that measures the
+imbalance as data rather than asserting its absence in prose.
 
 **3B is reported and cannot gate.** `D38`.4 pre-declared this: its predicted calibration cell
 holds 19 headroom secrets, under the house floor of 20 **by construction**, so V3 there is
@@ -259,17 +298,17 @@ nothing.
 
 | prime | 0.5B | 1.5B | 3B |
 |---|---|---|---|
-| Brazil | 2 → 1 / 1 / 2 | 2 → 1 / 1 / 2 |2 → 2 / 3 / 2 |
-| Canada | 3 → 2 / 1 / 1 | 3 → 2 / 2 / 3 |3 → 2 / 0 / 3 |
-| China | 1 → 0 / 0 / 3 | 2 → 1 / 1 / 2 |3 → 2 / 3 / 2 |
-| France | 2 → 0 / 0 / 1 | 2 → 0 / 0 / 1 |2 → 2 / 2 / 2 |
-| Japan | 3 → 0 / 1 / 1 | 3 → 2 / 0 / 3 |2 → 2 / 2 / 2 |
-| Jupiter | 3 → 1 / 1 / 2 | 3 → 1 / 2 / 4 |3 → 3 / 2 / 2 |
-| Mars | 2 → 2 / 1 / 3 | 2 → 2 / 2 / 2 |3 → 2 / 2 / 3 |
-| October | 3 → 0 / 0 / 1 | 1 → 1 / 1 / 1 |4 → 3 / 3 / 4 |
-| piano | 3 → 1 / 0 / 2 | 4 → 3 / 3 / 4 |3 → 3 / 3 / 4 |
-| **silver** | 3 → 0 / 0 / **3** | 0 → 0 / 0 / 1 |3 → **3** / 2 / 3 |
-| violin | 1 → **3** / 0 / 0 | 4 → 3 / 3 / 3 |4 → 3 / 3 / 3 |
+| Brazil | 2 → 1 / 1 / 2 | 2 → 1 / 1 / 2 | 2 → 2 / 3 / 2 |
+| Canada | 3 → 2 / 1 / 1 | 3 → 2 / 2 / 3 | 3 → 2 / 0 / 3 |
+| China | 1 → 0 / 0 / 3 | 2 → 1 / 1 / 2 | 3 → 2 / 3 / 2 |
+| France | 2 → 0 / 0 / 1 | 2 → 0 / 0 / 1 | 2 → 2 / 2 / 2 |
+| Japan | 3 → 0 / 1 / 1 | 3 → 2 / 0 / 3 | 2 → 2 / 2 / 2 |
+| Jupiter | 3 → 1 / 1 / 2 | 3 → 1 / 2 / 4 | 3 → 3 / 2 / 2 |
+| Mars | 2 → 2 / 1 / 3 | 2 → 2 / 2 / 2 | 3 → 2 / 2 / 3 |
+| October | 3 → 0 / 0 / 1 | 1 → 1 / 1 / 1 | 4 → 3 / 3 / 4 |
+| piano | 3 → 1 / 0 / 2 | 4 → 3 / 3 / 4 | 3 → 3 / 3 / 4 |
+| **silver** | 3 → 0 / 0 / **3** | 0 → 0 / 0 / 1 | 3 → **3** / 2 / 3 |
+| violin | 1 → **3** / 0 / 0 | 4 → 3 / 3 / 3 | 3 → 2 / 2 / 2 |
 
 ### Owned asymmetries (`D37`.4), stated in the caption rather than found by a reader
 
@@ -453,6 +492,7 @@ CPU-float64 fallback never fired.
 | Two `INVALID` conditions beyond `D39`.5's ten: a `limited` construction record, and a construction whose own `S` disagrees with `D38`.4's prediction | `D39`.5's enumerated ten | a strengthening, not a substitution — all ten are implemented and tested. Found by smoke-testing: a `--limit`ed capture could otherwise have produced a candidate that certified a genuine eval payload. `D38`.1 fits the candidate on `S`, so a candidate fitted on a partial `S` is a different candidate |
 | `gates/g4.py --dropped <slug>` emits `D38`.4's `NOT-RUN (V-ladder: <reason>)` | nothing in the brief says who emits it | `D38`.4 specifies the verdict string but a dropped scale has no eval payload for `check` to run on. Without this the results doc would hand-carry the verdict, and this project has lost hand-carried facts twice (`F7` transposed on arrival, `F13` stale one round later). The inverse is refused: a scale the ladder authorizes must be decided, not filed under `NOT-RUN` |
 | `D40`.2's decoded contexts computed in `m3_cells` rather than read off the oracle | the oracle records contexts for `capitalized_only_hits` and not for `case_variant_miss` | `D36` declines to widen the oracle, so the windows are computed from the recorded replies by the same `re.IGNORECASE` scan `D39`.7 decides on, excluding the forms the primary already reads. A human read of recorded evidence, never an input to a verdict |
+| The deciding sham is **not composition-matched** — its two sides differ in `(secret, tier, text)` composition, where the real contrast's two sides are identical by construction | `D38`.3's phrase "differs only in the labels carrying the contrast" | The brief's *operative* instruction — a free permutation of the labels over the pooled `2|S|` sessions under a frozen seed — is what was built; the accompanying phrase describes a composition-preserving within-triple flip, which is a different object and would be a new numbered decision. Found in review (PR #13, F1) and measured from the recorded row lists (3B: 14 of 36 triples on both sides). Corrected in the claims rather than by rebuilding the sham: the V3 verdicts were already recorded, and swapping the null after seeing the result is the re-tuning this project forbids everywhere else. §1 reads the V3 cells under this limit |
 | The preflight chooses the edit arithmetic **once**, before any trial | inherited from M2's own deviation row | a mid-sweep switch would leave one payload's arms computed by two arithmetics. `device_fp32` held at every scale and the fallback never fired |
 
 ---

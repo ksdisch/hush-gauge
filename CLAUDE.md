@@ -111,8 +111,12 @@ V1 and V2 hold everywhere by wide margins — split-half `cos` 0.665 / 0.958 / 0
 construction is reproducible from disjoint calibration halves and is **not** the secret's own
 direction. V3 then fails at every scale: real vs deciding sham is **7/25 vs 7/25** (0.5B,
 CI-null), **15/25 vs 23/25** (1.5B, Newcombe [−0.521, −0.083], CI-clean **against** the
-candidate), and 3/19 vs 8/19 (3B, CI-null and under the floor by construction). **Ablating a label-permuted sham raises emission at least as much as ablating
-the real candidate, and at 1.5B CI-cleanly more.**
+candidate), and 3/19 vs 8/19 (3B, CI-null and under the floor by construction). **Ablating the sham — the same pipeline over the same session pool with the labels freely
+re-dealt — raises emission at least as much as ablating the real candidate, and at 1.5B
+CI-cleanly more.** That sham is **not** composition-matched to the real contrast (PR #13
+review F1, measured: 3B has 14 of 36 triples on both sides), so the licensed reading is
+"the candidate has no advantage over this null", not "the label contributes nothing";
+`docs/M3-RESULTS.md` §1 owns the limit.
 
 **Three M3 facts worth carrying, all in `docs/M3-RESULTS.md`:** `D38`.5's **dual** read-back
 held on every λ > 0 edit over ~175,000 checks (worst survival 9.95 × 10⁻⁸, worst `v_secret`
