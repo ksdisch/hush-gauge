@@ -1,10 +1,117 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-04 (**M2 merged (PR #10, `a964878`); `docs/M3-BRIEF.md` FROZEN —
-approved by Kyle 2026-08-04 after the PR #11 review; `D34`–`D40` settled. Next: the M3
-build**)_
+_Last updated: 2026-08-04 (**M3 built and run. Arm B dropped at all three scales by
+`D38`.4's own ladder — G4 never decided, `NOT-RUN` everywhere; Arm A delivered in full.
+All four milestones are closed. Next: a planning session, not a build**)_
 
-## What was just done (2026-08-04)
+## What was just done (2026-08-04, later) — the M3 build and sweep
+
+**M3 is COMPLETE. Arm B was dropped at all three scales, so `G4` was never decided** —
+`NOT-RUN (V-ladder: V3)` at 0.5B and 1.5B, `NOT-RUN (V-ladder: no gate-capable V3 pass)` at
+3B. That is `K5`'s pre-committed fallback, written into `KICKOFF.md` before this project had
+any code, and it reduces M3 to Arm A without harming M0–M2. `docs/M3-RESULTS.md` is the
+citable record and carries every number computed from the result JSONs. **No bar was
+re-tuned, no dose revisited, and no second candidate family was tried** — the brief
+pre-registers exactly one and no post-hoc variants. **966 tests** (M2 left 848).
+
+**The candidate validated structurally and failed behaviourally. That is the finding.**
+
+| | 0.5B | 1.5B | 3B |
+|---|---|---|---|
+| V1 split-half `cos(w_A, w_B)` (bar ≥ 0.5) | +0.665 | **+0.958** | +0.909 |
+| V2 `\|cos(v̂_s, ŵ)\|` (ceiling ≤ 0.5) | 0.032 | 0.019 | 0.022 |
+| V3 real `w⊥` vs deciding sham | 7/25 vs 7/25 | **15/25 vs 23/25** | 3/19 vs 8/19 |
+| V3 Newcombe 95% | [−0.239, +0.239] | **[−0.521, −0.083]** | [−0.502, +0.026] |
+| Arm B | `NOT-RUN (V3)` | `NOT-RUN (V3)` | `NOT-RUN (no gate-capable V3 pass)` |
+
+The construction is **reproducible** — recovered from disjoint calibration halves at
+`cos` up to 0.958 — and **provably not the secret's content**, sitting at `|cos|` ≈ 0.02
+against `v̂_s` before anything is projected out. Then V3 asks whether ablating it raises
+emission more than ablating a direction built by the same pipeline over the same session
+pool with the labels freely re-dealt, and the answer is no at every scale — **exactly tied at
+0.5B, and CI-cleanly against the candidate at 1.5B, where the sham flips 23 of 25 secrets to
+the real candidate's 15.** Ablating *something* at the late third does produce blurts, and
+the candidate has no advantage over the sham at doing it.
+
+**Read that under the sham's own limits (PR #13, reviews F1 + F8).** The sham is **neither
+composition-matched nor label-balanced**. `construct()` gives each side exactly one session
+per `(secret, tier, text)` triple and exactly one label — one side entirely with-secret,
+the other entirely no-secret, because the label *is* the contrast; `permuted_sham()` deals rows out of
+a shuffled bag, so at 3B only 14 of 36 triples appear on both sides — and the labels come out
+uneven too, leaving side A a **+10.0%** net with-secret surplus at 0.5B, i.e. a retained
+fraction of the real contrast. At the layers the V3 arms actually edit — the late third —
+`cos(real, sham)` is **+0.060 / −0.165 / +0.057**: **the sham is not orthogonal to the
+candidate.** (Band-wide medians are +0.164 / −0.036 / +0.057 and rank the scales the other
+way round; they are carried by layers only the never-run `real_full` arm would touch, which
+is review F11 and cost this loop a round.) Which way that pushes any individual V3 cell is
+**not** determined by these numbers, and no direction of bias is claimed. So the licensed
+claim is *the candidate has no
+advantage over this null*, **not** *the label contributes nothing*, and M3 cannot separate
+the label effect from composition noise or from the retained surplus. It was corrected in
+the claims rather than by rebuilding the sham, because the V3 verdicts were already recorded
+and swapping the null after seeing the result is the re-tuning this project forbids.
+
+**Four things to carry forward:**
+
+- **`D38`.5's dual read-back is the one thing M3 proved rather than argued.** Every λ > 0
+  edit certified at run time that the surviving projection of `w⊥` equals (1 − λ) of the
+  original **and** that the session secret's own `v̂_s` projection was unchanged — worst
+  residuals 9.95 × 10⁻⁸ and 5.87 × 10⁻⁸ against `READBACK_TOL` 10⁻⁴, over ~175,000 checks,
+  with the CPU-float64 fallback never firing. `D34`'s answer to M2's routed question —
+  *move the orthogonality guarantee out of the readout and into the operator* — worked
+  exactly as designed. It is the design lesson worth reusing even though the candidate died.
+- **`D40`.3's non-nesting flag test was never produced, and that is the drop's real cost.**
+  It is the question **M2 explicitly routed to M3**, and `D40`.3 attached it to the
+  eval-only full-band arm — so a candidate failing its ladder took an unrelated band
+  question down with it. **M2's late-third/full-band flag is exactly as open as it was.** A
+  future milestone that wants it answered should run the band comparison on an
+  already-certified direction (`v_secret`, as M2 used), not behind a new candidate's
+  survival. Same for `D40`.1's preservation readouts and `D35`'s eval population, neither of
+  which was ever realized.
+- **Everything the brief predicted, and that M3 actually tested, reproduced exactly.**
+  `D38`.1's `S` realized **80 / 154 / 36** sessions over **25 / 25 / 19** headroom secrets;
+  `D37` A5's baseline-emitting T4 population realized **26 / 26 / 31** of 44; the capture was
+  byte-identical to M0 **200/200** at every scale; zero boundary-indeterminates in every Arm
+  B population. `D38`.1's *one named edge case* reproduced verbatim — the 3B calibration
+  `gold` session ending `GOLD`, primary-silent, canary fired, sitting inside `S` exactly as
+  the brief owned in advance.
+- **Arm A landed partial congruence with one strong incongruence.** Localization ordering
+  agrees (on the matched primes the late third is strictest at all three scales — stronger
+  than A1's eval-secret cells show); the **new** late-third dose curve is monotone
+  non-increasing everywhere; A5's specificity contrast reproduces in direction at all three
+  scales and CI-cleanly at 1.5B only (**26 / 26 / 31** populations, all exactly predicted).
+  **A3 does not agree at all** — our only CI-clean causal signal is at 0.5B, mute-map's
+  gate-bearing scales are 1.5B and 3B. The brief said before the data were pooled that this
+  would be a reportable finding *against* unification, and it is the outcome that landed.
+  Also incongruent: **`silver`**, mute-map's pre-registered *non-specific* anti-example,
+  behaves **specifically** on our side at 0.5B (3/4 → 0/4 under its own direction, 3/4 under
+  its sibling's).
+
+**What was built:** `m3_cells.py` (the shared pure-python arithmetic, cut from `m2_cells.py`),
+`m3_capture.py` (Arm B's `D38`.1 capture, cut from `m1_probe_panel.py`), `construct_switch.py`
+(the candidate, its sham, V1/V2, **and** the `D38`.5 dual read-back — `D34`'s guarantee lives
+in the operator, so its certification lives with the candidate), `m3_arm_b.py` and
+`m3_matched_primes.py` (both cut from `m2_ablation.py`), `gates/g4.py` (byte-frozen
+`GATE_WORDING` pinned by SHA256, ten `INVALID` arms plus two more found by smoke-testing),
+`run_m3.sh`, twelve result JSONs, `switch_directions/PROVENANCE.md`, and
+`docs/M3-RESULTS.md`. Total sweep ≈ **3.6 h** against the brief's 8–14 h — the gap is the
+drop, which cut the most expensive phase before it started, exactly as the brief's fallback
+line predicted.
+
+**Three defects the smoke runs caught that reading did not:** a hardcoded capture path in the
+construction record; deployed directions built in CPU float64 and handed to a preflight
+reading MPS residuals; and — the real one — a `--limit`ed capture could have produced a
+candidate that certified a genuine eval payload, now refused twice over (a `limited` flag
+carried capture → construction → gate, plus an arm-7 check on the construction's own
+population against `D38`.4's prediction).
+
+**One thing worth knowing about the sweep driver:** `run_m3.sh`'s final gate loop was edited
+while the script was running, and bash had already buffered that region — so the gates ran
+the pre-edit form and exited 1 on the missing eval payloads. The verdicts were then produced
+correctly by hand with `gates/g4.py --dropped <slug>`. **Do not edit a running shell script**;
+the fix landed in git but not in the running process.
+
+### Earlier — the M3 brief's approval (2026-08-04)
 
 **PR #10 (the M2 build) merged** as `a964878` after its continuation review run closed
 CLEAR (the mailbox is the per-finding authority). **`docs/M3-BRIEF.md` was written,
@@ -503,6 +610,15 @@ Found by the review of the results themselves, and corrected in `docs/M0-RESULTS
 
 ## Where things stand
 
+**M3 is complete: Arm B dropped at every scale, G4 never decided, Arm A delivered in full.**
+`docs/M3-RESULTS.md` is normative for what M3 found; `docs/M3-BRIEF.md` stays normative for
+how it was specified, and `D34`–`D40` are settled and unchanged. On disk and tracked:
+`m3_cells.py`, `m3_capture.py`, `construct_switch.py`, `m3_arm_b.py`,
+`m3_matched_primes.py`, `gates/g4.py`, `run_m3.sh`, twelve M3 result JSONs, and
+`switch_directions/PROVENANCE.md`. The candidate `.pt` files are gitignored with their
+SHA256s in that tracked record (`K6`/`K3`); **`results/*.npz` now holds M1's score sidecars
+and M3's new residual sidecars alike — do not delete them.**
+
 **M2 is complete and G3 is decided — FAIL at every scale, all three pre-committed nulls.**
 `docs/M2-RESULTS.md` is normative for what M2 found; `docs/M2-BRIEF.md` stays normative for
 how it was specified, and `D1`–`D33` are all settled and unchanged. On disk and tracked:
@@ -579,20 +695,24 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**The M3 build** — well-specified from `docs/M3-BRIEF.md` (frozen) plus
-`docs/M2-RESULTS.md`; no design calls are left open. The deliverables and their order
-are the brief's: `m3_capture.py` (the construction capture, streamed accumulators) →
-`construct_switch.py` (the `D38` candidate + shams; the V-ladder on calibration decides
-per scale whether Arm B lives) → `m3_arm_b.py` + `gates/g4.py` (ten INVALID arms
-dry-run proven before any real run) → `m3_matched_primes.py` (nine arms; recorded cells
-read from the M0/M2 records, never re-run) → `docs/M3-RESULTS.md` with the `D37`
-congruence table. Binding throughout, unchanged: `D25`'s per-scale decode assertion,
-the frozen oracle, M0/M1/M2-certified modules read-only, and **do not delete
-`results/*.npz`**.
+**A planning session, not a build.** All four milestones are closed and every gate is
+decided or reported. The three items in `docs/M3-RESULTS.md` §"What M3 sends forward" are
+design questions of exactly the class the standing rule routes to a Fable session:
 
-**Run-config note:** the build session is **Opus 5 at `high`** —
-`claude --model claude-opus-5 --effort high` — started fresh from the brief, never from
-a planning transcript.
+1. **M2's non-nesting flag is still open**, and M3 showed why the design coupled it to a
+   risk it need not have been coupled to. A milestone that wants it answered should run the
+   band comparison on an already-certified direction rather than behind a new candidate's
+   survival.
+2. **Whether a mediating direction exists is untouched.** `K5` said mute-map hands over
+   none; M3 constructed one family and it does not mediate. The honest status is *unknown*,
+   not *absent* — and V1/V2 passing while V3 fails is an informative shape for anyone who
+   tries again.
+3. **A3's scale incongruence argues against unification** and is the fusion-relevant result
+   the kickoff set out to test.
+
+**Run-config note:** **Fable 5 at `xhigh`** — `claude --model claude-fable-5 --effort xhigh`
+— started fresh from `docs/M3-RESULTS.md` and `docs/M3-BRIEF.md`, never from a build
+transcript.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the

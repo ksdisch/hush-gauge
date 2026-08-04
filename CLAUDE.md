@@ -97,21 +97,49 @@ contrast cell, the byte-frozen `GATE_WORDING` with ten INVALID arms, and the des
 secondaries. It carries `D26`'s causal framing: a direction that fails as a detector may
 still be causally load-bearing — if G3 passes, that tension is the finding.
 
-**`docs/M3-BRIEF.md` is FROZEN — approved by Kyle 2026-08-04** after the adversarial
-review on PR #11 (the review mailbox is the per-finding authority). **`D34`–`D40` are
-settled** and mirrored into `docs/DECISIONS.md`: the three routed questions closed —
-orthogonality moves into the operator (Arm B's edit is projected ⊥ `v_secret` per
-session per layer, with a dual read-back), G4 decides on the **baseline-silent T1–T2
-eval population** (predicted 94/151/43 trials over 25/25/24 headroom secrets), and the
-frozen oracle stays deciding with the case-insensitive re-score a conjunctive PASS
-component (`CASE-SHAPE-SENSITIVE` voids). Arm A is recast as a **gateless
-causal-profile congruence table** — the kickoff's "primed-suppression signature" exists
-nowhere in mute-map (extraction finding). Arm B constructs its mediator candidate on
-calibration with a label-permuted deciding sham and a per-scale validation ladder;
-every drop is `K5`'s pre-committed null. **Next action: the M3 build**
-(`claude --model claude-opus-5 --effort high`), started fresh from the brief. M2 records
-no probe scores and reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**
-(M3's capture writes new sidecar files and never touches M1's).
+**M3 is COMPLETE as of 2026-08-04. Arm B was dropped at all three scales by `D38`.4's own
+ladder, so `G4` was never decided — every scale reports `NOT-RUN (V-ladder: …)`.** That is
+`K5`'s pre-committed fallback and `KICKOFF.md` calls it a passing outcome: M3 reduces to
+Arm A without harming M0–M2. `docs/M3-RESULTS.md` is normative for what M3 found;
+`docs/M3-BRIEF.md` stays normative for how it was specified, and `D34`–`D40` are unchanged.
+**No bar was re-tuned, no dose revisited, and no second candidate family was tried** — the
+brief pre-registers exactly one and no post-hoc variants. **966 tests.**
+
+**The candidate validated structurally and failed behaviourally, and that is the finding.**
+V1 and V2 hold everywhere by wide margins — split-half `cos` 0.665 / 0.958 / 0.909 against a
+0.5 bar, and `|cos(v̂_s, ŵ)|` 0.032 / 0.019 / 0.022 against a 0.5 ceiling — so the
+construction is reproducible from disjoint calibration halves and is **not** the secret's own
+direction. V3 then fails at every scale: real vs deciding sham is **7/25 vs 7/25** (0.5B,
+CI-null), **15/25 vs 23/25** (1.5B, Newcombe [−0.521, −0.083], CI-clean **against** the
+candidate), and 3/19 vs 8/19 (3B, CI-null and under the floor by construction). **Ablating the sham — the same pipeline over the same session pool with the labels freely
+re-dealt — raises emission at least as much as ablating the real candidate, and at 1.5B
+CI-cleanly more.** That sham is **neither composition-matched nor label-balanced** (PR #13
+reviews F1 + F8 + F11, measured: 3B has 14 of 36 triples on both sides; 0.5B carries a
++10.0% net with-secret surplus, and at the **deployed late third** `cos(real, sham)` is
++0.060 / −0.165 / +0.057), so it is **not orthogonal to the candidate**. Which way that
+pushes any individual V3 cell is *not* determined by those numbers and no direction of bias
+is claimed. The licensed reading is "the candidate has no advantage over this null", not "the label
+contributes nothing"; `docs/M3-RESULTS.md` §1 owns the limit and reads the cells under it.
+
+**Three M3 facts worth carrying, all in `docs/M3-RESULTS.md`:** `D38`.5's **dual** read-back
+held on every λ > 0 edit over ~175,000 checks (worst survival 9.95 × 10⁻⁸, worst `v_secret`
+preservation 5.87 × 10⁻⁸ against `READBACK_TOL` 10⁻⁴), so `D34`'s orthogonality guarantee was
+**certified at run time** rather than argued — the one thing in M3 that is proven rather than
+claimed; **`D40`.3's non-nesting flag test was never produced**, because it lives in the
+eval-only full-band arm, so **M2's routed late-third/full-band flag is exactly as open as it
+was** — the one place the drop cost a pre-declared deliverable rather than a gate; and Arm A
+landed **partial congruence with one strong incongruence** — localization ordering agrees (on
+the matched primes the late third is strictest at all three scales), the new late-third dose
+curve is monotone everywhere, A5 reproduces in direction at all three scales and CI-cleanly
+at 1.5B only, and **A3 does not agree at all**, our only CI-clean causal signal sitting at
+0.5B while mute-map's gate-bearing scales are 1.5B and 3B.
+
+**M3 adds no read-only set of its own beyond the usual rule** — `m3_cells.py`,
+`m3_capture.py`, `construct_switch.py`, `m3_arm_b.py`, `m3_matched_primes.py` and
+`gates/g4.py` are certified as run. **Do not delete `results/*.npz`** — M1's score sidecars
+and M3's new `m3-residuals-*.npz` are both there, and M3's capture never touched M1's.
+`switch_directions/*.pt` are gitignored with their SHA256s in the tracked
+`switch_directions/PROVENANCE.md` (`K6`/`K3` pattern).
 
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and

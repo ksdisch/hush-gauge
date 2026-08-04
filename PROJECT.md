@@ -5,12 +5,16 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **M1 COMPLETE, 2026-08-01 — G1 and G2 both FAIL at all three scales.** Both
-are **pre-committed nulls**, which `KICKOFF.md` calls a passing v1: the failure mode this
-project guards against is an *undecided* gate, not a negative one. No bar was re-tuned and
-`D21`'s calibration fallback never fired. `D16` held completely — 3,000 of 3,000
-with-secret trials byte-identical to M0. Full curves, both gates, every `D24`/`D17` readout
-and the deviations in `docs/M1-RESULTS.md`.
+**Status:** **ALL FOUR MILESTONES CLOSED, 2026-08-04.** **M3 dropped Arm B at all three
+scales** on its own pre-registered validation ladder, so G4 was never decided — `K5`'s
+fallback, and `KICKOFF.md` calls a pre-committed null a passing v1. The constructed
+candidate passed both structural rungs and failed the behavioural one (`docs/M3-RESULTS.md`);
+**Arm A was delivered in full** and is gateless by design.
+**M2 COMPLETE, 2026-08-03 — G3 FAILS at all three scales**, three pre-committed nulls that
+are not the same null three times (`docs/M2-RESULTS.md`).
+**M1 COMPLETE, 2026-08-01 — G1 and G2 both FAIL at all three scales**, both pre-committed
+nulls; no bar re-tuned, `D21`'s fallback never fired, and `D16` held completely — 3,000 of
+3,000 with-secret trials byte-identical to M0 (`docs/M1-RESULTS.md`).
 **M0 COMPLETE, 2026-07-30 — G0 PASSES on all three scales**: the battery has dynamic range
 (`R1` retired), the single pre-declared revision unused, `D1`–`D14` frozen, full curves and
 caveats in `docs/M0-RESULTS.md`. 656 tests passing.
@@ -28,8 +32,8 @@ intervention, the λ = 0 identity arm, G3's contrast, the preservation battery, 
 random-direction control, the gate code, and the secondaries — inheriting `D26`'s causal
 framing and `D25`'s decode rule with its per-scale assertion.
 
-**Next action:** the M2 build, in a fresh Opus 5 session started from the frozen brief
-per its run-config note. M2 does not depend on G1 or G2 having passed.
+**Next action:** a **planning** session, not a build — the three design questions in
+`docs/M3-RESULTS.md` §"What M3 sends forward". Fable 5 at `xhigh`.
 
 ## Purpose
 
@@ -73,12 +77,21 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**M0, M1 and M2 all closed.** G0 PASSES (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as
-pre-committed nulls (`docs/M1-RESULTS.md`); **G3 FAILS on all three scales**
-(`docs/M2-RESULTS.md`) — also pre-committed nulls, and not the same null three times: at
-0.5B the causal and specificity clauses both PASS (25/25 → 15/25) and the preservation
-battery fails, at 3B the battery holds and the causal clause does not fire, at 1.5B
-neither holds. Kicked off 2026-07-29 from
+**All four milestones closed. The project is complete as scoped.** G0 PASSES
+(`docs/M0-RESULTS.md`); G1 and G2 both FAIL as pre-committed nulls
+(`docs/M1-RESULTS.md`); **G3 FAILS on all three scales** (`docs/M2-RESULTS.md`) — also
+pre-committed nulls, and not the same null three times: at 0.5B the causal and specificity
+clauses both PASS (25/25 → 15/25) and the preservation battery fails, at 3B the battery
+holds and the causal clause does not fire, at 1.5B neither holds. **M3 (`docs/M3-RESULTS.md`)
+dropped Arm B at all three scales on its own pre-registered validation ladder, so G4 was
+never decided** — `K5`'s fallback, written before any code existed. The constructed candidate
+passed both structural rungs (split-half `cos` up to 0.958; `|cos(v̂_s, ŵ)|` ≈ 0.02) and
+failed the behavioural one: a sham built by the same pipeline with the labels freely
+re-dealt raises emission as much as the real candidate at 0.5B and CI-cleanly more at 1.5B
+(that sham is neither composition-matched nor label-balanced, so it is not orthogonal to the
+candidate — an owned limit, `docs/M3-RESULTS.md` §1). **Arm A was delivered in full** and is
+gateless by design — partial congruence with mute-map's causal profile, with the scale
+pattern as the strong incongruence. Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the
 J-lens audit brainstorm), picked at that day's backlog-hygiene pass once mute-map
 closed (M4 PASSED 2026-07-29) — the stated precondition for this project's M3 fusion
@@ -124,8 +137,21 @@ inputs.
    causal-profile congruence table (the kickoff's "primed-suppression signature" exists
    nowhere in mute-map — extraction finding); Arm B constructs its mediator candidate
    with orthogonality-by-construction (`D38`), a per-scale V-ladder, and G4 on the
-   baseline-silent T1–T2 population (`D39`). Next: the M3 build (Opus 5, `high`),
-   fresh from the brief.
+   baseline-silent T1–T2 population (`D39`).
+12. ~~**M3 build**~~ — **done 2026-08-04**; all four modules plus `gates/g4.py` built and
+   frozen before any run, the ~3.6 h sweep run on all three subjects, and **Arm B dropped
+   at every scale by `D38`.4's ladder** — `NOT-RUN (V-ladder: V3)` at 0.5B/1.5B and
+   `NOT-RUN (V-ladder: no gate-capable V3 pass)` at 3B (`docs/M3-RESULTS.md`). Arm A
+   delivered in full. 966 tests. Every predicted population reproduced exactly
+   (`S` 80/154/36 over 25/25/19; A5 26/26/31 of 44) and the capture was byte-identical to
+   M0 200/200 at every scale.
+
+**Next: a planning session, not a build.** The three items in `docs/M3-RESULTS.md`
+§"What M3 sends forward" are design questions — whether M2's non-nesting flag gets its own
+milestone on an already-certified direction (M3 could not answer it, because `D40`.3's test
+was coupled to Arm B's survival), whether a second candidate family is worth a brief given
+that `K5`'s status is *unknown* rather than *absent*, and what A3's scale incongruence means
+for the fusion story the kickoff set out to test. Fable 5 at `xhigh`.
 
 ## Boundaries
 
