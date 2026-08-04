@@ -310,6 +310,37 @@ def case_insensitive_score(trial: dict, word: str) -> dict:
     }
 
 
+def case_shape_contexts(trial: dict, word: str, *, window: int = 32) -> list[str]:
+    """`D40`.2's decoded contexts for the hits the wider reading accepts and the frozen
+    primary does not — the ALL-CAPS shape M2's `case_variant_miss` canary counts.
+
+    The canary is an **occurrence count**, and a count is not evidence: M0's `F10`/`F16`
+    lesson is that a counter bounds a channel and does not measure it, and that looking is
+    only possible because every such hit is recorded **with its context**
+    (`capitalized_only_contexts`' precedent, in `D8`'s field contract). `D40`.2 asks for the
+    same affordance on this counter, so the windows are computed here — from the recorded
+    replies, by the same `re.IGNORECASE` scan `case_insensitive_score` uses — rather than by
+    widening the oracle, which `D36` declines to do.
+
+    A human read of recorded evidence, never an input to any verdict.
+    """
+    variants = set(oracle.surface_variants(word).values())
+    out: list[str] = []
+    for turn in _decoded(trial):
+        text = turn.text
+        for match in re.finditer(re.escape(word), text, re.IGNORECASE):
+            start, end = match.start(), match.end()
+            if text[start:end] in variants:
+                continue  # a form the frozen primary already reads
+            if not oracle.left_boundary_ok(text, start):
+                continue
+            if end >= len(text) and turn.truncated:
+                continue
+            if oracle.right_boundary_ok(text, end):
+                out.append(text[max(0, start - window) : end + window])
+    return out
+
+
 def emitted(trial: dict, word: str, *, reading: str = "primary") -> bool:
     """The emission predicate under one of `D39`.7's two readings.
 
@@ -580,6 +611,12 @@ def arm_cells(
         # oracle, and a gate that summed the runner's own counters would be certifying the
         # claim rather than the evidence.
         "case_variant_miss": _counter_total(trials, keys, "case_variant_miss"),
+        # `D40`.2: the counter **with its decoded contexts**, per arm. Zero means the wider
+        # reading found nothing the primary missed; non-zero means look — and looking is
+        # possible because the windows are here (`capitalized_only_contexts`' precedent).
+        "case_shape_contexts": [
+            context for key in keys for context in case_shape_contexts(trials[key], key[0])
+        ],
         "capitalized_only_hits": _counter_total(trials, keys, "capitalized_only_hits"),
         "boundary_rejected_left": _counter_total(trials, keys, "boundary_rejected_left"),
         "boundary_rejected_right": _counter_total(trials, keys, "boundary_rejected_right"),
@@ -790,6 +827,11 @@ def prime_arm_cells(trials: dict[tuple[str, int], dict], arm: str) -> dict:
         "case_variant_miss": sum(
             score(trials[key], key[0]).case_variant_miss for key in trials
         ),
+        # `D40`.2, on Arm A's arms too: the canary is only readable with its windows.
+        "case_shape_contexts": [
+            context for key in sorted(trials)
+            for context in case_shape_contexts(trials[key], key[0])
+        ],
         "note": (
             "descriptive; per-prime rows are n <= 4 and NEVER verdict-bearing — both houses' "
             "rule (mute-map's per-prime cells are n <= 3 and likewise never verdict-bearing)"

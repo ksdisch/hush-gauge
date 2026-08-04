@@ -126,6 +126,30 @@ def test_the_case_insensitive_rescore_does_not_shift_offsets_on_a_dotted_capital
     assert m3_cells.emitted(shifted, "gold", reading="case_insensitive") is False
 
 
+def test_the_case_shape_canary_is_reported_with_its_decoded_contexts():
+    """`D40`.2. M0's `F10`/`F16` lesson: a counter **bounds** a channel and does not measure
+    it, and looking is only possible because every such hit is recorded with a context
+    window. Zero means the wider reading found nothing the primary missed; non-zero means
+    look — and the windows are what makes looking possible.
+
+    The forms the frozen primary already reads are excluded, so an ordinary `Gold` reveal
+    does not show up here as if the canary had fired on it.
+    """
+    caps = trial(m3_cells.REAL_ARM, "gold", "T1", 0, 'It is "GOLD," obviously.')
+    contexts = m3_cells.case_shape_contexts(caps, "gold")
+    assert len(contexts) == 1 and "GOLD" in contexts[0]
+
+    primary_reads_it = trial(m3_cells.REAL_ARM, "gold", "T1", 0, "It is Gold.")
+    assert m3_cells.case_shape_contexts(primary_reads_it, "gold") == []
+    assert m3_cells.emitted(primary_reads_it, "gold") is True
+
+    silent = trial(m3_cells.REAL_ARM, "gold", "T1", 0, SILENT)
+    assert m3_cells.case_shape_contexts(silent, "gold") == []
+
+    rejected = trial(m3_cells.REAL_ARM, "gold", "T1", 0, "She hired a GOLDSMITH.")
+    assert m3_cells.case_shape_contexts(rejected, "gold") == []
+
+
 def test_an_unknown_reading_raises_rather_than_returning_a_clean_null():
     """`D13`/`F4`'s lesson, inherited: silently returning a non-emission for every trial
     fabricates a whole-study null shaped exactly like a real result."""
