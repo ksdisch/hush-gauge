@@ -118,12 +118,14 @@ inputs.
    with `GATE_WORDING` byte-identical to the brief, the ~5.9 h sweep run on all three
    subjects, **G3 decided once per scale and FAILS at every scale**
    (`docs/M2-RESULTS.md`). 848 tests. `D28`'s identity arm held 100/100 everywhere.
-11. **`docs/M3-BRIEF.md` WRITTEN (2026-08-03)** — draft, awaiting adversarial review and
-   Kyle's approval. It answers M2's routed questions as `D34`–`D36`, recasts Arm A as a
-   causal-profile congruence table (the kickoff's "primed-suppression signature" is
-   absent from mute-map; `D26` voids the silent-trial quantity — both owned), and
-   constructs Arm B's candidate with orthogonality-by-construction (`D38`) and G4 on
-   the baseline-silent T1–T2 population (`D39`). Nothing in M3 runs until approval.
+11. **`docs/M3-BRIEF.md` FROZEN — approved by Kyle 2026-08-04** after the PR #11
+   adversarial review; `D34`–`D40` mirrored into `docs/DECISIONS.md`, the review's
+   F7–F10 folded in at approval on Kyle's recorded agreement. Arm A is a gateless
+   causal-profile congruence table (the kickoff's "primed-suppression signature" exists
+   nowhere in mute-map — extraction finding); Arm B constructs its mediator candidate
+   with orthogonality-by-construction (`D38`), a per-scale V-ladder, and G4 on the
+   baseline-silent T1–T2 population (`D39`). Next: the M3 build (Opus 5, `high`),
+   fresh from the brief.
 
 ## Boundaries
 
