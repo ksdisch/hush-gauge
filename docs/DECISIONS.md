@@ -1303,7 +1303,9 @@ rise clearing some but not all PASS conditions. **Ten INVALID arms are named in 
 brief** and dry-run proven against unmodified runner output (`D14`), every predicate
 recomputed from recorded replies (`D32`). `UNDERPOWERED` below 20 headroom secrets;
 verdict precedence `INVALID > UNDERPOWERED > the contrast`; a failed rise is
-**`not shown`**, never "no mediator exists".
+**`not shown`**, never "no mediator exists". **Population membership everywhere is
+fixed by the frozen `D13` primary** — the re-score changes verdicts on those cells,
+never membership.
 
 ## D40 — Pre-declared secondaries and reporting rules — all descriptive, none decide
 

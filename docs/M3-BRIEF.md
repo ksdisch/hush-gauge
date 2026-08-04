@@ -167,11 +167,16 @@ bankable.
 
 1. `m3_capture.py` — cut from `m1_probe_panel.py` (house runner rule): the Arm B
    **construction capture** — late-band residuals at response positions on calibration
-   T1–T2 sessions, with-secret and matched no-secret arms, accumulated as **streamed
-   per-(arm, layer, split-half) sums and counts** and written to new gitignored `.npz`
-   sidecars with SHA256s recorded in the tracked result JSON (new files only;
-   deliberately *not* raw residuals — a raw dump at 3B would run ~4 GB/scale, ~165× M1's
-   24 MB score sidecar, and the `D38` construction needs only the streamed sums).
+   T1–T2 sessions, with-secret and matched no-secret arms, accumulated as
+   **per-(session, layer) sums and counts** — a session is one (secret, text, tier, arm)
+   generation; its sidecar row is the sum vector over its response positions plus the
+   count — and written to new gitignored `.npz` sidecars with SHA256s recorded in the
+   tracked result JSON (new files only; ~tens of MB per scale). Deliberately *not* raw
+   per-position residuals — that dump at 3B would run ~4 GB/scale, ~165× M1's 24 MB
+   score sidecar. **Session granularity is the coarsest that still supports `D38`.3's
+   deciding sham**: the label permutation acts on sessions, so arm-level totals cannot
+   reconstruct the permuted means; every other ladder quantity streams from the same
+   rows.
 2. `construct_switch.py` — the candidate-direction builder: the `D38` contrast
    construction, the per-layer orthogonalization against `v_secret`, the norm-matched
    label-permuted sham construction (frozen seeds), split-half diagnostics, and
@@ -287,10 +292,11 @@ share one direction and one secret, so a trial-pooled Newcombe overstates indepe
 (mute-map owns the same in its M1 stats row), one more reason no A-row decides anything.
 
 **5. Split handling and sourcing.** Recorded cells are **read**, new cells are **run**,
-and nothing is re-run against an order-sensitive constructor. The 4 eval primes' λ-grid,
-thirds and `D31` random cells are recomputed from M2's recorded trials; their
-control-direction cells, and the 7 calibration primes' six-arm set, are new generation
-in `m3_matched_primes.py`; the calibration primes' λ = 0 arm is byte-asserted against
+and nothing is re-run against an order-sensitive constructor. The 4 eval primes' **full-band**
+λ-grid, thirds and `D31` random cells are recomputed from M2's recorded trials; their
+control-direction **and late-third dose** cells, and the 7 calibration primes' **six
+non-dose arms plus the three late-third dose arms** (review F7 — M2's record holds no
+late-third dose cell for any prime), are new generation in `m3_matched_primes.py`; the calibration primes' λ = 0 arm is byte-asserted against
 M0's recorded T4 trials (`D28`'s identity pattern — an assertion with no order-sensitive
 constructor behind it). The result JSON records **`m0_reference` and `m2_reference`** —
 path + SHA256 of each record it read cells from, M2's `m0_reference` precedent — so
@@ -320,8 +326,13 @@ no-secret sessions for the same triples (same text, same tier, same yardstick, u
 `D18`'s frozen no-secret frame), so the two means share text and tier composition exactly
 and differ only in the frame's secret sentences. **"Baseline-silent" is the one term this
 brief uses for that set.** Emitting trials are excluded so the contrast is not a speech
-direction (`D24`.3's lesson), and `S` is fixed **before** the `D38`.3 label permutation,
-which permutes with-secret/no-secret labels within the `S`-matched session pool.
+direction (`D24`.3's lesson) — "emitting" here, as everywhere, is the frozen `D13`
+primary's verdict, whose known case-shape blind spot means a case-shifted reveal can sit
+inside `S` (the one recorded instance: 3B calibration `gold` at T1, `GOLD`,
+primary-silent, canary fired — an owned edge; the eval-side counter is 0/0/0 and
+`D40`.2's per-arm reporting is the watch). `S` is fixed **before** the `D38`.3 label
+permutation, which permutes with-secret/no-secret labels within the `S`-matched session
+pool.
 Per-layer, per-scale; secret-pooled (one `w(l)` per layer per scale, not per secret — a
 *mediator* should be secret-general; a per-secret direction would be indistinguishable
 from content).
@@ -444,7 +455,10 @@ frozen primary **and** under the pre-registered case-insensitive re-score of the
 cells; a PASS requires the CI-clean positive exclusion under **both**. A rise CI-clean
 under exactly one reading carries **`CASE-SHAPE-SENSITIVE`** in the verdict string and is
 not a PASS. `D13` is untouched — the primary remains the deciding oracle; this clause
-only prevents its known blind spot, on either arm, from deciding alone.
+only prevents its known blind spot, on either arm, from deciding alone. **Population
+membership is oracle-fixed:** every population in this brief — `D38`.1's `S`, the
+baseline-silent sets, the headroom secrets — is defined once, by the frozen `D13`
+primary; the re-score changes verdicts on those cells, never membership.
 
 ### D40 — Pre-declared secondaries and reporting rules — all descriptive, none decide
 

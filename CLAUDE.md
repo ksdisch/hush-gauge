@@ -110,7 +110,8 @@ nowhere in mute-map (extraction finding). Arm B constructs its mediator candidat
 calibration with a label-permuted deciding sham and a per-scale validation ladder;
 every drop is `K5`'s pre-committed null. **Next action: the M3 build**
 (`claude --model claude-opus-5 --effort high`), started fresh from the brief. M2 records
-no probe scores and M3 reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**.
+no probe scores and reuses M1's `.npz` sidecars — **do not delete `results/*.npz`**
+(M3's capture writes new sidecar files and never touches M1's).
 
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and
