@@ -755,6 +755,47 @@ def test_a_failed_rise_is_reported_not_shown(tmp_path, monkeypatch):
     assert "no mediator" not in result["verdict"]
 
 
+def test_a_dropped_scale_reports_its_ladder_verdict_rather_than_having_it_transcribed(
+    tmp_path, monkeypatch, base_eval, capsys
+):
+    """`D38`.4's reporting path. A dropped scale has no eval payload by construction, so
+    without this the results doc would hand-carry the verdict string — and this project has
+    lost hand-carried facts to exactly that twice (`F7`, `F13`)."""
+    monkeypatch.setattr(g4, "_root", lambda: tmp_path)
+    monkeypatch.setattr(construct_switch, "PROVENANCE_PATH",
+                        tmp_path / "switch_directions" / "PROVENANCE.md")
+    write_tree(tmp_path, eval_payload=base_eval,
+               v3_pass={SLUG: False, OTHER_SLUG: False})
+    result = g4.dropped(SLUG)
+    assert result["verdict"] == m3_cells.not_run_verdict("V3")
+    assert result["v_ladder"]["eval_authorized"] is False
+    assert "reduces to Arm A" in result["arm_b"]
+
+    # 3B is not gate-capable, so with no gate-capable pass anywhere its reason differs.
+    third = m3_cells.slug_for("Qwen/Qwen2.5-3B-Instruct")
+    (tmp_path / "results" / f"m3-switch-{third}.json").write_text(
+        json.dumps({**switch_record(SLUG), "subject": "Qwen/Qwen2.5-3B-Instruct"}, indent=1)
+    )
+    assert g4.dropped(third)["verdict"] == m3_cells.not_run_verdict(
+        m3_cells.NO_GATE_CAPABLE_V3
+    )
+
+
+def test_a_scale_the_ladder_authorizes_cannot_be_reported_as_dropped(
+    tmp_path, monkeypatch, base_eval, capsys
+):
+    """The inverse, refused loudly: an authorized scale must be **decided** with its eval
+    payload, not filed under `NOT-RUN`."""
+    monkeypatch.setattr(g4, "_root", lambda: tmp_path)
+    monkeypatch.setattr(construct_switch, "PROVENANCE_PATH",
+                        tmp_path / "switch_directions" / "PROVENANCE.md")
+    write_tree(tmp_path, eval_payload=base_eval, v3_pass={SLUG: True, OTHER_SLUG: True})
+    with pytest.raises(SystemExit) as exit_info:
+        g4.dropped(SLUG)
+    assert exit_info.value.code == 2
+    assert "cannot be reported as dropped" in capsys.readouterr().out
+
+
 def test_the_verdict_prints_every_tolerance_it_used(tree):
     result = g4.check(tree)
     assert result["tolerances"] == {

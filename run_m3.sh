@@ -60,7 +60,14 @@ done
 
 for slug in "${SLUGS[@]}"; do
   step "G4 $slug"
-  run uv run python gates/g4.py "results/m3-armb-${slug}-eval.json"
+  if [ -f "results/m3-armb-${slug}-eval.json" ]; then
+    run uv run python gates/g4.py "results/m3-armb-${slug}-eval.json"
+  else
+    # `D38`.4 dropped Arm B here, so there is no eval payload to decide — the gate reports
+    # the ladder's own `NOT-RUN (V-ladder: <reason>)` instead of the verdict being
+    # hand-carried into the results doc.
+    run uv run python gates/g4.py --dropped "$slug"
+  fi
 done
 
 echo ""

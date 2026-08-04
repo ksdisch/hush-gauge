@@ -764,12 +764,89 @@ def check(payload: dict) -> dict:
     }
 
 
+def dropped(slug: str) -> dict:
+    """`D38`.4's reporting path for a scale where Arm B **dropped**: the verdict string
+    `NOT-RUN (V-ladder: <reason>)`, **computed** from the recorded ladder rather than
+    transcribed.
+
+    A dropped scale has no eval payload by construction — that is what dropping means — so
+    `check` has nothing to run on, and without this the results doc would have to hand-carry
+    the verdict. This project has lost numbers to exactly that twice (`F7`, `F13`), and a
+    verdict string is a number's more dangerous cousin.
+
+    Refuses the inverse case loudly: a scale the ladder **authorizes** must produce an eval
+    payload and be decided, not be reported as dropped.
+    """
+    switch_path = _root() / "results" / f"m3-switch-{slug}.json"
+    if not switch_path.exists():
+        fail_invalid(
+            f"{switch_path} does not exist — a scale with no construction record has no "
+            "ladder to report, which is a missing run rather than a drop"
+        )
+    switch = json.loads(switch_path.read_text())
+
+    def v3_for(other: str):
+        path = _root() / "results" / f"m3-armb-{other}-calibration.json"
+        if not path.exists():
+            return None
+        try:
+            return m3_cells.v3_verdict(
+                m3_cells.armb_cells(json.loads(path.read_text())), slug=other
+            )
+        except m3_cells.CellError as exc:
+            fail_invalid(f"the V3 payload for {other} cannot be recomputed: {exc}")
+
+    capable = [s for s, ok in m3_cells.V3_GATE_CAPABLE.items() if ok]
+    own = v3_for(slug) or {"passes": False, "n_headroom_secrets": 0, "powered": False,
+                           "ci_clean_rise": False, "diff": None, "newcombe_95": None,
+                           "clause": "V3"}
+    ladder = m3_cells.ladder_verdict(
+        slug=slug,
+        v1=require(switch["v_ladder"], "V1", "switch.v_ladder"),
+        v2=require(switch["v_ladder"], "V2", "switch.v_ladder"),
+        v3=own,
+        gate_capable_passes=any((v3_for(o) or {}).get("passes") for o in capable),
+    )
+    if ladder["eval_authorized"]:
+        fail_invalid(
+            f"D38.4 authorizes an eval run at {slug}, so it cannot be reported as dropped — "
+            "decide it with the eval payload instead"
+        )
+    return {
+        "verdict": ladder["verdict"],
+        "subject": switch.get("subject"),
+        "arm_b": "dropped at this scale; M3 reduces to Arm A here",
+        "v_ladder": ladder,
+        "note": (
+            "D38.4: the brief pre-registers exactly one candidate family and no post-hoc "
+            "variants, so every drop is a reportable design null (K5) and never a failure to "
+            "fix. Arm A is unaffected — it is gateless and independent of Arm B."
+        ),
+    }
+
+
 def main(argv: list[str]) -> int:
+    if len(argv) == 3 and argv[1] == "--dropped":
+        result = dropped(argv[2])
+        print(GATE_WORDING)
+        print()
+        print(json.dumps(result, indent=1))
+        print()
+        print(f"VERDICT: {result['verdict']}")
+        return 0
     if len(argv) != 2:
         print(__doc__)
         print("usage: uv run python gates/g4.py <m3-armb-<slug>-eval.json>")
+        print("       uv run python gates/g4.py --dropped <slug>   # D38.4's NOT-RUN report")
         return 1
-    payload = json.loads(pathlib.Path(argv[1]).read_text())
+    path = pathlib.Path(argv[1])
+    if not path.exists():
+        print(
+            f"no payload at {path}. If D38.4 dropped Arm B at this scale, report it with:\n"
+            f"  uv run python gates/g4.py --dropped <slug>"
+        )
+        return 1
+    payload = json.loads(path.read_text())
     result = check(payload)
     print(GATE_WORDING)
     print()
