@@ -181,9 +181,10 @@ bankable.
    from the record, never re-run, so no drift is possible — and the calibration primes'
    λ = 0 arm is byte-asserted against **M0's recorded T4 trials** (the `D28` identity
    pattern). The `D31` random arm is **not** in this runner: its directions are a
-   function of a word's index in M2's frozen eval-order draw list, so no draw list can
-   serve both a re-certification and the calibration primes; the `D31` cross-milestone
-   comparison lives at M2's pooled level, where it is already recorded.
+   function of the draw order — a word's index in M2's frozen eval-order list **and** the
+   ascending band-layer list — so no draw can serve both a re-certification and the
+   calibration primes; the `D31` cross-milestone comparison lives at M2's pooled level,
+   where it is already recorded.
 5. `gates/g4.py` — G4 frozen as code, byte-frozen `GATE_WORDING`, dry-run `INVALID`
    arms proven against the runners' unmodified output (`D14`), every predicate recomputed
    from recorded replies and checked against the runner's verdict (M2's `D32` lesson).
@@ -214,7 +215,7 @@ must author fresh, and what is absent:
 | Per-prime window and dose cells exist (`results/m2-depth-*.json → items[*].cells`), n ≤ 3, never verdict-bearing in mute-map | Arm A per-prime rows inherit the same never-verdict-bearing rule |
 | The 12 primes and strata (S1 hard-switch: Brazil, Canada, China, France, Japan; S2 space-keyed: Jupiter, Mars, piano, violin; S3 leaky: Egypt, October; S4 anti-example: silver) | 11 in our battery per `D9a` (`Egypt` the forced loss); eval side: China, Japan, Brazil, piano; calibration side: Canada, France, October, Jupiter, Mars, violin, silver |
 | **Direction-keying rule:** direction from the **bare-form** unembed row where single-token, else the **leading-space** row; recorded per item as `direction_key` (`mute-map/docs/DECISIONS.md:301-308`) | `D38`/`D37` inherit it exactly for matched-prime directions; recorded per cell |
-| `silver` is the pre-registered anti-example — on the **specificity** axis: deleting its direction spares every *other* concept (its matrix row, 27/27 · 31/31 · 31/31) while `silver` itself is muted by its own deletion **and by the control's** (`primed_late` 0/1 · 0/3 · 0/1 with `control_late` 0 at every scale — fully muted by its own deletion at the late third on every scale, heavily but not fully damaged at the shallower depths (1.5B `primed_early` 1/3), and muted by the sibling's at the late third, with control early/middle only partial at 1.5B (2/3, 1/3); mute-map §4.4.1 warns against reading one cell of its column as its row) | A5 pools the specificity contrast over the 11 primes; `silver` is carried inside it as the recorded non-specific member, and its own row is never read alone |
+| `silver` is the pre-registered anti-example — on the **specificity** axis: deleting its direction spares every *other* concept (its matrix row, 27/27 · 31/31 · 31/31) while `silver` itself is muted by its own deletion **and by the control's** (`primed_late` 0/1 · 0/3 · 0/1 with `control_late` 0 at every scale — fully muted by its own deletion at the late third on every scale, heavily but not fully damaged at the shallower depths (1.5B `primed_early` 1/3), and muted by the sibling's at the late third, with control early/middle only partial at 1.5B (2/3, 1/3); mute-map §4.4.1 warns against reading one cell of its column as its row) | A5 pools the specificity contrast over the matched primes (**10 of 11 at 1.5B** — `silver` has no baseline-emitting trial there, stated in the row); `silver` is the recorded non-specific member, its row reported beside the pool and never read alone |
 | **"Primed-suppression signature": ABSENT.** No per-layer or per-position trajectory of any internal quantity exists in mute-map; only final-position output readouts and the two response curves | The kickoff Arm A object is unimplementable as worded; recast in `D37` |
 | **Similarity metric / distance / normalization: ABSENT** | Arm A's comparison is authored fresh in `D37` and pre-registered here |
 | **Sham / norm-matched random-direction control: ABSENT in mute-map** (zero hits repo-wide) | Arm B's sham has no upstream precedent; `D31` is the house precedent and `D38`.3 authors the deciding sham fresh |
@@ -249,8 +250,8 @@ arm set, plus the control-direction arm at all 11 primes. The frozen rows:
 | A1 localization, pooled | thirds at λ = 1 vs λ = 0, per scale (recorded: 0.5B early 25/25, mid 25/25, late 16/25) | tier cells (recorded: late 0/28 · 0/34 · 3/32, early/mid high) | same *ordering* (late strictest) — per scale, CI-clean or not, stated |
 | A2 dose shape, pooled | λ grid at the deciding set (recorded) | λ grid at late third (recorded) | monotone non-increasing in both — per scale; plus the honest magnitude gap stated (their λ = 0.25 halves naming; ours moves 0–3 secrets) |
 | A3 scale pattern | which scales show any CI-clean effect (recorded: 0.5B only) | which scales gate (theirs: 1.5B/3B, with 0.5B never gate-bearing) | stated as the **strongest incongruence** if it holds — the two effects live at opposite ends of the scale range |
-| A4 per-prime rows, matched | per-prime late-third, full-band and **control-direction** cells on the 11 primes (plus the recorded `D31` random cells on the 4 eval primes) | per-prime `primed_late` **and `control_late`** cells, plus window/dose cells (recorded, n ≤ 3) | per-prime direction-of-effect agreement on both the primed and the control side, n ≤ 4 vs n ≤ 3, **never verdict-bearing** (both houses' rule) |
-| A5 the specificity contrast, pooled | primed-late vs **control-direction-late** on the **baseline-emitting** T4 trials of the 11 primes — predicted population **26 / 26 / 31** of 44 per scale, computed from M0's record; the M0-recorded λ = 0 pooled cell is the sparing reference; each prime's control is its frozen `cross` word (`batteries/probe_panel.json`, e.g. `silver → platinum`) | the m2-depth contrast **pooled over the same 11 primes**: `primed_late` vs `control_late` = **0/25 vs 17/25 · 0/31 vs 27/31 · 1/29 vs 27/29** (recorded; mute-map's M1 specificity clause is the cited precedent for the *object*, not the comparison cell), with `silver` the known **non-specific** member (`primed_late` 0/1 · 0/3 · 0/1, `control_late` 0 everywhere) | the table's sham dimension: a congruence method must reproduce the *contrast* — suppression under the own direction, sparing under the sibling's, both read against λ = 0 — not merely suppression. `silver`'s per-prime row (n ≤ 4; T4 baseline 3/4 · **0/4** · 3/4, degenerate at 1.5B) is flagged inside the pooled cell and never read alone |
+| A4 per-prime rows, matched | per-prime late-third, full-band and **control-direction** cells on the 11 primes | per-prime `primed_late` **and `control_late`** cells, plus window/dose cells (recorded, n ≤ 3) | per-prime direction-of-effect agreement on both the primed and the control side, each read against that prime's λ = 0 cell, n ≤ 4 vs n ≤ 3, **never verdict-bearing** (both houses' rule) |
+| A5 the specificity contrast, pooled | primed-late vs **control-direction-late** on the **baseline-emitting** T4 trials of the 11 primes — predicted population **26 / 26 / 31** of 44 per scale, computed from M0's record; the M0-recorded λ = 0 pooled cell is the sparing reference; each prime's control is its frozen `cross` word (`batteries/probe_panel.json`, e.g. `silver → platinum`) | the m2-depth contrast **pooled over the same 11 primes**: `primed_late` vs `control_late` = **0/25 vs 17/25 · 0/31 vs 27/31 · 1/29 vs 27/29** (recorded; mute-map's M1 specificity clause is the cited precedent for the *object*, not the comparison cell), with `silver` the known **non-specific** member (`primed_late` 0/1 · 0/3 · 0/1, `control_late` 0 everywhere) | the table's sham dimension: a congruence method must reproduce the *contrast* — suppression under the own direction, sparing under the sibling's, both read against λ = 0 — not merely suppression. `silver`'s per-prime row (n ≤ 4; T4 baseline 3/4 · **0/4** · 3/4, degenerate at 1.5B, stated) is **reported beside** the pooled cell and never read alone — at 1.5B it contributes zero baseline-emitting trials, so our restricted pool there carries **10 of the 11** primes while the `theirs` gate admits `silver` (0/3 vs 0/3); the one-member mismatch is stated wherever the two cells are compared |
 
 **3. No gate, no similarity scalar.** `KICKOFF.md` gave Arm A no gate, and no defensible
 scalar metric exists over two curve families with different tasks, populations, and units
@@ -277,7 +278,9 @@ thirds and `D31` random cells are recomputed from M2's recorded trials; their
 control-direction cells, and the 7 calibration primes' six-arm set, are new generation
 in `m3_matched_primes.py`; the calibration primes' λ = 0 arm is byte-asserted against
 M0's recorded T4 trials (`D28`'s identity pattern — an assertion with no order-sensitive
-constructor behind it). Nothing decides on any of these cells; they are descriptive rows
+constructor behind it). The result JSON records **`m0_reference` and `m2_reference`** —
+path + SHA256 of each record it read cells from, M2's `m0_reference` precedent — so
+every read-from-record cell has checkable provenance. Nothing decides on any of these cells; they are descriptive rows
 in a gateless arm. The calibration half's prior uses (M1 threshold fitting, `D30` QA
 validation) are unaffected.
 
@@ -324,8 +327,11 @@ construction (all directions are unit):
   then the identical `D38`.2 orthogonalization. It matches construction-induced
   structure (pooling, position weighting, normalization) and differs only in the labels
   carrying the contrast. G4's contrast cell is real-vs-**this**.
-- **Reported sham — `D31` random:** the norm-matched random-direction protocol reused
-  verbatim (per-(secret, layer) seeded draws), as the cross-milestone comparable arm.
+- **Reported sham — the `D31` protocol, applied fresh:** per-(eval secret, late-band
+  layer) unit Gaussians with M3's own frozen seed and a recorded draw order in the
+  payload. The *protocol* is `D31`'s; the draws are new — M2's vectors are full-band and
+  index-keyed to its 25-word eval list, and nothing is inherited from them. The
+  cross-milestone comparison is protocol-level, not vector-level.
 
 **4. Validation ladder, all on calibration, all pre-registered, pass/fail frozen here:**
 
