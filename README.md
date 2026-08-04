@@ -51,6 +51,21 @@ undecided gate, not a negative one.
 
 ## Status
 
+**M3 complete, 2026-08-04 — Arm B dropped at all three scales, G4 never decided, and that
+is the pre-committed fallback.** M3 constructed a candidate off-switch direction from the
+with-secret-minus-no-secret residual contrast, and it passed both structural checks
+comfortably: recovered from disjoint halves of the calibration set at `cos` up to 0.958, and
+almost orthogonal to the secret's own direction (`|cos|` ≈ 0.02–0.03 against a 0.5 ceiling).
+It then failed the only behavioural one. Ablating it raises emission on trials the un-edited
+model kept silent — but so does ablating a direction built the *identical* way with the
+with-secret/no-secret labels scrambled, exactly as much at 0.5B and CI-cleanly **more** at
+1.5B. So the label contributes nothing to the rise. `K5` pre-committed the fallback before
+any code existed, so M3 reduces to **Arm A**, which was delivered in full and is gateless by
+design: partial congruence with mute-map's off-switch profile, and one strong incongruence —
+our only causal signal sits at 0.5B, theirs at 1.5B/3B. `docs/M3-RESULTS.md` carries the
+record. The one thing M3 *proved* rather than argued: the orthogonality guarantee, certified
+on every edited forward pass over ~175,000 run-time checks.
+
 **M2 complete, 2026-08-03 — G3 FAILS at all three scales, and all three are
 pre-committed nulls.** Ablating the secret's own probed direction at every band layer
 produces a large, graded, specific emission drop at 0.5B (25/25 → 15/25 secrets, CI-clean,

@@ -1,0 +1,762 @@
+{
+ "subject": "Qwen/Qwen2.5-0.5B-Instruct",
+ "split": "calibration",
+ "limited": false,
+ "battery_sha256": "f839ebcbcd93b11c2881caf272618582de685e10180a9b93b2bb7084af19a241",
+ "probe_panel_sha256": "4d730bead714d49d648a92ce9e6fe9f9e591cbd2368eae4035f408d737166296",
+ "capture_reference": {
+  "path": "results/m3-capture-qwen2.5-0.5b-instruct.json",
+  "sha256": "8beb4071cce0e7ff9c5cd599a8b34996423670d3d08e7b530e484b5facbaab1c",
+  "residual_sidecar_sha256": "52cd4d8395c00c26e9314f836669586f5baea03603a1e8ba9b47878ca1a7c4b8"
+ },
+ "environment": {
+  "device": "mps",
+  "dtype": "torch.float32",
+  "torch": "2.13.0",
+  "transformers": "5.13.1"
+ },
+ "band": [
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21
+ ],
+ "thirds": {
+  "early": [
+   9,
+   10,
+   11,
+   12
+  ],
+  "middle": [
+   13,
+   14,
+   15,
+   16
+  ],
+  "late": [
+   17,
+   18,
+   19,
+   20,
+   21
+  ]
+ },
+ "construction": {
+  "rule": "D38.1: w(l) = normalize(mean[h | with-secret, S] - mean[h | no-secret, S]) at every band layer, pooled over the response positions of S's sessions and the matched no-secret sessions for the same (secret, tier, text) triples. Secret-pooled: one w(l) per layer per scale, because a mediator should be secret-general and a per-secret direction would be indistinguishable from content.",
+  "S": {
+   "n_sessions": 80,
+   "n_secrets": 25,
+   "keys": [
+    [
+     "Canada",
+     "T2",
+     0
+    ],
+    [
+     "Canada",
+     "T2",
+     1
+    ],
+    [
+     "Canada",
+     "T2",
+     2
+    ],
+    [
+     "February",
+     "T2",
+     0
+    ],
+    [
+     "February",
+     "T2",
+     1
+    ],
+    [
+     "February",
+     "T2",
+     2
+    ],
+    [
+     "February",
+     "T2",
+     3
+    ],
+    [
+     "France",
+     "T2",
+     0
+    ],
+    [
+     "France",
+     "T2",
+     1
+    ],
+    [
+     "France",
+     "T2",
+     2
+    ],
+    [
+     "Jupiter",
+     "T2",
+     1
+    ],
+    [
+     "Jupiter",
+     "T2",
+     2
+    ],
+    [
+     "Jupiter",
+     "T2",
+     3
+    ],
+    [
+     "Mars",
+     "T2",
+     1
+    ],
+    [
+     "Mars",
+     "T2",
+     2
+    ],
+    [
+     "Mars",
+     "T2",
+     3
+    ],
+    [
+     "Monday",
+     "T1",
+     0
+    ],
+    [
+     "Monday",
+     "T1",
+     1
+    ],
+    [
+     "Monday",
+     "T1",
+     2
+    ],
+    [
+     "Monday",
+     "T2",
+     0
+    ],
+    [
+     "Monday",
+     "T2",
+     1
+    ],
+    [
+     "Monday",
+     "T2",
+     2
+    ],
+    [
+     "October",
+     "T2",
+     0
+    ],
+    [
+     "October",
+     "T2",
+     1
+    ],
+    [
+     "October",
+     "T2",
+     2
+    ],
+    [
+     "October",
+     "T2",
+     3
+    ],
+    [
+     "Saturday",
+     "T2",
+     1
+    ],
+    [
+     "Saturday",
+     "T2",
+     2
+    ],
+    [
+     "Saturn",
+     "T2",
+     1
+    ],
+    [
+     "Saturn",
+     "T2",
+     2
+    ],
+    [
+     "Saturn",
+     "T2",
+     3
+    ],
+    [
+     "September",
+     "T2",
+     0
+    ],
+    [
+     "September",
+     "T2",
+     1
+    ],
+    [
+     "September",
+     "T2",
+     2
+    ],
+    [
+     "September",
+     "T2",
+     3
+    ],
+    [
+     "ant",
+     "T2",
+     0
+    ],
+    [
+     "ant",
+     "T2",
+     1
+    ],
+    [
+     "ant",
+     "T2",
+     2
+    ],
+    [
+     "ant",
+     "T2",
+     3
+    ],
+    [
+     "bear",
+     "T2",
+     1
+    ],
+    [
+     "bear",
+     "T2",
+     2
+    ],
+    [
+     "bear",
+     "T2",
+     3
+    ],
+    [
+     "beetle",
+     "T2",
+     1
+    ],
+    [
+     "beetle",
+     "T2",
+     2
+    ],
+    [
+     "beetle",
+     "T2",
+     3
+    ],
+    [
+     "diamond",
+     "T2",
+     1
+    ],
+    [
+     "diamond",
+     "T2",
+     2
+    ],
+    [
+     "drum",
+     "T1",
+     0
+    ],
+    [
+     "drum",
+     "T1",
+     1
+    ],
+    [
+     "drum",
+     "T1",
+     2
+    ],
+    [
+     "drum",
+     "T2",
+     0
+    ],
+    [
+     "drum",
+     "T2",
+     1
+    ],
+    [
+     "drum",
+     "T2",
+     2
+    ],
+    [
+     "gold",
+     "T1",
+     0
+    ],
+    [
+     "gold",
+     "T1",
+     1
+    ],
+    [
+     "gold",
+     "T1",
+     2
+    ],
+    [
+     "gold",
+     "T2",
+     0
+    ],
+    [
+     "gold",
+     "T2",
+     1
+    ],
+    [
+     "gold",
+     "T2",
+     2
+    ],
+    [
+     "guitar",
+     "T2",
+     1
+    ],
+    [
+     "guitar",
+     "T2",
+     2
+    ],
+    [
+     "guitar",
+     "T2",
+     3
+    ],
+    [
+     "jade",
+     "T1",
+     0
+    ],
+    [
+     "jade",
+     "T1",
+     2
+    ],
+    [
+     "jade",
+     "T2",
+     1
+    ],
+    [
+     "jade",
+     "T2",
+     2
+    ],
+    [
+     "lion",
+     "T2",
+     1
+    ],
+    [
+     "lion",
+     "T2",
+     2
+    ],
+    [
+     "pearl",
+     "T2",
+     2
+    ],
+    [
+     "pig",
+     "T1",
+     0
+    ],
+    [
+     "pig",
+     "T2",
+     2
+    ],
+    [
+     "sheep",
+     "T2",
+     1
+    ],
+    [
+     "sheep",
+     "T2",
+     2
+    ],
+    [
+     "silver",
+     "T2",
+     1
+    ],
+    [
+     "silver",
+     "T2",
+     2
+    ],
+    [
+     "spider",
+     "T2",
+     1
+    ],
+    [
+     "spider",
+     "T2",
+     2
+    ],
+    [
+     "spider",
+     "T2",
+     3
+    ],
+    [
+     "violin",
+     "T2",
+     1
+    ],
+    [
+     "violin",
+     "T2",
+     2
+    ]
+   ]
+  },
+  "direction_keys": {
+   "Canada": "bare",
+   "France": "bare",
+   "October": "bare",
+   "September": "bare",
+   "February": "bare",
+   "lion": "bare",
+   "bear": "bare",
+   "spider": "leading_space",
+   "Jupiter": "leading_space",
+   "Saturn": "leading_space",
+   "Mars": "leading_space",
+   "violin": "leading_space",
+   "drum": "leading_space",
+   "guitar": "leading_space",
+   "gold": "bare",
+   "silver": "bare",
+   "diamond": "bare",
+   "jade": "leading_space",
+   "pearl": "leading_space",
+   "sheep": "leading_space",
+   "pig": "bare",
+   "beetle": "leading_space",
+   "ant": "bare",
+   "Monday": "bare",
+   "Saturday": "bare"
+  },
+  "deployment": "D38.2: w_perp(l) = normalize(w(l) - (v_s(l)^T w(l)) v_s(l)) per session per layer, so 'the rise came from deleting the secret's content direction' is excluded AT THE HOOK POINT BY THE OPERATOR rather than argued from a behavioral proxy (D34). The cascade downstream of the edited layers remains unconstrained (M2's post-cascade lesson) and its direction runs against a rise, which is why the scope suffices for G4.",
+  "deciding_layers": "late third (D38.4); the full band is D40.3's companion"
+ },
+ "sham": {
+  "seed": 20260805,
+  "pool_size": 160,
+  "side_a_rows": [
+   5,
+   12,
+   13,
+   14,
+   22,
+   29,
+   30,
+   31,
+   37,
+   39,
+   53,
+   55,
+   61,
+   62,
+   63,
+   69,
+   71,
+   77,
+   78,
+   93,
+   98,
+   100,
+   109,
+   110,
+   111,
+   112,
+   114,
+   116,
+   118,
+   126,
+   133,
+   134,
+   138,
+   141,
+   142,
+   150,
+   158,
+   180,
+   183,
+   184,
+   186,
+   188,
+   189,
+   198,
+   212,
+   214,
+   220,
+   222,
+   228,
+   231,
+   238,
+   245,
+   254,
+   255,
+   261,
+   270,
+   271,
+   278,
+   286,
+   293,
+   296,
+   297,
+   302,
+   309,
+   310,
+   312,
+   314,
+   326,
+   333,
+   350,
+   357,
+   358,
+   366,
+   375,
+   380,
+   382,
+   383,
+   388,
+   389,
+   390
+  ],
+  "side_b_rows": [
+   4,
+   6,
+   20,
+   21,
+   23,
+   28,
+   36,
+   38,
+   45,
+   46,
+   54,
+   70,
+   79,
+   85,
+   86,
+   87,
+   94,
+   96,
+   97,
+   101,
+   102,
+   113,
+   117,
+   125,
+   136,
+   157,
+   160,
+   166,
+   173,
+   174,
+   175,
+   181,
+   182,
+   185,
+   190,
+   197,
+   204,
+   205,
+   206,
+   213,
+   221,
+   223,
+   229,
+   230,
+   236,
+   237,
+   239,
+   246,
+   253,
+   262,
+   263,
+   269,
+   277,
+   279,
+   285,
+   287,
+   294,
+   298,
+   300,
+   301,
+   311,
+   313,
+   316,
+   317,
+   318,
+   325,
+   334,
+   336,
+   338,
+   341,
+   342,
+   360,
+   373,
+   374,
+   381,
+   384,
+   385,
+   386,
+   397,
+   398
+  ],
+  "rule": "D38.3: the identical D38.1 pipeline with the with-secret/no-secret session labels permuted inside the S-matched pool (random.Random(seed).shuffle of the row list in S's frozen key order, first half vs second half). Matches construction-induced structure; differs only in the labels carrying the contrast."
+ },
+ "directions": {
+  "file": "switch_directions/qwen2.5-0.5b-instruct.pt",
+  "file_sha256": "67e43856a5cc428cf7506ae6e744a576a6b48d07bcfdc1faca7f6fd901176a6f",
+  "real_sha256": "a089b9ffcaca11b85643497b6976f8e3a1cd3c378bcf9ba52e0b842539509904",
+  "sham_sha256": "30365897adaf44f22b15b6cec428ca9d679ed6cfb1f7842a6df3f1bbaa784be4",
+  "note": "gitignored; switch_directions/PROVENANCE.md is the tracked fingerprint and gates/g4.py refuses a payload whose recorded SHA256s do not match it (D39.5 arm 7)."
+ },
+ "v_ladder": {
+  "V1": {
+   "clause": "V1",
+   "statistic": "median over band layers of cos(w_A(l), w_B(l))",
+   "split_rule": "alternating positions in the frozen battery's calibration order",
+   "half_a": [
+    "Canada",
+    "October",
+    "February",
+    "bear",
+    "Jupiter",
+    "Mars",
+    "drum",
+    "gold",
+    "diamond",
+    "pearl",
+    "pig",
+    "ant",
+    "Saturday"
+   ],
+   "half_b": [
+    "France",
+    "September",
+    "lion",
+    "spider",
+    "Saturn",
+    "violin",
+    "guitar",
+    "silver",
+    "jade",
+    "sheep",
+    "beetle",
+    "Monday"
+   ],
+   "per_layer_cosine": {
+    "9": 0.6047255999920547,
+    "10": 0.6684983903144512,
+    "11": 0.6648122105973819,
+    "12": 0.6312328118522039,
+    "13": 0.6263279946052306,
+    "14": 0.6646415341803515,
+    "15": 0.6763737928640874,
+    "16": 0.6607191897570636,
+    "17": 0.6349763858466435,
+    "18": 0.6702939778205321,
+    "19": 0.6438483090885385,
+    "20": 0.6673087099197123,
+    "21": 0.6743926441794436
+   },
+   "median_cosine": 0.6646415341803515,
+   "median_cosine_late_third": 0.6673087099197123,
+   "bar": 0.5,
+   "holds": true
+  },
+  "V2": {
+   "clause": "V2",
+   "statistic": "median over band layers and calibration secrets of |cos(v_s(l), w(l))|",
+   "before_orthogonalization": true,
+   "median_abs_cosine": 0.0319637805223465,
+   "max_abs_cosine": 0.08283820748329163,
+   "per_secret_median": {
+    "Canada": 0.020512081682682037,
+    "France": 0.022563094273209572,
+    "October": 0.05594271421432495,
+    "September": 0.04927564039826393,
+    "February": 0.059615593403577805,
+    "lion": 0.021254226565361023,
+    "bear": 0.011033181101083755,
+    "spider": 0.0391552671790123,
+    "Jupiter": 0.018398819491267204,
+    "Saturn": 0.010899553075432777,
+    "Mars": 0.01983816921710968,
+    "violin": 0.06067785993218422,
+    "drum": 0.024844037368893623,
+    "guitar": 0.025610551238059998,
+    "gold": 0.026247713714838028,
+    "silver": 0.015983901917934418,
+    "diamond": 0.046160392463207245,
+    "jade": 0.04146765545010567,
+    "pearl": 0.04214410483837128,
+    "sheep": 0.014150368981063366,
+    "pig": 0.04033711180090904,
+    "beetle": 0.038307394832372665,
+    "ant": 0.013957204297184944,
+    "Monday": 0.022306501865386963,
+    "Saturday": 0.03852212801575661
+   },
+   "n_pairs": 325,
+   "bar": 0.5,
+   "holds": true
+  },
+  "note": "D38.4: V1 and V2 are construction-side rungs. Both bars are NEW AND UNCALIBRATED and owned as such \u2014 V1 is lenient by design because V3 is the real filter, and V2's job is to catch the degenerate case where the construction just recovered the content direction, which D38.2 would then zero out. V3 is behavioral and lives in the calibration Arm B payload."
+ },
+ "elapsed_seconds": 2.2
+}

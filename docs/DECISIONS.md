@@ -1318,3 +1318,51 @@ the deciding late-third arm, per-secret emitting-set overlap at both units again
 per-session pre-orthogonalization cosine table. (5) Exposure texture: T1/T2 are
 single-turn; the tier composition of every rise is reported. (6) Arm A's congruence
 table lands in `M3-RESULTS.md` with every row labeled retrospective or new.
+
+## M3 execution record (2026-08-04) — no new decisions
+
+**Arm B was dropped at all three scales by `D38`.4's own ladder, so G4 was never decided
+and every scale reports `NOT-RUN (V-ladder: …)`.** That is `K5`'s pre-committed fallback,
+and `KICKOFF.md` calls it a passing outcome: M3 reduces to Arm A without harming M0–M2.
+`docs/M3-RESULTS.md` is the citable record and carries every number, computed from the
+result JSONs rather than transcribed. `docs/M3-BRIEF.md` stays normative for how M3 was
+specified. **No bar was re-tuned, no dose revisited, no second candidate family tried, and
+`D34`–`D40` are unchanged.**
+
+**The candidate validated structurally and failed behaviourally, which is the finding.**
+V1 (split-half consistency) and V2 (distinctness from content) hold at every scale and by
+wide margins — median `cos(w_A, w_B)` = 0.665 / 0.958 / 0.909 against a 0.5 bar, and
+median `|cos(v̂_s, ŵ)|` = 0.032 / 0.019 / 0.022 against a 0.5 ceiling, so the construction
+is reproducible from disjoint halves and is **not** the secret's own direction. V3 then
+fails everywhere: real vs deciding sham is **7/25 vs 7/25** at 0.5B (CI-null),
+**15/25 vs 23/25** at 1.5B (Newcombe [−0.521, −0.083], CI-clean **against** the candidate),
+and 3/19 vs 8/19 at 3B (CI-null, and under the house floor by construction so it could not
+gate). Under `D38`.4 the two gate-capable scales drop on V3 and 3B drops for want of a
+gate-capable V3 pass.
+
+**What executed as pre-registered.** `D38`.1's `S` realized **80 / 154 / 36** sessions over
+**25 / 25 / 19** headroom secrets — `D38`.4's predicted table, exactly, at every scale — and
+`D37` A5's baseline-emitting T4 population realized **26 / 26 / 31** of 44, likewise exact.
+The capture's with-secret arm reproduced M0 byte-for-byte **200 of 200** at every scale.
+`D38`.5's dual read-back held on every λ > 0 edit over ~175,000 checks: worst survival
+residual 9.95 × 10⁻⁸ and worst `v_secret` preservation residual 5.87 × 10⁻⁸ against
+`READBACK_TOL` 10⁻⁴, so `D34`'s orthogonality guarantee was **certified at run time**
+rather than argued, and the CPU-float64 fallback never fired. `D38`.1's one named edge case
+reproduced verbatim — the 3B calibration `gold` session whose reply ends `GOLD`, primary-
+silent, canary fired, sitting inside `S` exactly as the brief owned in advance.
+
+**What the drop cost, recorded rather than skipped.** Three `D40` secondaries live in the
+eval run and were never produced: `D40`.1's preservation readouts, `D40`.5's tier
+composition (moot — there is no rise to compose), and **`D40`.3's non-nesting flag test**.
+The third matters: it is the question M2 explicitly routed to M3, and it remains exactly as
+open as it was. `D35`'s eval population (94 / 151 / 43) was likewise never realized, so
+`D39`.5's arm 4 never fired on real data.
+
+**Arm A was delivered in full and is unaffected** — `D37`.3 gave it no gate, and it shares
+no artifact, population or gate with Arm B. Its measured answer is **partial congruence
+with one strong incongruence**: localization ordering agrees (on the matched primes the
+late third is strictest at all three scales), the late-third dose curve is monotone
+non-increasing at every scale, A5's specificity contrast reproduces in direction everywhere
+and CI-cleanly at 1.5B only — and **A3 does not agree at all**, our single CI-clean causal
+signal sitting at 0.5B while mute-map's gate-bearing scales are 1.5B and 3B. `D26`'s
+validity caveat is discharged by redesign: no A-row reads a silent-trial workspace quantity.
