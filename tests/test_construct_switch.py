@@ -406,8 +406,10 @@ def test_composition_matched_is_false_when_the_labels_are_unevenly_dealt():
     ignored it, so it would have reported `true` on the split below: composition perfect on
     every other axis, labels 2-0 against 0-2.
 
-    Measured on the frozen artifacts, the realized surplus is +10.0% at 0.5B (median
-    `cos(real, sham)` +0.164), −2.6% at 1.5B and +5.6% at 3B.
+    Measured on the frozen artifacts, the realized surplus is +10.0% at 0.5B, −2.6% at 1.5B
+    and +5.6% at 3B, and `cos(real, sham)` **at the deployed late third** is +0.060 / −0.165
+    / +0.057 (PR #13, review F11 — the band-wide medians rank the scales the other way and
+    describe layers the V3 arms never edited).
     """
     keys = [("gold", "T1", 0), ("iron", "T1", 0)]
     index = {

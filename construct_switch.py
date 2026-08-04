@@ -21,11 +21,12 @@ One subject per invocation, after `m3_capture.py`:
 * `w_sham(l)` — `D38`.3's **deciding** sham: the identical pipeline with the
   with-secret/no-secret session labels permuted inside the `S`-matched pool. It matches
   the construction-induced structure a random direction cannot — pooling, position
-  weighting, normalization, layer geometry. **It does not match `(secret, tier, text)`
-  composition**, and `permuted_sham`'s docstring says why and by how much; the brief's
-  "differs only in the labels" is the characterisation of a *composition-preserving*
+  weighting, normalization, layer geometry. **It matches neither `(secret, tier, text)`
+  composition nor an even label deal**, so it is not orthogonal to the candidate;
+  `permuted_sham`'s docstring says why and by how much. The brief's "differs only in the
+  labels" is the characterisation of a *composition-preserving, label-balanced*
   permutation, not of the free one `D38`.3's operative instruction specifies (PR #13,
-  review F1).
+  reviews F1 + F8 + F11).
 * `V1` and `V2` — `D38`.4's two construction-side ladder rungs, whose bars are **new and
   uncalibrated and owned as such** in `m3_cells`.
 
@@ -487,10 +488,14 @@ def permuted_sham(
     carries the contrast, the text/tier composition of the two pooled means, and — because a
     free shuffle does not deal the labels evenly either — a **net surplus of one label on one
     side**, which leaves the sham carrying that fraction of the real contrast rather than
-    none of it (PR #13, review F8). Measured: +10.0% at 0.5B, −2.6% at 1.5B, +5.6% at 3B,
-    with median `cos(real, sham)` of +0.164 / −0.036 / +0.057 tracking sign and magnitude.
-    The sham is therefore **not orthogonal to the candidate**, and the bias runs toward
-    finding no difference between them. `D38`.3's
+    none of it (PR #13, review F8). Measured surplus: +10.0% at 0.5B, −2.6% at 1.5B, +5.6%
+    at 3B. The resulting `cos(real, sham)` **at the layers the V3 arms actually edit — the
+    late third** — is +0.060 / −0.165 / +0.057 (PR #13, review F11: the band-wide medians
+    an earlier fix quoted, +0.164 / −0.036 / +0.057, are carried by layers only the
+    never-run `real_full` arm would touch, and they rank the scales the other way round).
+    The sham is therefore **not orthogonal to the candidate**; which way that pushes any
+    individual V3 cell is **not** determined by these numbers, and no direction of bias is
+    claimed. `D38`.3's
     operative instruction — *"the identical pipeline with the with-secret/no-secret session
     labels permuted (seed frozen per scale in the artifact)"* — is what this implements; the
     brief's accompanying "differs only in the labels carrying the contrast" describes a
@@ -594,11 +599,14 @@ def _side_composition(index: dict, keys: Sequence[tuple[str, str, int]], side_a,
             and a["arms"] == b["arms"]
         ),
         "note": (
-            "construct()'s two sides are matched by construction on (secret, tier, text) "
-            "AND on label count (one with-secret and one no-secret per triple per side); "
-            "permuted_sham()'s free shuffle preserves neither. composition_matched requires "
-            "all four — tiers, text_index, full triple overlap, and equal label counts — so "
-            "it cannot report true on a label-imbalanced sham (PR #13, reviews F1 + F8)."
+            "construct()'s two sides are matched by construction on (secret, tier, text) and "
+            "MAXIMALLY separated on label — one side is 100% with-secret and the other 100% "
+            "no-secret, because the label IS the contrast, so its own "
+            "net_fraction_of_real_contrast is +1.0 by design. permuted_sham() preserves "
+            "neither the composition nor an even label split. composition_matched requires "
+            "all four axes — tiers, text_index, full triple overlap, and equal label counts "
+            "— so it cannot report true on a label-imbalanced sham; it describes the sham's "
+            "intended null shape, never construct()'s (PR #13, reviews F1 + F8 + F12)."
         ),
     }
 

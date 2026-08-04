@@ -38,10 +38,13 @@ composition-matched nor label-balanced**. `construct()` gives each side exactly 
 per `(secret, tier, text)` triple and one of each label; `permuted_sham()` deals rows out of
 a shuffled bag, so at 3B only 14 of 36 triples appear on both sides — and the labels come out
 uneven too, leaving side A a **+10.0%** net with-secret surplus at 0.5B, i.e. a retained
-fraction of the real contrast. Median `cos(real, sham)` is **+0.164 / −0.036 / +0.057**,
-tracking that imbalance in sign and magnitude: **the sham is not orthogonal to the
-candidate**, and the bias runs toward finding no difference — worst precisely at 0.5B, the
-cell reported as the clean "tied" one. So the licensed claim is *the candidate has no
+fraction of the real contrast. At the layers the V3 arms actually edit — the late third —
+`cos(real, sham)` is **+0.060 / −0.165 / +0.057**: **the sham is not orthogonal to the
+candidate.** (Band-wide medians are +0.164 / −0.036 / +0.057 and rank the scales the other
+way round; they are carried by layers only the never-run `real_full` arm would touch, which
+is review F11 and cost this loop a round.) Which way that pushes any individual V3 cell is
+**not** determined by these numbers, and no direction of bias is claimed. So the licensed
+claim is *the candidate has no
 advantage over this null*, **not** *the label contributes nothing*, and M3 cannot separate
 the label effect from composition noise or from the retained surplus. It was corrected in
 the claims rather than by rebuilding the sham, because the V3 verdicts were already recorded
