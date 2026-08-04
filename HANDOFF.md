@@ -35,7 +35,8 @@ the candidate has no advantage over the sham at doing it.
 
 **Read that under the sham's own limits (PR #13, reviews F1 + F8).** The sham is **neither
 composition-matched nor label-balanced**. `construct()` gives each side exactly one session
-per `(secret, tier, text)` triple and one of each label; `permuted_sham()` deals rows out of
+per `(secret, tier, text)` triple and exactly one label — one side entirely with-secret,
+the other entirely no-secret, because the label *is* the contrast; `permuted_sham()` deals rows out of
 a shuffled bag, so at 3B only 14 of 36 triples appear on both sides — and the labels come out
 uneven too, leaving side A a **+10.0%** net with-secret surplus at 0.5B, i.e. a retained
 fraction of the real contrast. At the layers the V3 arms actually edit — the late third —
