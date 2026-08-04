@@ -88,7 +88,8 @@ never decided** — `K5`'s fallback, written before any code existed. The constr
 passed both structural rungs (split-half `cos` up to 0.958; `|cos(v̂_s, ŵ)|` ≈ 0.02) and
 failed the behavioural one: a sham built by the same pipeline with the labels freely
 re-dealt raises emission as much as the real candidate at 0.5B and CI-cleanly more at 1.5B
-(that sham is not composition-matched — an owned limit, `docs/M3-RESULTS.md` §1). **Arm A was delivered in full** and is
+(that sham is neither composition-matched nor label-balanced, so it is not orthogonal to the
+candidate — an owned limit, `docs/M3-RESULTS.md` §1). **Arm A was delivered in full** and is
 gateless by design — partial congruence with mute-map's causal profile, with the scale
 pattern as the strong incongruence. Kicked off 2026-07-29 from
 `~/Projects/j-lens-proj-ideas/secret-leak-build-plan-2026-07-28.md` (idea A3 of the

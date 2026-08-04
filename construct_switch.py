@@ -483,8 +483,14 @@ def permuted_sham(
     3B side A is T1 16 / T2 20 against side B's T1 10 / T2 26, and only **14 of 36** triples
     appear on both sides (0.5B 38 of 80, 1.5B 72 of 154).
 
-    So the sham differs from the real contrast in **two** ways, not one: the label that
-    carries the contrast, and the text/tier composition of the two pooled means. `D38`.3's
+    So the sham differs from the real contrast in **three** ways, not one: the label that
+    carries the contrast, the text/tier composition of the two pooled means, and — because a
+    free shuffle does not deal the labels evenly either — a **net surplus of one label on one
+    side**, which leaves the sham carrying that fraction of the real contrast rather than
+    none of it (PR #13, review F8). Measured: +10.0% at 0.5B, −2.6% at 1.5B, +5.6% at 3B,
+    with median `cos(real, sham)` of +0.164 / −0.036 / +0.057 tracking sign and magnitude.
+    The sham is therefore **not orthogonal to the candidate**, and the bias runs toward
+    finding no difference between them. `D38`.3's
     operative instruction — *"the identical pipeline with the with-secret/no-secret session
     labels permuted (seed frozen per scale in the artifact)"* — is what this implements; the
     brief's accompanying "differs only in the labels carrying the contrast" describes a
@@ -521,10 +527,13 @@ def permuted_sham(
             "weighting, normalization, layer geometry. It does NOT match (secret, tier, "
             "text) composition: the shuffle is free, so a triple can land twice on one side "
             "and not at all on the other, and the recorded `composition` block measures the "
-            "realized imbalance. The sham therefore differs from the real contrast in two "
-            "ways — the label AND the composition — not one. A composition-preserving "
-            "within-triple flip is a different object and would be a new numbered decision "
-            "(PR #13, review F1)."
+            "realized imbalance. Nor does it deal the labels evenly: the recorded "
+            "`label_balance` block gives the net with-secret surplus, which leaves the sham "
+            "carrying that fraction of the real contrast, so real and sham are NOT "
+            "orthogonal. The sham therefore differs from the real contrast in three ways — "
+            "label, composition, and label balance — not one. A composition-preserving, "
+            "label-balanced within-triple flip is a different object and would be a new "
+            "numbered decision (PR #13, reviews F1 + F8)."
         ),
     }
 
@@ -555,20 +564,41 @@ def _side_composition(index: dict, keys: Sequence[tuple[str, str, int]], side_a,
 
     a_triples = {by_row[row] for row in side_a}
     b_triples = {by_row[row] for row in side_b}
+    a, b = side(side_a), side(side_b)
+    # `D38`.1's contrast is `mean[with-secret] − mean[no-secret]`, so a side holding more
+    # with-secret rows than the other carries a **net fraction of the real contrast**. The
+    # free shuffle does not deal the labels evenly, so the sham is not orthogonal to the
+    # candidate by construction — PR #13, review F8, which caught this flag computing `arms`
+    # and then ignoring it. A flag that cannot detect the thing it names is this project's
+    # own recurring defect class.
+    net = (a["arms"]["with_secret"] - a["arms"]["no_secret"]) / len(keys) if keys else 0.0
     return {
-        "side_a": side(side_a),
-        "side_b": side(side_b),
+        "side_a": a,
+        "side_b": b,
         "triples_on_both_sides": len(a_triples & b_triples),
         "n_triples": len(keys),
+        "label_balance": {
+            "side_a_net_with_secret": a["arms"]["with_secret"] - a["arms"]["no_secret"],
+            "net_fraction_of_real_contrast": net,
+            "balanced": a["arms"] == b["arms"],
+            "note": (
+                "a nonzero net leaves the sham carrying that fraction of the real "
+                "with-secret-minus-no-secret contrast, so real and sham are NOT orthogonal; "
+                "compare against the recorded cos(real, sham)."
+            ),
+        },
         "composition_matched": (
-            side(side_a)["tiers"] == side(side_b)["tiers"]
-            and side(side_a)["text_index"] == side(side_b)["text_index"]
+            a["tiers"] == b["tiers"]
+            and a["text_index"] == b["text_index"]
             and len(a_triples & b_triples) == len(keys)
+            and a["arms"] == b["arms"]
         ),
         "note": (
-            "construct()'s two sides are composition-matched by construction (one session "
-            "per triple per side); permuted_sham()'s are not. Recorded so the limit is "
-            "measurable from the artifact rather than asserted in prose (PR #13, review F1)."
+            "construct()'s two sides are matched by construction on (secret, tier, text) "
+            "AND on label count (one with-secret and one no-secret per triple per side); "
+            "permuted_sham()'s free shuffle preserves neither. composition_matched requires "
+            "all four — tiers, text_index, full triple overlap, and equal label counts — so "
+            "it cannot report true on a label-imbalanced sham (PR #13, reviews F1 + F8)."
         ),
     }
 

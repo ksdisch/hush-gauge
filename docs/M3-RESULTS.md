@@ -149,7 +149,7 @@ The sham is not "nothing": it is built by the same pipeline over the same sessio
 same pooling, same position weighting, same normalization, same per-session orthogonalization
 against `v̂_s`. Ablating it flips 23 of 25 secrets into emitting; ablating the real candidate
 flips 15; the difference excludes zero. But the sham differs from the real contrast in
-**two** ways, not one, and an earlier draft of this document claimed only the first.
+**three** ways, not one, and an earlier draft of this document claimed only the first.
 
 ### The deciding sham is not composition-matched (PR #13, review F1)
 
@@ -168,15 +168,34 @@ from the recorded `side_a_rows` / `side_b_rows`:
 
 The real construction's equivalent table is exact equality in every cell, by construction.
 
+**And the shuffle does not deal the labels evenly either — so the sham is not orthogonal to
+the candidate** (PR #13, review F8). `D38`.1's contrast is
+`mean[with-secret] − mean[no-secret]`, so a side holding more with-secret rows than the other
+carries a *net fraction of the real contrast*:
+
+| | side A (ws/ns) | net surplus, as a fraction of the real contrast | median `cos(real, sham)` |
+|---|---|---|---|
+| 0.5B | **44 / 36** | **+10.0%** | **+0.164** |
+| 1.5B | 75 / 79 | −2.6% | −0.036 |
+| 3B | 19 / 17 | +5.6% | +0.057 |
+
+Sign and magnitude track each other at all three scales, which is what identifies the
+imbalance as the cause rather than a coincidence. **The bias runs toward finding no
+difference** between real and sham — and the worst case is 0.5B, the cell reported as the
+clean "exactly tied 7/25 vs 7/25". That tie is therefore the *least* trustworthy of the three
+V3 cells, not the cleanest; 1.5B, where the sham *beat* the candidate, has the smallest
+contamination (−2.6%, and of the opposite sign).
+
 **What this costs the reading.** `D38`.3's operative instruction is *"the identical pipeline
 with the with-secret/no-secret session labels permuted (seed frozen per scale in the
 artifact)"*, and that is what was built; the brief's accompanying phrase *"differs only in
 the labels carrying the contrast"* describes a **composition-preserving** permutation — a
 within-triple flip — which is a different object. So the honest statement of the V3 result is
 narrower than "the label contributes nothing": **ablating a freely-relabelled,
-composition-unmatched direction from the same session pool raises emission at least as much
-as ablating the constructed candidate, and CI-cleanly more at 1.5B.** Part of the sham's
-effect may be composition noise rather than label-scrambling, and M3 cannot separate the two.
+composition-unmatched, label-imbalanced direction from the same session pool raises emission
+at least as much as ablating the constructed candidate, and CI-cleanly more at 1.5B.** Part
+of the sham's effect may be composition noise, and part of its similarity to the candidate is
+the retained label surplus; M3 cannot separate any of the three.
 
 **Why this was not fixed by rebuilding the sham.** The V3 verdicts are recorded. Swapping in
 a differently-constructed sham after seeing the candidate fail is the re-tuning this project
@@ -414,10 +433,13 @@ Two internal consistency checks fall out of the table.
    composition, and a cleaner construction is not ruled out by it.
 3. **The 1.5B sham result is about this construction, not about editing.** Ablating the
    deciding sham raises emission in 23 of 25 secrets. That is a real effect of removing *a*
-   late-third direction built from pooled residual geometry. It says the with-secret label
-   contributes nothing to the rise — and, at 1.5B, that keeping the label makes the edit
-   *less* effective. Why a label-scrambled direction should out-perform the real one is not
-   something M3 can answer from these data, and it is not asserted here.
+   late-third direction built from pooled residual geometry. What it licenses is that **the
+   constructed candidate has no advantage over that sham**, and at 1.5B is CI-cleanly worse
+   — *not* that the with-secret label contributes nothing, which §1's "deciding sham is not
+   composition-matched" subsection retracts. The sham is neither composition-matched nor
+   label-balanced, so it is not a clean null and it is not orthogonal to the candidate. Why a
+   freely-relabelled direction should out-perform the real one is not something M3 can answer
+   from these data, and it is not asserted here.
 4. **Arm A's per-prime rows are `n ≤ 4`, and its pooled rows are trial-pooled over clustered
    trials.** Neither is verdict-bearing; both houses agree on that rule, and Arm A has no gate
    to be tempted by.
@@ -492,7 +514,7 @@ CPU-float64 fallback never fired.
 | Two `INVALID` conditions beyond `D39`.5's ten: a `limited` construction record, and a construction whose own `S` disagrees with `D38`.4's prediction | `D39`.5's enumerated ten | a strengthening, not a substitution — all ten are implemented and tested. Found by smoke-testing: a `--limit`ed capture could otherwise have produced a candidate that certified a genuine eval payload. `D38`.1 fits the candidate on `S`, so a candidate fitted on a partial `S` is a different candidate |
 | `gates/g4.py --dropped <slug>` emits `D38`.4's `NOT-RUN (V-ladder: <reason>)` | nothing in the brief says who emits it | `D38`.4 specifies the verdict string but a dropped scale has no eval payload for `check` to run on. Without this the results doc would hand-carry the verdict, and this project has lost hand-carried facts twice (`F7` transposed on arrival, `F13` stale one round later). The inverse is refused: a scale the ladder authorizes must be decided, not filed under `NOT-RUN` |
 | `D40`.2's decoded contexts computed in `m3_cells` rather than read off the oracle | the oracle records contexts for `capitalized_only_hits` and not for `case_variant_miss` | `D36` declines to widen the oracle, so the windows are computed from the recorded replies by the same `re.IGNORECASE` scan `D39`.7 decides on, excluding the forms the primary already reads. A human read of recorded evidence, never an input to a verdict |
-| The deciding sham is **not composition-matched** — its two sides differ in `(secret, tier, text)` composition, where the real contrast's two sides are identical by construction | `D38`.3's phrase "differs only in the labels carrying the contrast" | The brief's *operative* instruction — a free permutation of the labels over the pooled `2|S|` sessions under a frozen seed — is what was built; the accompanying phrase describes a composition-preserving within-triple flip, which is a different object and would be a new numbered decision. Found in review (PR #13, F1) and measured from the recorded row lists (3B: 14 of 36 triples on both sides). Corrected in the claims rather than by rebuilding the sham: the V3 verdicts were already recorded, and swapping the null after seeing the result is the re-tuning this project forbids everywhere else. §1 reads the V3 cells under this limit |
+| The deciding sham is **not composition-matched and not label-balanced** — its two sides differ in `(secret, tier, text)` composition *and* in how many with-secret rows each holds, where the real contrast's two sides are identical on both by construction | `D38`.3's phrase "differs only in the labels carrying the contrast" | The brief's *operative* instruction — a free permutation of the labels over the pooled `2|S|` sessions under a frozen seed — is what was built; the accompanying phrase describes a composition-preserving within-triple flip, which is a different object and would be a new numbered decision. Found in review (PR #13, F1) and measured from the recorded row lists (3B: 14 of 36 triples on both sides; 0.5B a +10.0% net with-secret surplus giving median `cos(real, sham)` = +0.164, review F8 — so the sham is not orthogonal to the candidate and the bias runs toward no-difference). Corrected in the claims rather than by rebuilding the sham: the V3 verdicts were already recorded, and swapping the null after seeing the result is the re-tuning this project forbids everywhere else. §1 reads the V3 cells under this limit |
 | The preflight chooses the edit arithmetic **once**, before any trial | inherited from M2's own deviation row | a mid-sweep switch would leave one payload's arms computed by two arithmetics. `device_fp32` held at every scale and the fallback never fired |
 
 ---

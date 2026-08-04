@@ -59,8 +59,9 @@ almost orthogonal to the secret's own direction (`|cos|` ≈ 0.02–0.03 against
 It then failed the only behavioural one. Ablating it raises emission on trials the un-edited
 model kept silent — but so does ablating a direction built by the same pipeline over the same session pool with
 the with-secret/no-secret labels freely re-dealt — exactly as much at 0.5B and CI-cleanly
-**more** at 1.5B. (That sham is not composition-matched to the real contrast; an owned limit
-`docs/M3-RESULTS.md` §1 measures and reads the cells under.) `K5` pre-committed the fallback before
+**more** at 1.5B. (That sham is neither composition-matched nor label-balanced, so it retains a fraction of the
+real contrast rather than none — an owned limit `docs/M3-RESULTS.md` §1 measures and reads
+the cells under.) `K5` pre-committed the fallback before
 any code existed, so M3 reduces to **Arm A**, which was delivered in full and is gateless by
 design: partial congruence with mute-map's off-switch profile, and one strong incongruence —
 our only causal signal sits at 0.5B, theirs at 1.5B/3B. `docs/M3-RESULTS.md` carries the

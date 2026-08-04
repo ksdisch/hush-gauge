@@ -397,3 +397,50 @@ def test_the_recorded_sham_rule_no_longer_claims_composition_matching():
     assert "does NOT match (secret, tier, text) composition" in note["rule"]
     assert "differs only in the labels" not in note["rule"]
     assert "composition" in note and "composition_matched" in note["composition"]
+
+
+def test_composition_matched_is_false_when_the_labels_are_unevenly_dealt():
+    """PR #13, review F8. The free shuffle does not deal the labels evenly, and a side with a
+    net with-secret surplus carries **that fraction of the real contrast** — so the sham is
+    not orthogonal to the candidate. The first version of this flag computed `arms` and then
+    ignored it, so it would have reported `true` on the split below: composition perfect on
+    every other axis, labels 2-0 against 0-2.
+
+    Measured on the frozen artifacts, the realized surplus is +10.0% at 0.5B (median
+    `cos(real, sham)` +0.164), −2.6% at 1.5B and +5.6% at 3B.
+    """
+    keys = [("gold", "T1", 0), ("iron", "T1", 0)]
+    index = {
+        ("with_secret", "gold", "T1", 0): 0,
+        ("no_secret", "gold", "T1", 0): 1,
+        ("with_secret", "iron", "T1", 0): 2,
+        ("no_secret", "iron", "T1", 0): 3,
+    }
+    # Both with-secret rows on side A, both no-secret on side B: tiers and text_index match
+    # exactly and every triple appears on both sides, so only the label check can catch it.
+    cell = construct_switch._side_composition(index, keys, [0, 2], [1, 3])
+    assert cell["side_a"]["tiers"] == cell["side_b"]["tiers"]
+    assert cell["side_a"]["text_index"] == cell["side_b"]["text_index"]
+    assert cell["triples_on_both_sides"] == cell["n_triples"]
+    assert cell["label_balance"]["balanced"] is False
+    assert cell["label_balance"]["side_a_net_with_secret"] == 2
+    assert cell["label_balance"]["net_fraction_of_real_contrast"] == 1.0
+    assert cell["composition_matched"] is False, (
+        "a label-imbalanced sham must never report composition_matched"
+    )
+
+
+def test_label_balance_is_reported_even_when_everything_matches():
+    """The mirror: a balanced, composition-matched split reports a zero net surplus, so the
+    field distinguishes 'measured and zero' from 'not measured'."""
+    keys = [("gold", "T1", 0), ("iron", "T1", 0)]
+    index = {
+        ("with_secret", "gold", "T1", 0): 0,
+        ("no_secret", "gold", "T1", 0): 1,
+        ("with_secret", "iron", "T1", 0): 2,
+        ("no_secret", "iron", "T1", 0): 3,
+    }
+    cell = construct_switch._side_composition(index, keys, [0, 3], [1, 2])
+    assert cell["label_balance"]["balanced"] is True
+    assert cell["label_balance"]["net_fraction_of_real_contrast"] == 0.0
+    assert cell["composition_matched"] is True
