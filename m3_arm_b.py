@@ -377,6 +377,16 @@ def build_payload(
             **intervene.draw_order_note(random_words, thirds["late"]),
             "seed": m3_cells.RANDOM_SEED,
             "sha256": random_sha,
+            # `draw_order_note`'s inherited `rule` text names M2's **band**-wide draw; M3's
+            # random arm is deployed at the late third only, so the recorded rule is restated
+            # here rather than left describing a different layer set.
+            "rule": (
+                "D31's protocol at M3's deployment: one unit-normalized d_model Gaussian per "
+                "(split secret, LATE-THIRD layer), one torch.Generator per scale on CPU, "
+                "secrets in battery order x late-third layers ascending, reused across "
+                "positions and trials. Not orthogonalized — D38.5(b) is recorded as not "
+                "claimed on this arm."
+            ),
             "note": (
                 "D38.3's REPORTED sham: D31's protocol with M3's own frozen seed and a "
                 "recorded draw order. The draws are new — M2's vectors are full-band and "

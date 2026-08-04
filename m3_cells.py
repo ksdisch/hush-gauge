@@ -693,6 +693,15 @@ def armb_cells(payload: dict) -> dict:
             "trials is prose (D39.5 arm 8's standing)"
         )
 
+    # `D39`.5 arm 6 says *"a payload whose recomputed emission verdicts disagree with its
+    # recorded flags"* — **every** trial, not only the ones that end up in the population.
+    # `arm_cells` re-verifies the population; a swept trial outside it decides nothing, but
+    # "recomputed, not trusted" is a claim about the payload rather than about the cells, and
+    # a flag nothing can contradict is decorative wherever it sits.
+    for arm, trials in arms.items():
+        for key, trial in sorted(trials.items()):
+            _verify(trial, "emitted", score(trial, key[0]).emitted, f"{arm} trial {key}")
+
     population = population_cells(payload, arms)
     keys = baseline_silent(arms[CLEAN_ARM])
 

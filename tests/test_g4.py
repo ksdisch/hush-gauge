@@ -451,6 +451,9 @@ def test_arm_4_refuses_a_realized_population_that_disagrees_with_D35(tree, capsy
         if arm == m3_cells.CLEAN_ARM:
             trial["replies"] = [f"The secret word is {trial['secret']}."]
             trial["truncated"] = [False]
+            # The recorded flag moves with the reply, so the payload stays internally
+            # consistent and the arm proves the population check rather than tripping arm 6.
+            trial["emitted"] = True
     payload = rebuild(payload)
     # The λ = 0 reply now differs from M0's, so arm 3 fires first; assert the population
     # arithmetic moved as well, which is what arm 4 turns on.
