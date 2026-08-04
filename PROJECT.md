@@ -118,12 +118,12 @@ inputs.
    with `GATE_WORDING` byte-identical to the brief, the ~5.9 h sweep run on all three
    subjects, **G3 decided once per scale and FAILS at every scale**
    (`docs/M2-RESULTS.md`). 848 tests. `D28`'s identity arm held 100/100 everywhere.
-11. **Open `docs/M3-BRIEF.md`** — a design session (Fable 5), not a build one. It opens
-   with M2's two routed questions (the acknowledgment clause's orthogonality; the
-   deciding unit versus a saturated population), plus M3's own pre-commits: Arm A's
-   similarity metric and Arm B's missing mediating direction (`K5`), with `D26`'s named
-   validity caveat on Arm A. M2's late-third localization at 0.5B is a live input —
-   the band third M3 names as its interest carried the whole 0.5B effect.
+11. **`docs/M3-BRIEF.md` WRITTEN (2026-08-03)** — draft, awaiting adversarial review and
+   Kyle's approval. It answers M2's routed questions as `D34`–`D36`, recasts Arm A as a
+   causal-profile congruence table (the kickoff's "primed-suppression signature" is
+   absent from mute-map; `D26` voids the silent-trial quantity — both owned), and
+   constructs Arm B's candidate with orthogonality-by-construction (`D38`) and G4 on
+   the baseline-silent T1–T2 population (`D39`). Nothing in M3 runs until approval.
 
 ## Boundaries
 

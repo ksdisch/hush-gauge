@@ -1,7 +1,8 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-03 (**M2 is COMPLETE — G3 FAILS on all three scales, every one a
-pre-committed null**; next: `docs/M3-BRIEF.md`, a design session)_
+_Last updated: 2026-08-03 (**M2 is COMPLETE and merged (PR #10, `a964878`); G3 FAILS on
+all three scales, every one a pre-committed null. `docs/M3-BRIEF.md` is WRITTEN — draft,
+awaiting adversarial review + Kyle's approval**)_
 
 ## What was just done
 
