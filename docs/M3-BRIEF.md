@@ -209,7 +209,7 @@ must author fresh, and what is absent:
 | Per-prime window and dose cells exist (`results/m2-depth-*.json → items[*].cells`), n ≤ 3, never verdict-bearing in mute-map | Arm A per-prime rows inherit the same never-verdict-bearing rule |
 | The 12 primes and strata (S1 hard-switch: Brazil, Canada, China, France, Japan; S2 space-keyed: Jupiter, Mars, piano, violin; S3 leaky: Egypt, October; S4 anti-example: silver) | 11 in our battery per `D9a` (`Egypt` the forced loss); eval side: China, Japan, Brazil, piano; calibration side: Canada, France, October, Jupiter, Mars, violin, silver |
 | **Direction-keying rule:** direction from the **bare-form** unembed row where single-token, else the **leading-space** row; recorded per item as `direction_key` (`mute-map/docs/DECISIONS.md:301-308`) | `D38`/`D37` inherit it exactly for matched-prime directions; recorded per cell |
-| `silver` is the pre-registered anti-example — on the **specificity** axis: deleting its direction spares every *other* concept (its matrix row, 27/27 · 31/31 · 31/31) while `silver` itself is muted by its own deletion **and by the control's** (`primed_late` 0/1 · 0/3 · 0/1 with `control_late` 0 at every scale — muted by its own deletion at every depth and by the sibling's at the late third, with control early/middle only partial at 1.5B (2/3, 1/3); mute-map §4.4.1 warns against reading one cell of its column as its row) | A5 is built on the like-for-like suppression cells, with `silver`'s real signature — suppression *without specificity* — as the prediction |
+| `silver` is the pre-registered anti-example — on the **specificity** axis: deleting its direction spares every *other* concept (its matrix row, 27/27 · 31/31 · 31/31) while `silver` itself is muted by its own deletion **and by the control's** (`primed_late` 0/1 · 0/3 · 0/1 with `control_late` 0 at every scale — fully muted by its own deletion at the late third on every scale, heavily but not fully damaged at the shallower depths (1.5B `primed_early` 1/3), and muted by the sibling's at the late third, with control early/middle only partial at 1.5B (2/3, 1/3); mute-map §4.4.1 warns against reading one cell of its column as its row) | A5 is built on the like-for-like suppression cells, with `silver`'s real signature — suppression *without specificity* — as the prediction |
 | **"Primed-suppression signature": ABSENT.** No per-layer or per-position trajectory of any internal quantity exists in mute-map; only final-position output readouts and the two response curves | The kickoff Arm A object is unimplementable as worded; recast in `D37` |
 | **Similarity metric / distance / normalization: ABSENT** | Arm A's comparison is authored fresh in `D37` and pre-registered here |
 | **Sham / norm-matched random-direction control: ABSENT in mute-map** (zero hits repo-wide) | Arm B's sham has no upstream precedent; `D31` is the house precedent and `D38`.3 authors the deciding sham fresh |
@@ -235,9 +235,9 @@ files' SHAs differ, docstrings only), same scales, same decode discipline on our
 
 **2. The congruence table, pre-registered as to *rows*, retrospective as to already-known
 cells — labeled row by row.** Much of the substrate is already recorded (our M2; their
-M2), so those rows are honest **retrospective comparisons** and the table says so; only
-the `m3_matched_primes.py` cells (the 7 calibration primes) are new measurements. The
-frozen rows:
+M2), so those rows are honest **retrospective comparisons** and the table says so; the
+new measurements are the `m3_matched_primes.py` cells — the 7 calibration primes' full
+arm set, plus the control-direction arm at all 11 primes. The frozen rows:
 
 | row | ours | theirs | congruence readout |
 |---|---|---|---|
@@ -245,7 +245,7 @@ frozen rows:
 | A2 dose shape, pooled | λ grid at the deciding set (recorded) | λ grid at late third (recorded) | monotone non-increasing in both — per scale; plus the honest magnitude gap stated (their λ = 0.25 halves naming; ours moves 0–3 secrets) |
 | A3 scale pattern | which scales show any CI-clean effect (recorded: 0.5B only) | which scales gate (theirs: 1.5B/3B, with 0.5B never gate-bearing) | stated as the **strongest incongruence** if it holds — the two effects live at opposite ends of the scale range |
 | A4 per-prime rows, matched | per-prime late-third, full-band, **control-direction** and random cells on the 11 primes | per-prime `primed_late` **and `control_late`** cells, plus window/dose cells (recorded, n ≤ 3) | per-prime direction-of-effect agreement on both the primed and the control side, n ≤ 4 vs n ≤ 3, **never verdict-bearing** (both houses' rule) |
-| A5 the anti-example | `silver`'s own-direction late cell beside its **same-category control-direction** cell — `platinum`, its frozen `cross` word in `batteries/probe_panel.json`, λ = 1 at the late third | `silver` is muted by its own direction *and* the sibling's at the late third (`primed_late` 0/1 · 0/3 · 0/1, `control_late` 0 at every scale) — suppression **without specificity** | the sham row, like-for-like with mute-map's own control protocol: if `silver`'s emission also drops under the sibling's direction, the non-specific signature reproduces; a method that reads `silver`'s suppression as direction-specific unification evidence is over-permissive |
+| A5 the specificity contrast, pooled | primed-late vs **control-direction-late**, pooled over the 11 matched primes (44 trials/arm; each prime's frozen `cross` word from `batteries/probe_panel.json`, e.g. `silver → platinum`) | mute-map's pooled primed-vs-control contrast (its M1 specificity clause), with `silver` the known **non-specific** member (`primed_late` 0/1 · 0/3 · 0/1 *and* `control_late` 0 at every scale) | the table's sham dimension: a congruence method must reproduce the *contrast* — suppression under the own direction, sparing under the sibling's — not merely suppression. `silver`'s per-prime row (n ≤ 4; T4 baseline 3/4 · **0/4** · 3/4, degenerate at 1.5B, stated) is flagged inside the pooled cell and never read alone |
 
 **3. No gate, no similarity scalar.** `KICKOFF.md` gave Arm A no gate, and no defensible
 scalar metric exists over two curve families with different tasks, populations, and units
@@ -263,12 +263,14 @@ mute-map reads only under an any-direction-damage frame, and their gate-bearing 
 are exactly where our effect is absent; and the M2 flag — our late-vs-full non-nesting —
 which row A4 confronts with per-prime data and `D40`.3 tests directly.
 
-**5. Split handling.** The 4 eval-side primes' cells come from M2's recorded arms
-(re-certified bit-for-bit by the runner before any new cell, mute-map's
-`order_reused_first` convention); the 7 calibration-side primes get new cells from
-`m3_matched_primes.py`. Nothing decides on calibration cells; they are descriptive rows
-in a gateless arm. The calibration half's prior uses (M1 threshold fitting, `D30` QA
-validation) are unaffected.
+**5. Split handling.** `m3_matched_primes.py` runs its seven arms on all 11 primes. For
+the 4 eval-side primes, the six arms M2 recorded are re-run first and asserted
+bit-identical to the M2 record (mute-map's `order_reused_first` convention; a mismatch
+is `INVALID`); the **control-direction arm is a new cell at every prime** — M2's
+`arms_swept` contains no control arm, so it has no record to certify against and is
+produced fresh at all 11. Nothing decides on any of these cells; they are descriptive
+rows in a gateless arm. The calibration half's prior uses (M1 threshold fitting, `D30`
+QA validation) are unaffected.
 
 ### D38 — Arm B's candidate: constructed, orthogonalized, sham-matched, validated on calibration
 
@@ -342,8 +344,9 @@ construction (all directions are unit):
   passes V3.** V3's job is a floor of behavioral evidence for the candidate family
   somewhere — not an in-sample veto of a powered eval cell (3B's eval cell, 43 trials
   over 24 headroom secrets, clears the floor on its own). A scale where Arm B drops gets
-  the Arm B verdict string **`NOT-RUN (V-ladder: <rung>)`** and reduces to Arm A there;
-  Arm B drops entirely only when no scale survives the ladder. The brief pre-registers
+  the Arm B verdict string **`NOT-RUN (V-ladder: <reason>)`**, with `<reason>` ∈
+  {V1, V2, V3, no gate-capable V3 pass}, and reduces to Arm A there; Arm B drops
+  entirely only when no scale survives the ladder. The brief pre-registers
   **exactly one candidate family** (the `D38`.1 construction) and no post-hoc variants —
   every drop is a reportable design null (`K5`'s fallback), not a failure to fix.
 - λ = 1 at the **late third** is the deciding deployment (mute-map's home, our M2 flag's
@@ -389,15 +392,18 @@ payload; missing or non-identical λ = 0 arm; a payload whose recomputed emissio
 disagree with its recorded flags (`D32`'s lesson — every predicate recomputed from
 replies); wrong-direction payload (sham and real arms swapped — caught by the recorded
 per-arm direction SHA256s against `switch_directions/PROVENANCE.md`); dropped-trial
-payload (population completeness recomputed); a V3-failed candidate reaching an eval
-payload. Ten arms minimum, enumerated in the gate tests.
+payload (population completeness recomputed); a candidate reaching an eval payload at a
+scale the `D38` drop semantics do not authorize — V1/V2-failed at that scale, V3-failed
+at that gate-capable scale, or 3B without ≥ 1 gate-capable V3 pass. Ten arms minimum,
+enumerated in the gate tests.
 
 **6. `GATE_WORDING` is byte-frozen with the artifact** at freeze time, prints every
 tolerance and count it uses, and follows the house labels: a failed rise is
 **`not shown`**, never "no mediator exists"; `UNDERPOWERED` attaches below N = 20;
-verdict precedence `INVALID > UNDERPOWERED > the contrast`, with `COLLAPSE-CARRIED`
-(`D39`.4) and `CASE-SHAPE-SENSITIVE` (`D39`.7) each attaching only to an otherwise-PASS
-and voiding it.
+verdict precedence `INVALID > UNDERPOWERED > the contrast`. `COLLAPSE-CARRIED`
+(`D39`.4) and `CASE-SHAPE-SENSITIVE` (`D39`.7) are **voiding tags**: each names a rise
+that clears some but not all of the PASS conditions, and a verdict carrying either is
+not a PASS.
 
 **7. Case-shape robustness (per `D36`):** the PASS condition is evaluated under the
 frozen primary **and** under the pre-registered case-insensitive re-score of the same
@@ -437,7 +443,9 @@ forward-only over ~400 calibration sessions × 3 scales (M1-panel-like; hours);
 construction and validation are CPU-side linear algebra plus one calibration-side
 generation sweep (V3: 3 arms × ~200 trials × 3 scales); the G4 sweep is 4 generation
 arms (λ = 0, real, deciding sham, `D31` random) × 200 eval T1–T2 trials × 3 scales plus
-the full-band descriptive arm; `m3_matched_primes.py` is ~6 arms × 28 trials × 3 scales.
+the full-band descriptive arm; `m3_matched_primes.py` is ~7 arms × 44 trials × 3 scales
+(11 primes × 4 texts), the eval primes' overlapping arms doubling as the bit-identity
+re-certification.
 Estimate **8–14 h** end-to-end, dominated by the G4 sweep and capture. If V3 kills the
 candidate, everything after the validation ladder is skipped and M3 completes as Arm A
 alone in **≤ 4 h** of new compute.
