@@ -254,7 +254,7 @@ per scale) and `docs/M4-RESULTS.md`, every number computed from the payloads.
 |---|---|---|
 | First gateless milestone | house rule "gates are frozen as code before any real run" | `D41`'s reasoning: deterministic decode leaves no sampling variance on set structure; a manufactured gate invites bar-shaping. `D37`.3 (Arm A) is the precedent at arm level; M4 extends it to a milestone whose every deliverable is that kind of object. Runner discipline unchanged; `D14`-proven integrity aborts stand in (`D48`) |
 | M2's recorded **edited** arms read from its frozen payload, not re-run | the cut-runner-runs-its-own-arms pattern of M0–M3 | M4's own freshly-run λ = 0 arm proves byte-identity with the frozen decode, which makes a re-run of M2's edited arms informationless; rows are recomputed from `results/m2-ablation-*.json` trials with the payload SHA-referenced (`D37`'s pattern), never transcribed from prose |
-| Fresh random draws (seed 20260804) beside M2's recorded family | `D31`'s M2 realization | A lattice reading needs all seven cells from one family; M2 recorded one cell (full band). M2's row is kept as a beside-texture cell, never pooled (`D47`) |
+| Fresh random draws (seed 20260806) beside M2's recorded family | `D31`'s M2 realization | A lattice reading needs all seven cells from one family; M2 recorded one cell (full band). M2's row is kept as a beside-texture cell, never pooled (`D47`) |
 | No dose axis on any new arm | M2's full-band dose grid | The dose grid is a full-band-only object; the thirds ran at λ = 1 only (PR #14 F10), and M4's question is set structure at the deployed dose, λ = 1 |
 | Fresh tier texts declined | text-generality | `D41` names-and-declines: a new `D1`-rule certification with no scoped consumer |
 
