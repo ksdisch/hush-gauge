@@ -23,6 +23,44 @@ anchors are our own recorded numbers (dim-stage, mute-map), never a paper claim.
 
 ## Where we are
 
+**M4 is COMPLETE as of 2026-08-05, and it is the project's last measurement.** It is
+**gateless by design** (`D48`) and reports **no verdict** — no PASS/FAIL anywhere except
+where `docs/M4-RESULTS.md` quotes `D44`'s conditional. `docs/M4-RESULTS.md` is normative
+for what M4 found; `docs/M4-BRIEF.md` stays normative for how it was specified, and
+`D45`–`D48` are unchanged. **1,001 tests.**
+
+**M2's non-nesting flag is answered, and the answer is more general than the flag was.**
+At **0.5B** — the only scale whose sets are large enough to read — **5 of the 6 comparable
+pairs whose subset silences anything are not nested** (case-insensitively 5 of 5, no
+exception left), and `D46`'s pre-registered question, *which rung of
+`{late} ⊆ {mid+late} ⊆ full` breaks*, answers **both**, in both chains and under both
+readings. At 1.5B the single readable pair is not nested either. So the edited layer set
+does **not** behave like a set of independently-acting parts.
+
+**Four M4 facts worth carrying, all in `docs/M4-RESULTS.md`:** the failure runs **both
+ways** — {late} silences `cow` and `horse` at 0.5B and *no other layer set does*, while a
+union can silence what neither part does (`mosquito`/`ruby` under {early+mid} at 0.5B; at
+**1.5B {mid+late} silences four** where {mid} and {late} each silence none); what orders
+the effect is **the late third's presence, not the layer count** (0.5B: 41–44 of 100 trials
+silenced by every set containing it, 19–27 by every set without it, including the 8-layer
+{early+mid} against {late}'s 5); the **random lattice is `DEGENERATE` at every secret-level
+cell at every scale** — the pre-committed outcome — and at the trial level is churn with no
+structure (0.5B: 13–20 trials silenced at *every* layer set, 4-layer or 13-layer alike), so
+the real family's organization by layer set is **not** an artifact of editing more layers;
+and **`D44`'s conditional was consumed and not met** — union rows silence 0 · 1 · **4** at
+1.5B and 0 · 0 · 0 at 3B against the ≥ 5-of-25 bar, the largest landing at 21/25 with
+Newcombe [−0.347, +0.004], the exact last straddling rung the brief computed before the
+arms existed. **No bar moved, and M4 re-decides nothing: `G0`–`G4` stand as M0–M3 recorded
+them.**
+
+**M4's own read-only set, for the write-up:** `m4_cells.py` and `m4_lattice.py` are
+certified as run. `D48`'s five aborts all held and none fired on real data — 300 of 300
+λ = 0 trials byte-identical to M0 across the three scales, and byte-identical to **M2's**
+λ = 0 on all 100 shared trials at every scale, which is what licenses M4 reading M2's
+edited arms from the SHA-referenced payload rather than re-running them (`D45`). `D27`'s
+read-back held over **2,344,517** checks, worst residual 1.21e-07 against `READBACK_TOL`
+1e-4. **`docs/M4-RESULTS.md`'s tables are generated from the payloads, not retyped.**
+
 **M2 is COMPLETE as of 2026-08-03. `G3` FAILS on all three scales — every one a
 pre-committed null**, which `KICKOFF.md` calls a passing v1. `docs/M2-RESULTS.md` is normative
 for what M2 found; `docs/M2-BRIEF.md` stays normative for how it was specified, and `D27`–`D33`
@@ -168,8 +206,9 @@ completeness, SHA checks, cross-payload environment/precision equality). **`D43`
 label-balanced **within-triple flip sham** is pre-registered as the deciding null for any
 future construction candidate — and **barred from retroactive verdict-bearing use** on
 M3's recorded candidate. **`D44`** — the arc closes as answered: **not unified at these
-scales with this instrument**; no v2; M4 is the only outstanding measurement debt, then
-the write-up; the LoRA organism arc is a successor kickoff, not a hush-gauge v2.
+scales with this instrument**; no v2; M4 was the only outstanding measurement debt and it
+is **paid as of 2026-08-05**, so **the write-up is all that remains**; the LoRA organism
+arc is a successor kickoff, not a hush-gauge v2.
 
 **M2's own read-only set, for M3:** `intervene.py`, `m2_cells.py`, `preservation.py`,
 `build_preservation_qa.py`, `m2_ablation.py`, `m2_preservation.py`, `gates/g3.py`, and

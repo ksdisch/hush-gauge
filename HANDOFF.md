@@ -1,11 +1,56 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-04 (**the M4 brief is APPROVED & FROZEN — `docs/M4-BRIEF.md`,
-`D45`–`D48` mirrored into the ledger; next: the M4 build, then the write-up.** No v2:
-`D44` closes the unification question **against**, at these scales with this
-instrument)_
+_Last updated: 2026-08-05 (**M4 is COMPLETE — the layer-set lattice is run at all three
+scales, `docs/M4-RESULTS.md` is written, and the project's measurement debt is paid. All
+that remains is the write-up.**) No v2: `D44` closes the unification question **against**,
+at these scales with this instrument_
 
-## What was just done (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
+## What was just done (2026-08-05) — the M4 build: the layer-set lattice on `v_secret`
+
+**M4 is complete and gateless.** Two new modules (`m4_cells.py` cut from `m3_cells.py`,
+`m4_lattice.py` cut from `m2_ablation.py`), eleven new arms × 100 trials × three scales,
+and `docs/M4-RESULTS.md`. **1,001 tests.** `D45`–`D48` were not re-opened, no bar moved,
+and **no verdict word appears anywhere** except where the results doc quotes `D44`'s
+conditional.
+
+**What it found** (full detail in `docs/M4-RESULTS.md`, which is normative):
+
+- **M2's non-nesting flag is answered and generalizes.** At 0.5B, 5 of the 6 comparable
+  pairs whose subset silences anything are **not nested** (case-insensitively 5 of 5), and
+  `D46`'s pre-registered question — which rung of `{late} ⊆ {mid+late} ⊆ full` breaks —
+  answers **both**, in both chains and both readings. At 1.5B the single readable pair is
+  not nested either.
+- **The failure runs both ways.** {late} silences `cow` and `horse` at 0.5B and no other
+  layer set does; and a union can silence what neither part does — {early+mid} at 0.5B,
+  and **{mid+late} silencing four secrets at 1.5B** where {mid} and {late} each silence
+  none.
+- **The late third's presence orders the effect, not the layer count** (0.5B: 41–44 of 100
+  trials silenced by every set containing it, 19–27 by every set without it).
+- **The random lattice is `DEGENERATE` at every secret-level cell at every scale** — the
+  pre-committed outcome — and pure churn at the trial level with no ordering by layer
+  count, which closes the **churn half** of `D40`.3's generalization question. The
+  second-constructed-direction half stays banked behind `D42`.
+- **`D44`'s conditional was consumed and not met**: union rows silence 0 · 1 · **4** at
+  1.5B and 0 · 0 · 0 at 3B against the ≥ 5-of-25 bar; the largest is 21/25 with Newcombe
+  [−0.347, +0.004], the exact last straddling rung the brief pre-computed.
+
+**Integrity, all recorded in the payloads:** `D48`'s five aborts held and none fired on
+real data; 300 of 300 λ = 0 trials byte-identical to M0, and byte-identical to **M2's**
+λ = 0 on every shared trial, which is the licence for reading M2's edited arms from the
+SHA-referenced payload (`D45`); `D27`'s read-back held over 2,344,517 checks, worst
+residual 1.21e-07 against a 1e-4 tolerance; 5.49 h of sweep against the brief's ≈ 6 h.
+
+**Two process notes worth carrying.** (1) A first cut of `m4_cells.py` read only the four
+λ = 1 real layer sets from M2 and missed that `D45` also names its **dose rows** — caught
+by re-reading the decision against the code, fixed before the sweep, and the dose rows now
+sit under `recorded_arms` with `direction: real_dose`, never inside the lattice. (2) One
+hand-transcribed cell in the results doc was wrong in the first draft (`horse` under
+{mid}); every table in `docs/M4-RESULTS.md` is now **generated from the payloads** by a
+scratch emitter rather than retyped, and the prose numbers were verified programmatically
+against the payloads afterwards. This project's most-repeated defect, caught by the
+substrate rather than by a reader.
+
+## What was done before that (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
 
 **The planning session M3 routed its design questions to ran 2026-08-04. All four are
 settled by Kyle ("I approve all of your recommendations") and recorded in

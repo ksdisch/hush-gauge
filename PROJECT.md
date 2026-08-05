@@ -5,7 +5,12 @@ an in-context secret enters the J-lens-readable workspace under adversarial pres
 (including on trials where it is never emitted), validate it causally by ablation, and
 test whether secrecy is mute-map's late-band output off-switch.
 
-**Status:** **ALL FOUR MILESTONES CLOSED, 2026-08-04.** **M3 dropped Arm B at all three
+**Status:** **ALL MEASUREMENT COMPLETE, 2026-08-05 — only the write-up remains.**
+**M4 COMPLETE, 2026-08-05 — the layer-set lattice on `v_secret`, gateless and carrying no
+verdict** (`docs/M4-RESULTS.md`): M2's non-nesting flag is answered and generalizes over
+the lattice at 0.5B, the random lattice is `DEGENERATE` everywhere, and `D44`'s
+conditional was consumed and not met.
+**ALL FOUR GATED MILESTONES CLOSED, 2026-08-04.** **M3 dropped Arm B at all three
 scales** on its own pre-registered validation ladder, so G4 was never decided — `K5`'s
 fallback, and `KICKOFF.md` calls a pre-committed null a passing v1. The constructed
 candidate passed both structural rungs and failed the behavioural one (`docs/M3-RESULTS.md`);
@@ -42,8 +47,22 @@ pre-registered; barred from retroactive use on M3's recorded candidate), and **`
 then the write-up).
 
 **M4 brief APPROVED & FROZEN, 2026-08-04** (`docs/M4-BRIEF.md`) — `D45`–`D48` mirrored
-into `docs/DECISIONS.md`. **Next action:** the M4 build (Opus 5 at `high`, fresh from
-the brief).
+into `docs/DECISIONS.md`.
+
+**M4 COMPLETE, 2026-08-05** (`docs/M4-RESULTS.md`) — the layer-set lattice run on the
+certified `v_secret` at all three scales, **gateless and carrying no verdict**. M2's
+non-nesting flag is answered and it generalizes: at 0.5B, 5 of the 6 comparable pairs
+whose subset silences anything are **not nested**, and `D46`'s pre-registered question —
+which rung of `{late} ⊆ {mid+late} ⊆ full` breaks — answers **both**, in both chains and
+both readings. The failure runs both ways: a union can silence secrets neither of its
+parts does (**{mid+late} silences four at 1.5B** where {mid} and {late} each silence
+none). The **random lattice is `DEGENERATE` at every secret-level cell at every scale**
+and pure churn at the trial level, closing the churn half of `D40`.3's generalization
+question. **`D44`'s conditional was consumed and not met** (union rows 0 · 1 · 4 at 1.5B
+and 0 · 0 · 0 at 3B against the ≥ 5-of-25 bar), so the arc's recorded closing stands.
+**Next action:** the write-up — the project's terminal deliverable, and the only thing
+left (Fable 5 at `xhigh`, fresh from `KICKOFF.md`, `DECISIONS.md` and the five
+`M*-RESULTS.md`).
 
 ## Purpose
 
@@ -163,10 +182,13 @@ inputs.
    (banked), the within-triple flip sham pre-registered with a retroactivity bar, and the
    arc closed — not unified at these scales with this instrument, no v2.
 
-**`docs/M4-BRIEF.md` is approved and frozen (2026-08-04)**, fixing `D41`'s milestone
-(lattice arms, populations, pre-registered rows, the gateless deviation owned) as
-`D45`–`D48` in the ledger. **Next: the M4 build**; after M4 lands, the write-up
-(`D44`'s routing).
+14. ~~The M4 build~~ — **done 2026-08-05**; `m4_cells.py` + `m4_lattice.py` + 29 new tests,
+   eleven arms × 100 trials × three scales in 5.49 h, and `docs/M4-RESULTS.md`. Gateless
+   (`D48`), no verdict, no bar moved. `D48`'s five aborts all held and none fired on real
+   data; 300 of 300 λ = 0 trials byte-identical to M0 and to M2's λ = 0.
+
+**M4 is the project's last measurement, and it is paid.** What remains is **the write-up**
+(`D44`'s routing) — the terminal deliverable. Nothing else is outstanding.
 
 ## Boundaries
 
