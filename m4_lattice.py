@@ -373,11 +373,14 @@ def build_payload(
         "m2_reference": {
             "path": str(pathlib.Path(m2_path).relative_to(RESULTS.parent)),
             "sha256": probe.sha256(m2_path),
-            "arms_read": [*m4_cells.M2_REAL_SOURCE, m4_cells.M2_RANDOM_ARM],
+            "arms_read": [*m4_cells.M2_REAL_SOURCE, *m4_cells.M2_DOSE_SOURCE,
+                          m4_cells.M2_RANDOM_ARM],
             "rule": (
                 "D45: M4's own freshly-run lambda_0 arm proves byte-identity with the "
                 "frozen decode, which makes re-running M2's edited arms informationless. "
-                "Their rows are recomputed from this payload's trials"
+                "Their rows are recomputed from this payload's trials. The dose rows are "
+                "full-band cells at lambda < 1 and are recorded beside the lattice, never "
+                "inside it — the lattice is a set-structure object at the deployed dose"
             ),
         },
         "generation": {

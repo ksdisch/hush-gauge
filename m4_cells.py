@@ -134,6 +134,12 @@ M2_REAL_SOURCE: dict[str, str] = {
     "lambda_1": "full",
 }
 
+#: `D45` names M2's **dose rows** among the arms M4 reads. They are full-band cells at
+#: λ < 1, so they are **not** lattice cells — the lattice is a set-structure object at the
+#: deployed dose — and they are recorded beside it as the dose texture the same reading
+#: rules apply to. M4 adds no dose axis of its own (`D45`.2).
+M2_DOSE_SOURCE = ("lambda_0.25", "lambda_0.5", "lambda_0.75")
+
 #: `D47`: M2's own random full-band arm, reported **beside** M4's `random_full` as
 #: family-stability texture — same protocol, different draws. Never pooled with M4's
 #: lattice and never read as part of it.
@@ -947,6 +953,12 @@ def lattice_cells(payload: dict, m2_payload: dict) -> dict:
             recorded[arm] = arm_row(
                 arm, m2_arms[arm], m2_base,
                 layer_set=layer_set, direction="real", source="m2",
+            )
+    for arm in M2_DOSE_SOURCE:
+        if arm in m2_arms:
+            recorded[arm] = arm_row(
+                arm, m2_arms[arm], m2_base,
+                layer_set="full", direction="real_dose", source="m2",
             )
     if M2_RANDOM_ARM in m2_arms:
         recorded[M2_RANDOM_ARM] = arm_row(

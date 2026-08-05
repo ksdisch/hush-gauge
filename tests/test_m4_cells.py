@@ -349,8 +349,15 @@ def test_recorded_m2_arms_are_read_not_re_run(payload):
     recomputed from the SHA-referenced payload's trials — never transcribed, never
     re-generated, and never mixed into M4's own `arms` block."""
     recorded = payload["cells"]["recorded_arms"]
-    assert set(recorded) == set(m4_cells.M2_REAL_SOURCE) | {m4_cells.M2_RANDOM_ARM}
+    assert set(recorded) == (set(m4_cells.M2_REAL_SOURCE) | set(m4_cells.M2_DOSE_SOURCE)
+                             | {m4_cells.M2_RANDOM_ARM})
     assert all(row["source"] == "m2" for row in recorded.values())
+    # `D45` names the dose rows among the arms read; they are full-band cells at λ < 1, so
+    # they are recorded beside the lattice and never inside it (M4 adds no dose axis).
+    assert all(recorded[arm]["direction"] == "real_dose" for arm in m4_cells.M2_DOSE_SOURCE)
+    lattice_arms = {row["subset_arm"] for row in
+                    payload["cells"]["lattice"]["real"]["pairs"]["primary"]["secret"]}
+    assert not lattice_arms & set(m4_cells.M2_DOSE_SOURCE)
     assert all(row["source"] == "m4" for row in payload["cells"]["arms"].values())
     assert payload["m2_reference"]["sha256"] == probe.sha256(M2_PATH)
     # The recorded rows reproduce the substrate table the frozen brief was written against.
