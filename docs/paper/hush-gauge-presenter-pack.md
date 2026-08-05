@@ -135,7 +135,7 @@ Every load-bearing number, with the file it comes from. Payload paths take
 | QA errors are real | **21 of 24** are genuine factual errors, not form drift | `docs/M2-RESULTS.md` §3 |
 | Thirds at λ = 1, 0.5B | early 25/25, mid 25/25, **late 16/25** | `cells.arms.third_*` |
 | Selectivity | yardstick 22/25 → 19/25 while secret 25/25 → 15/25 (0.5B) | `cells.arms.lambda_*.selectivity` |
-| Canary | `case_variant_miss` fires on **edited arms only** — 9/9, 6/9, 1/9; zero on every λ = 0 and random arm | `docs/M2-RESULTS.md` §2 |
+| Canary | `case_variant_miss` fires on **edited arms only** — 9/9, 6/9, 1/9; zero on every **unedited** (λ = 0) arm at every scale. The random arm is one of the nine firing at 0.5B (1 occurrence) — the counter tracks rank-one late-band editing, not the real direction. *(The λ = 0 and random arms **are** untouched by the case-insensitive **re-score** — a different claim, and that one is true.)* | `docs/M2-RESULTS.md` §2; payload `trials[].case_variant_miss` |
 | Verdict survives the canary | 0.5B clause (1) case-insensitively 25/25 → 16/25, still CI-clean | `docs/M2-RESULTS.md` §2 |
 | Identity | λ = 0 **100/100** byte-identical to M0 at every scale | `docs/M2-RESULTS.md`; payload `m0_reference` |
 | Read-back (M2) | on the three arms M2-RESULTS names, 0.5B worst = 6.5e-08 (λ=1) · 3.7e-08 (random) · 3.9e-08 (span), tol 1e-4. **Careful:** that sentence is scoped to those arms — the largest per-arm residual in the 0.5B payload is **1.26e-07** (`third_late`). The study's recorded *global* is M4's. | payload `readback.per_arm` |

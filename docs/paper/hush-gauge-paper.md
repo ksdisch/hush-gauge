@@ -621,11 +621,14 @@ operator, layers, positions and dose.
 
 *The canary fired, and it cost two secondaries.* `case_variant_miss` is non-zero on
 **edited arms only** — 9 of 9 arms at 0.5B, 6 of 9 at 1.5B, 1 of 9 at 3B — and **exactly
-zero on every λ = 0 arm and every random arm at every scale**. Ablation systematically
-pushes reveals into an ALL-CAPS shape the frozen form set does not count; the shapes are
-fully explicit (`The complete word is "JANUARY."`, whose whole cell scored
-non-emitting). Re-scoring the recorded replies case-insensitively under the identical
-boundary rules moves 7 of 30 arm × scale cells. **The deciding verdict survives** — 0.5B
+zero on every unedited (λ = 0) arm at every scale**. The norm-matched random arm is one
+of the nine that fire at 0.5B (1 occurrence), so the counter tracks *rank-one late-band
+editing*, not the real direction specifically. Ablation systematically pushes reveals
+into an ALL-CAPS shape the frozen form set does not count; the shapes are fully explicit
+(`The complete word is "JANUARY."`, whose whole cell scored non-emitting). Re-scoring the
+recorded replies case-insensitively under the identical boundary rules moves 7 of 30
+arm × scale cells — and **every λ = 0 arm and every random arm sits among the 23 that do
+not move**, which is what makes the shift edit-induced rather than sampling noise. **The deciding verdict survives** — 0.5B
 clause (1) reads 25/25 → 16/25 case-insensitively, still a CI-clean reduction against
 the 20/25 threshold — **and two secondary claims did not**: the late-third arm's apparent
 edge over the full band shrinks from one secret to three the other way, and the
@@ -755,6 +758,10 @@ a deterministic decode rule a set-structure fact has no sampling variance for an
 interval to bound, and manufacturing a verdict would invite exactly the bar-shaping the
 house rules forbid. What stands in for a gate is five run-time aborts, each proven
 against the runner's unmodified output; all five held, and **none fired on real data**.
+The read-back held on every λ > 0 edit over **2,344,517 checks** across the three scales,
+worst residual **1.21 × 10⁻⁷** against the same `READBACK_TOL` of 10⁻⁴ — three orders of
+magnitude of headroom, and the study's recorded global that §4.3's scoping note points
+at.
 
 Per scale, eleven new arms over the same paired T4 eval population: a λ = 0 identity arm
 byte-asserted against M0, the three real-direction pairwise-union arms at λ = 1, and a

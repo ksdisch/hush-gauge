@@ -258,11 +258,15 @@ def fig1() -> None:
         "ceiling — 25 of 25", (-0.35, 25), xytext=(0, 6), textcoords="offset points",
         fontsize=7, color=MUTED, ha="left",
     )
-    ax.annotate(
-        "◆ open marker: the same T4 trials re-scored\nover turn 1's 64 positions only",
-        (5.35, 3.0), fontsize=7, color=INK2, ha="right",
+    # Identity for the open markers is carried by a real legend handle, not a text glyph:
+    # U+25C6 is absent from the configured font stack and renders as a tofu box.
+    ax.plot(
+        [], [], marker="D", markersize=7, markerfacecolor=SURFACE,
+        markeredgecolor=INK2, markeredgewidth=1.8, linestyle="none",
+        label="T4-turn-1: the same T4 trials\nre-scored over turn 1's 64 positions",
     )
-    ax.legend(loc="center left", bbox_to_anchor=(0.02, 0.55), fontsize=8.5, ncol=1)
+    ax.legend(loc="center left", bbox_to_anchor=(0.02, 0.55), fontsize=8.5, ncol=1,
+              handletextpad=0.6, labelspacing=0.7)
     tidy(ax)
     fig.tight_layout()
     fig.savefig(OUT / "fig1-pressure-ladder.png", bbox_inches="tight")
