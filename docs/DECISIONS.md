@@ -1388,7 +1388,10 @@ direction that is already certified.
 **The decision.** The flag test becomes **M4** — a small, dedicated characterization
 milestone on **`v_secret`** (the direction M2 used and certified). Its precondition is
 that M2's certified artifacts exist, which is already true: no construction, no
-validation ladder, no candidate whose failure can couple to it.
+validation ladder, no candidate whose failure can couple to it. `KICKOFF.md`'s phased
+plan is **closed as approved** — Milestone 0 through Milestone 3 plus S1, annotations
+only — and `docs/DECISIONS.md` is authoritative for post-M3 milestones, M4 included
+*(PR #14 review F8)*.
 
 **Scope-level commitments** (the M4 brief freezes the rest before any run, per house
 rule):
@@ -1410,28 +1413,37 @@ rule):
   payload (M2's record holds the random arm at the full band only). The reading is
   pre-registered with its degenerate case named: if the random lattice's silenced sets
   non-nest, the flag is generic edit churn; if they nest **non-trivially**, the flag is
-  specific to content-direction editing; and if they are empty or singletons at a scale —
-  the realized prior at 0.5B and 3B, where M2's recorded random full-band arm silences
-  **zero** secrets — the row reports `DEGENERATE` and licenses neither branch. Because
-  the secret-level unit can degenerate exactly there, the **trial-level**
+  specific to content-direction editing; and if they are empty or singletons at a scale,
+  the row reports `DEGENERATE` and licenses neither branch. That is the realized prior
+  at **every** scale — M2's recorded random full-band arm silences zero secrets at 0.5B
+  and 3B and the singleton {`Japan`} at 1.5B — so on the only prior available the
+  secret-level row degenerates everywhere and the trial-level companion carries the
+  question *(PR #14 review F12)*. Because of that, the **trial-level**
   silenced/induced companion is a mandatory row for the random lattice (at 0.5B M2's
   random arm silences 15 trials and induces 19 on a 63/100 baseline — churn with no set
   structure); secret-level stays the deciding-interest unit for the real direction, per
-  `D1`. That is the routed question's content, recovered with zero candidate risk.
+  `D1`. The **churn half** of `D40`.3's question is thereby recovered with zero
+  candidate risk; the content-generalization half needs a second content direction and
+  is banked behind `D42` *(PR #14 review F7)*.
 - **Gateless, the `D37`.3 precedent.** Under `D25`'s deterministic decode a set-structure
   fact has no sampling variance for a CI to bound, and manufacturing a gate would invite
   the bar-shaping the house forbids. M4 is the project's first gateless *milestone*; its
   brief owns that as a deviation, citing Arm A. Runner discipline is unchanged —
   populations recomputed from trials, payload-completeness checks, every row computed
-  from recorded replies.
+  from recorded replies. One quantitative row is commissioned explicitly: **each lattice
+  arm also reports the secret-level emission contrast against λ = 0 with its Newcombe
+  interval** — descriptive, never a gate; `D44`'s re-opening conditional consumes it
+  *(PR #14 review F13)*.
 - **Both oracle readings, pre-registered.** Every row reports the frozen `D13` primary
   and the case-insensitive re-score — the M2 fact was sharpest case-insensitively
   (overlap 3 of 6-vs-9 against the frozen counts' 5 of 9-vs-10), so a primary-only
   reading would under-report the thing under test. `D36` stands: the form set is
   untouched.
 - **0.5B is deciding-interest.** The non-nesting is a 0.5B fact — at 1.5B and 3B the
-  late-third and full-band cells do not separate. Companion arms at the other scales are
-  the M4 brief's call on cost.
+  two arms' silenced sets are **nested** (∅ ⊂ {`Japan`} and {`duck`} = {`duck`}), so
+  there is no non-nesting to characterize there *(PR #14 review F6 — the earlier "cells
+  do not separate" was false at 1.5B on the counts; the set fact is the one that
+  matters)*. Companion arms at the other scales are the M4 brief's call on cost.
 
 **Named and declined, bankable:** fresh tier texts (would answer text-generality, but
 requires a new `D1`-rule roster-disjoint certification and has no scoped consumer); any
@@ -1490,18 +1502,24 @@ to a future brief, it would be chosen by an author with a candidate at stake.
 **The object.** For each `(secret, tier, text)` triple in the construction set `S`, both
 matched sessions (with-secret and no-secret) enter the pool. A frozen-seeded assignment
 **flips, per triple, which side receives the with-secret member**, stratified within
-tier: each tier stratum of `n` triples is split ⌈n/2⌉ / ⌊n/2⌋, and each odd stratum's
-residue side is assigned in alternation over the frozen tier order, so the overall split
-stays exact wherever `|S|` is even. Per-tier balance is therefore exact **iff the stratum
-is even** — at M3's realized composition that is both strata at 0.5B (T1/T2 = 12/68) and
-1.5B (70/84), while at 3B **both strata are odd** (13/23), so per-tier balance there is
-off by one triple per stratum with the two residues cancelling overall (`|S|` = 36,
-even). Both sides hold exactly one session per triple. By construction:
-composition-matched on `(secret, tier, text)` **exactly**; label-balanced exactly overall
-wherever `|S|` is even (all three realized scales qualify) and to within one triple per
-odd tier stratum; expected retained fraction of the real contrast **zero**. The emitted
-`sham.composition` block (the PR #13 fix) must record the realized per-tier split and
-prove the matching as recorded data, never assert it in prose.
+tier: each tier stratum of `n` triples is split ⌈n/2⌉ / ⌊n/2⌋; the odd strata are
+**paired in frozen tier order** (`|S|` even ⟹ their count is even), and within each pair
+the frozen seed deals the two residue sides as a **fair coin** — one stratum's residue
+triple to each side — so the overall split stays exact wherever `|S|` is even **and**
+every triple's with-secret member is equally likely to land on either side *(PR #14
+review F11 — the alternation rule this replaces made the residue side deterministic,
+which biased `E[s_i]` to `r_j/n_j` in odd strata and falsified the zero-expectation
+claim below at 3B)*. Per-tier balance is exact **iff the stratum is even** — at M3's
+realized composition that is both strata at 0.5B (T1/T2 = 12/68) and 1.5B (70/84),
+while at 3B **both strata are odd** (13/23), so per-tier balance there is off by one
+triple per stratum with the two residues cancelling overall (`|S|` = 36, even). Both
+sides hold exactly one session per triple. By construction: composition-matched on
+`(secret, tier, text)` **exactly**; label-balanced exactly overall wherever `|S|` is
+even (all three realized scales qualify) and to within one triple per odd tier stratum;
+expected retained fraction of the real contrast **exactly zero** — the paired-coin
+residue rule keeps each triple's flip probability at exactly 1/2, at odd strata
+included. The emitted `sham.composition` block (the PR #13 fix) must record the realized
+per-tier split and prove the matching as recorded data, never assert it in prose.
 
 **What it does not fix, stated here so no one reads it as the complete repair:** the
 frame confound. A within-triple flip still removes the frame contrast from the sham in
@@ -1544,16 +1562,22 @@ proven."
 
 **Why no v2 — the decisive test.** A v2 is worth scoping only if some design available to
 this instrument could move A3. Moving it requires either a causal effect at 1.5B/3B on
-our side — M2 searched the full band and the single thirds under the dose grid there,
-with the full preservation battery holding at 3B, and the causal clause never fired — or
+our side — M2 searched the full band under the dose grid and the three single thirds at
+λ = 1 there *(PR #14 review F10 — the dose grid is a full-band-only object; no per-third
+dose curve exists)*, with the full preservation battery holding at 3B, and the causal
+clause never fired — or
 a **gate-bearing** mute-map effect at 0.5B, which their settled record excludes. One
 bounded residual is open on our side and is commissioned in this same section: `D41`'s
 pairwise-union arms were never run at any scale, and `D41`'s own motivating fact is that
 the edited layer set behaves non-monotonically, so an unrun union arm is not a priori
 weaker than the full band. **The conditional is therefore stated now:** if M4 runs its
-lattice at 1.5B or 3B and a union arm shows a CI-clean secret-level reduction, `D44`'s A3
-premise re-opens — without re-deciding G3 — and that stake is a named input to the M4
-brief's call on companion scales. Short of that, the 7B escape is dead-not-deferred in
+lattice at 1.5B or 3B and a union arm shows a CI-clean secret-level reduction — which
+from those scales' 25/25 baselines means **≥ 5 of 25 secrets silenced** (first decidable
+point 20/25, `stats.py`'s ruler), against the **1** the full band achieves on M2's
+record *(PR #14 review F13 — the bar stated, not left for a reader to derive; `D41`'s
+commissioned per-arm contrast row is the statistic this consumes)* — `D44`'s A3 premise
+re-opens — without re-deciding G3 — and that stake is a named input to the M4 brief's
+call on companion scales. Short of that, the 7B escape is dead-not-deferred in
 both repos, more candidate families re-ask `G4` (declined on its own merits in `D42`),
 and every remaining direction is a different phenomenon, not a sharper test of this one.
 
