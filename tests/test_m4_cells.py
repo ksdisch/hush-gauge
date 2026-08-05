@@ -564,6 +564,37 @@ def test_lambda_0_identity_against_m2_is_recorded(payload):
     assert identity["mismatched"] == []
 
 
+@pytest.mark.parametrize("slug", sorted(m4_cells.DECODE_PENALTY))
+def test_the_shipped_payloads_cells_recompute_from_their_own_trials(slug):
+    """`D48`'s recomputation clause, checked on the **shipped** payloads rather than only
+    on fixtures: `m4_cells.lattice_cells` re-run over a written payload's recorded trials
+    reproduces its recorded cells exactly.
+
+    This is the property `docs/M4-RESULTS.md` rests on — every number in it is read out of
+    these cells, and `D32`'s rule (kept by `D48` without its verdict) says a published
+    number must be re-derivable from the evidence. Without this, a later edit to the
+    arithmetic could leave a shipped payload's cells quietly disagreeing with the module
+    that claims to compute them. Skipped where the sweep has not been run.
+    """
+    lattice = ROOT / "results" / f"m4-lattice-{slug}.json"
+    m2 = ROOT / "results" / f"m2-ablation-{slug}.json"
+    if not lattice.exists() or not m2.exists():
+        pytest.skip(f"no M4 sweep recorded for {slug}")
+    payload = json.loads(lattice.read_text())
+    reference = json.loads(m2.read_text())
+    assert m4_cells.lattice_cells(payload, reference) == payload["cells"]
+    assert m4_cells.cross_payload_check(payload, reference)["environment_equal"] is True
+    assert m4_cells.completeness(
+        m4_cells.by_arm(payload), expected_arms=m4_cells.LATTICE_ARMS
+    )["complete"] is True
+    assert m4_cells.check_decode_rule(
+        slug, payload["generation"]["repetition_penalty"]
+    ) == m4_cells.expected_penalty(slug)
+    assert payload["cells"]["lambda_0_identity"]["identical"] is True
+    blob = json.dumps(payload["cells"])
+    assert "PASS" not in blob and "FAIL" not in blob
+
+
 def test_the_payload_says_it_is_gateless_and_carries_no_verdict(payload):
     """`D48`/`D46`: M4 publishes no PASS/FAIL. The one place a verdict word may appear in
     M4's reporting is a quotation of `D44`'s conditional, which is not in the payload."""
