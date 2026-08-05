@@ -151,7 +151,20 @@ generalization question with zero candidate risk; both oracle readings per row; 
 deciding-interest; fresh
 texts named-and-declined. **`D42`** — a second candidate family is **declined, banked**
 behind three conjunctive revisit conditions (frame-matched construction, `D43`'s sham, a
-consumer question surviving `D44`). **`D43`** — the composition-preserving,
+consumer question surviving `D44`).
+
+**`docs/M4-BRIEF.md` is FROZEN — approved by Kyle 2026-08-04** after the adversarial
+review on PR #16 (the review mailbox is the per-finding authority). **`D45`–`D48` are
+settled** and mirrored into `docs/DECISIONS.md`: eleven new arms per scale (the λ = 0
+identity arm byte-asserted vs M0 — the license for reading M2's edited arms from its
+SHA-referenced payload rather than re-running them; three real-direction union arms at
+λ = 1; the seven-arm random lattice under one fresh seed-20260806 `D31`-protocol family
+shared across arms), **all three scales**, both oracle readings per row, silenced and
+induced sets by name at both units, the per-arm secret-level Newcombe contrast vs λ = 0
+(descriptive; `D44` consumes the 1.5B/3B union rows against its ≥ 5-of-25 bar), the
+`DEGENERATE` rule on any empty-or-singleton secret-level set, and **gateless** with
+`D14`-proven integrity aborts standing in (`D25` drift, λ = 0 byte-mismatch,
+completeness, SHA checks, cross-payload environment/precision equality). **`D43`** — the composition-preserving,
 label-balanced **within-triple flip sham** is pre-registered as the deciding null for any
 future construction candidate — and **barred from retroactive verdict-bearing use** on
 M3's recorded candidate. **`D44`** — the arc closes as answered: **not unified at these

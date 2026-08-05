@@ -1,13 +1,17 @@
 # M4-BRIEF — The layer-set lattice on `v_secret`: characterizing M2's non-nesting flag
 
-*Written 2026-08-04 · start-of-stage brief · status: **awaiting Kyle's approval** — this
-brief freezes M4's remaining calls (`D45`–`D48`) before any M4 code is written or any run
-is made, per the house rule. `D41` (as folded per PR #14's review, PR #15) is the scope
-contract and is not re-opened here; the scope-level commitments it fixes — population,
-the lattice, the random companion, gateless, both oracle readings, 0.5B
-deciding-interest, the per-arm contrast row — appear below as constraints, not as new
-decisions. On approval, `D45`–`D48` mirror into `docs/DECISIONS.md` as the citable
-entries; after that the brief is never edited (annotations only), the M0–M3 convention.*
+*Written 2026-08-04 · start-of-stage brief · status: **frozen — approved by Kyle
+2026-08-04** ("Approved."), after the adversarial review on PR #16; the review's
+nice-to-have follow-ups (F5–F8) are folded in at approval on that recorded agreement,
+the M2/M3 precedent. The per-finding record is
+`~/.claude/reviews/hush-gauge/2026-08-04-docs-m4-brief.md` and **is the authority** —
+no round or finding totals are restated here, per the M0 lesson. `D41` (as folded per
+PR #14's review, PR #15) is the scope contract and is not re-opened here; the
+scope-level commitments it fixes — population, the lattice, the random companion,
+gateless, both oracle readings, 0.5B deciding-interest, the per-arm contrast row —
+appear below as constraints, not as new decisions. `D45`–`D48` are mirrored into
+`docs/DECISIONS.md` as the citable entries (pre-authorized); after them the brief is
+never edited (annotations only), matching the M0–M3 convention.*
 
 M4 is the milestone `D41` establishes: a small, **gateless** characterization of M2's
 late-third/full-band non-nesting flag, run on **`v_secret`** — the direction M2 used and
@@ -51,9 +55,12 @@ which **`D44` consumes and M4 merely feeds**.
   and must reproduce M0's recorded T4 eval replies **byte-for-byte**, with environment
   equality; any mismatch aborts the sweep.
 - **M0–M3-certified modules are read-only:** `oracle.py`, `encode.py`, `battery.py`,
-  `roster.py`, `stats.py`, `intervene.py`, `m2_cells.py`, `m3_cells.py`, every `m*_*.py`
-  runner, and `gates/g0–g4.py`. M4 adds new modules and artifacts only. **Do not delete
-  `results/*.npz`.**
+  `roster.py`, `stats.py`, `detect.py`, `probe.py`, `panel.py`, `intervene.py`,
+  `preservation.py`, `build_preservation_qa.py`, `construct_switch.py`, `m2_cells.py`,
+  `m3_cells.py`, every `m*_*.py` runner, and `gates/g0–g4.py` *(PR #16 review F5 — the
+  full enumeration, matching the predecessor briefs; `probe.py`/`panel.py` produce
+  `D27`'s `v̂_l(w)`, the direction M4 characterizes)*. M4 adds new modules and artifacts
+  only. **Do not delete `results/*.npz`.**
 
 ---
 
@@ -151,7 +158,15 @@ instead of re-running them *(PR #16 review F1)*. The deviations table owns this.
 `m3_cells.py`; the payload records every trial with `D8`'s field contract, the per-arm
 completeness check (25 × 4 per arm, verified against the frozen battery's recorded eval
 split), `D25`'s decode assertion, artifact/lens SHA checks, and the read-back's worst
-residual per edited arm.
+residual per edited arm. Because the lattice reads set relations **across two
+payloads**, M4's recorded `environment` block must **equal the referenced M2 payload's,
+else abort** — `gates/g3.py`'s two-payload precedent ("the two payloads record different
+environments; `D28` requires one machine") — and, on the same abort, the two payloads'
+`intervention.precision` must agree on **`edit_dtype` and `fallback_used`** *(PR #16
+review F7, scoped by PR #17 review F1: `Precision.payload()` also carries
+`probe_worst_residual`, a per-run measured float — 3.63e-08 / 3.22e-08 / 6.19e-08 across
+M2's scales — so whole-block equality would abort every sweep; the two named fields are
+the arithmetic identity the cross-payload comparison actually needs)*.
 
 ### D46 — The reading: pre-registered rows, both oracles, both units, and the degenerate case
 
@@ -193,8 +208,11 @@ comparable pair, the per-text `emitted` vectors of both arms are printed (M2 §2
 substrate unit), so the set fact is always readable at the resolution the payload
 records.
 
-**The degenerate case (`D41`, binding):** a silenced set that is empty or a singleton at
-a scale makes that scale's secret-level random row `DEGENERATE` — it licenses neither
+**The degenerate case (`D41`, binding; extended at approval):** a silenced set that is
+empty or a singleton at a scale makes that scale's secret-level row — **real or
+random** — `DEGENERATE` *(PR #16 review F8: the real direction's recorded sets at
+1.5B/3B are ∅/singleton too, and an unlabeled trivially-all-nested table would read as
+evidence the flag does not generalize)* — it licenses neither
 the churn branch nor the specificity branch. The realized prior says this will happen
 at every scale; if it does, that is the pre-committed reportable outcome and the
 trial-level rows carry the question. No bar moves.
@@ -222,6 +240,13 @@ structure is a fact about **layer sets**, never about re-draws. This is the
 pre-registration that makes nesting readable on the random side; it deliberately
 mirrors the real direction's situation, where `v̂_l(w)` is likewise fixed per
 (secret, layer) across arms.
+
+One recording trap is named now rather than discovered by the build session:
+`intervene.draw_order_note()` **hard-codes** `"seed": 20260803` and takes no seed
+argument, so a runner cut from `m2_ablation.py` that spreads it unchanged would publish
+M2's seed over M4's vectors. The M4 payload's `random_directions.seed` must be M4's own
+value — the `m3_arm_b.py` override pattern (spread the note, then override `"seed"` and
+`"rule"`) *(PR #16 review F6)*.
 
 M2's recorded random full-band arm (seed 20260803's family) is reported **beside** the
 new `random_full` row as a family-stability texture cell — same protocol, different

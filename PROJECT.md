@@ -41,9 +41,9 @@ pre-registered; barred from retroactive use on M3's recorded candidate), and **`
 (the arc verdict: not unified at these scales with this instrument; no v2; route to M4,
 then the write-up).
 
-**M4 brief WRITTEN, 2026-08-04** (`docs/M4-BRIEF.md`, PR #16) — `D45`–`D48` Proposed,
-frozen on approval. **Next action:** Kyle's approval of the brief; then the M4 build
-(Opus 5 at `high`, fresh from the brief).
+**M4 brief APPROVED & FROZEN, 2026-08-04** (`docs/M4-BRIEF.md`) — `D45`–`D48` mirrored
+into `docs/DECISIONS.md`. **Next action:** the M4 build (Opus 5 at `high`, fresh from
+the brief).
 
 ## Purpose
 
@@ -163,10 +163,10 @@ inputs.
    (banked), the within-triple flip sham pre-registered with a retroactivity bar, and the
    arc closed — not unified at these scales with this instrument, no v2.
 
-**`docs/M4-BRIEF.md` is written (2026-08-04, PR #16)**, freezing `D41`'s milestone
+**`docs/M4-BRIEF.md` is approved and frozen (2026-08-04)**, fixing `D41`'s milestone
 (lattice arms, populations, pre-registered rows, the gateless deviation owned) as
-`D45`–`D48` Proposed. **Next: Kyle's approval**, then the M4 build; after M4 lands, the
-write-up (`D44`'s routing).
+`D45`–`D48` in the ledger. **Next: the M4 build**; after M4 lands, the write-up
+(`D44`'s routing).
 
 ## Boundaries
 

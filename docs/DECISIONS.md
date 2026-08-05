@@ -1574,10 +1574,12 @@ proven."
 
 **Why no v2 — the decisive test.** A v2 is worth scoping only if some design available to
 this instrument could move A3. Moving it requires either a causal effect at 1.5B/3B on
-our side — M2 searched the full band under the dose grid and the three single thirds at
-λ = 1 there *(PR #14 review F10 — the dose grid is a full-band-only object; no per-third
-dose curve exists)*, with the full preservation battery holding at 3B, and the causal
-clause never fired — or
+our side — M2 searched the full band under the dose grid and the three single thirds
+and the case-pair span at λ = 1 there *(PR #14 review F10 — the dose grid is a
+full-band-only object; no per-third dose curve exists — and PR #15 review F7: `span_1`
+belongs in the enumeration, being 1.5B's strongest secret-level arm at 22/25 and still
+nowhere near the 20/25 decidable point)*, with the full preservation battery holding at
+3B, and the causal clause never fired — or
 a **gate-bearing** mute-map effect at 0.5B, which their settled record excludes. One
 bounded residual is open on our side and is commissioned in this same section: `D41`'s
 pairwise-union arms were never run at any scale, and `D41`'s own motivating fact is that
@@ -1585,9 +1587,11 @@ the edited layer set behaves non-monotonically, so an unrun union arm is not a p
 weaker than the full band. **The conditional is therefore stated now:** if M4 runs its
 lattice at 1.5B or 3B and a union arm shows a CI-clean secret-level reduction — which
 from those scales' 25/25 baselines means **≥ 5 of 25 secrets silenced** (first decidable
-point 20/25, `stats.py`'s ruler), against the **1** the full band achieves on M2's
+point 20/25, `stats.py`'s ruler), against the **1** — frozen primary; **0**
+case-insensitively at 1.5B — the full band achieves on M2's
 record *(PR #14 review F13 — the bar stated, not left for a reader to derive; `D41`'s
-commissioned per-arm contrast row is the statistic this consumes)* — `D44`'s A3 premise
+commissioned per-arm contrast row is the statistic this consumes — and PR #15 review
+F5: the recorded best labeled by reading)* — `D44`'s A3 premise
 re-opens — without re-deciding G3 — and that stake is a named input to the M4 brief's
 call on companion scales. Short of that, the 7B escape is dead-not-deferred in
 both repos, more candidate families re-ask `G4` (declined on its own merits in `D42`),
@@ -1607,3 +1611,82 @@ headline. The banked LoRA-trained-secrecy "organism arc" is the named successor 
 sharpened by this result into "does *trained-in* secrecy produce the workspace and causal
 signatures instructed secrecy lacked?" — and it is a **new kickoff with its own brief,
 not a hush-gauge v2**.
+
+# M4 brief (2026-08-04) — approved and frozen
+
+**`docs/M4-BRIEF.md` is FROZEN — approved by Kyle 2026-08-04** ("Approved."), after the
+adversarial review on PR #16 (the review mailbox is the per-finding authority; its F5–F8
+fold-ins, and PR #15's F5–F8, landed at approval on Kyle's recorded agreement — the
+M2/M3 precedent). `D45`–`D48` are mirrored here as the citable entries; the brief holds
+the full text and is never edited after this (annotations only).
+
+## D45 — The arms: three real unions, a seven-arm random lattice, one identity arm; all three scales
+
+**Decided 2026-08-04 by Kyle (M4 brief).** The lattice is the seven non-empty unions of
+the three sub-band thirds. Per scale, M4 newly runs **exactly eleven arms** over the M2
+eval T4 population (25 eval secrets × 4 frozen T4 texts, identical trials in every arm —
+paired): (1) `lambda_0`, `D28`'s identity arm, byte-asserted against M0's recorded T4
+eval replies — the run-time proof of the frozen decode that **licenses reading M2's
+edited arms instead of re-running them**; (2) the three real-direction union arms
+{early+mid} / {early+late} / {mid+late} at **λ = 1 only** (no dose axis — the dose grid
+is a full-band-only object); (3) the seven random-lattice arms under `D47`'s family.
+M2's recorded *edited* arms (single thirds, full band, dose, its random full-band arm)
+are recomputed from the trials of the SHA-referenced `results/m2-ablation-*.json`
+(`D37`'s reference pattern), never transcribed and never re-generated. **All three
+scales run the full design** (≈ 6 h measured from M2's per-arm times; `D44`'s 1.5B/3B
+stake decides the companion-scale call; 0.5B stays deciding-interest for the flag).
+Runner: `m4_lattice.py` cut from `m2_ablation.py`, `m4_cells.py` cut from `m3_cells.py`;
+payload discipline unchanged, plus — the lattice reads set relations across two payloads
+— M4's recorded `environment` must **equal the referenced M2 payload's, else abort**
+(`gates/g3.py`'s two-payload precedent), and on the same abort the two payloads'
+`intervention.precision` must agree on **`edit_dtype` and `fallback_used`** — not the
+whole block, which carries the per-run measured `probe_worst_residual` (PR #16 review
+F7 as scoped by PR #17 review F1).
+
+## D46 — The reading: pre-registered rows, both oracles, both units, the degenerate rule
+
+**Decided 2026-08-04 by Kyle (M4 brief).** Every arm — new and recorded — reports under
+**both** oracle readings (frozen `D13` primary; `D39`.7's case-insensitive re-score):
+secret-level k/25 and trial-level k/100, the silenced and induced sets **by name** at
+both units, the commissioned secret-level Newcombe contrast vs λ = 0 (descriptive,
+never a gate; `D44` consumes the 1.5B/3B union rows against its ≥ 5-of-25 bar), and the
+canary/selectivity/collapse texture recomputed from replies. The deliverable's center
+is the 12-pair lattice table (silenced-set relation for every strictly comparable pair);
+the pre-registered monotonicity reading accounts for what the record forces — at 0.5B
+`silenced({late}) ⊄ silenced(full)`, so at least one inclusion in
+`{late} ⊆ {mid+late} ⊆ {full}` must fail, and the reading is over **which** (first only /
+second only / both), with the two chains contrasted by which rung breaks. Per-text
+`emitted` vectors are printed for every membership-changing secret. **`DEGENERATE`
+applies to any secret-level row, real or random** (PR #16 review F8), on an empty or
+singleton silenced set — it licenses neither branch, and the trial-level rows carry the
+question. Reading limits pre-declared: descriptive throughout; no induction-channel
+claim; `removed_mass_mean` supports no argument; no verdict words in
+`docs/M4-RESULTS.md` except quoting `D44`'s conditional.
+
+## D47 — The random draw family: one frozen family per scale (seed 20260806), shared across all seven arms
+
+**Decided 2026-08-04 by Kyle (M4 brief).** Fresh `D31`-protocol draws — per (eval
+secret, band layer), one unit-normalized `d_model` Gaussian; one generator per scale,
+seed **20260806** (20260803 / 20260804 / 20260805 are spent: M2's family, M3's
+`D31`-protocol sham draw, M3's permutation — the payload's seed field must identify
+exactly one family), frozen draw order per `D31`'s rule, stacked fp32 SHA256 recorded.
+**All seven random arms at a scale use the same family** — an arm edits its layer set
+with the family's per-(secret, layer) directions — so the random lattice's set structure
+is a fact about layer sets, never re-draws. Recording trap named: `intervene.
+draw_order_note()` hard-codes `"seed": 20260803`, so the runner must override the spread
+note's `seed`/`rule` with M4's own values — the `m3_arm_b.py` pattern (PR #16 review
+F6). M2's recorded random full-band arm is reported beside the new `random_full` row as
+family-stability texture, never pooled.
+
+## D48 — Gateless, owned; what stands in for the gate
+
+**Decided 2026-08-04 by Kyle (M4 brief).** M4 has no gate (`D41`; `D37`.3 is the
+precedent): under `D25`'s deterministic decode a set-structure fact has no sampling
+variance for a CI to bound, and manufacturing a verdict invites bar-shaping. What
+replaces it: the runner **aborts** on `D25` decode drift, λ = 0 byte-mismatch (`D28`),
+incomplete arms, artifact/lens SHA mismatch, and `D45`'s cross-payload
+environment/precision inequality; `m4_cells.py` recomputes every published number from
+recorded replies and refuses non-reproducing aggregates (`D32`'s recomputation rule,
+kept without its verdict); and the integrity aborts are proven against the runner's
+unmodified output (`D14`'s fixture rule). Deliverables: `results/m4-lattice-*.json`
+per scale and `docs/M4-RESULTS.md`, every number computed from the payloads.
