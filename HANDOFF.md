@@ -1,9 +1,9 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-04 (**post-M3 planning session complete: `D41`–`D44` settled and
-recorded. M4 — the gateless non-nesting characterization on `v_secret` — is next; then
-the write-up. No v2: `D44` closes the unification question **against**, at these scales
-with this instrument**)_
+_Last updated: 2026-08-04 (**the M4 brief is written — `docs/M4-BRIEF.md`, PR #16,
+`D45`–`D48` Proposed — and awaits Kyle's approval; the PR #14 review's F6–F13 are folded
+into the ledger (PR #15). After approval: the M4 build, then the write-up. No v2: `D44`
+closes the unification question **against**, at these scales with this instrument**)_
 
 ## What was just done (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
 
@@ -756,20 +756,19 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**Write `docs/M4-BRIEF.md`** — the start-of-stage brief for the milestone `D41`
-establishes: the layer-set lattice on `v_secret` plus the random-direction companion
-lattice, the M2 eval T4 population with the λ = 0 arm byte-asserted against M0 (`D28`),
-both oracle readings pre-registered per row, gateless with the deviation owned (`D37`.3
-is the precedent). The brief freezes arms, populations and rows before any run, then goes
-through the usual adversarial review and Kyle's approval before a build session runs the
-sweep. After M4: the write-up (`D44`'s routing), with the negative unification as the
-arc's honest headline.
+**Kyle approves (or amends) `docs/M4-BRIEF.md`** — written 2026-08-04 (PR #16, after its
+adversarial review), freezing `D45`–`D48` as Proposed: the eleven-arm design (the λ = 0
+identity arm + three real-direction union arms + the seven-arm random lattice under one
+fresh seed-20260806 draw family), all three scales (~6 h), both oracle readings per row,
+the commissioned per-arm Newcombe contrast row, and the gateless deviation owned
+(`D37`.3 precedent). On approval `D45`–`D48` mirror into `docs/DECISIONS.md` and the
+brief freezes. After M4: the write-up (`D44`'s routing), with the negative unification
+as the arc's honest headline.
 
-**Run-config note:** the M4 brief is design-freezing work with `D41`'s scope calls
-pre-made — **Fable 5 at `high`**: `claude --model claude-fable-5 --effort high`, started
-fresh from `docs/DECISIONS.md` §"Post-M3 planning" (`D41`), `docs/M2-RESULTS.md` §2 (the
-substrate), and `docs/M3-RESULTS.md`. The build session that follows the brief's approval
-is Opus 5 at `high`, per the standing pattern.
+**Run-config note:** the session after the brief's approval is the **M4 build** — small,
+fully specified, one runner cut from a certified predecessor — **Opus 5 at `high`**:
+`claude --model claude-opus-5 --effort high`, started fresh from `docs/M4-BRIEF.md` plus
+`docs/M2-RESULTS.md` §2, never from this session's transcript.
 
 **Open follow-ups** — two, both from PR #2, both nice-to-have:
 - `F6` — the WikiText test `pytest.skip`s itself when the HF cache differs, behind the
