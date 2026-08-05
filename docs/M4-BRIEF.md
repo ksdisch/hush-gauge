@@ -136,12 +136,15 @@ per scale — ≈ 6 h total, wall-clock-bound — and `D44` names a stake that l
 to 0.5B would spend the flag's scale and skip the conditional's. 0.5B remains
 **deciding-interest** for the flag itself (`D41`).
 
-**Recorded arms are read, never re-run.** The real-direction {early}, {mid}, {late},
-full-band, dose, and λ = 0 rows, and M2's random full-band arm, are recomputed **from
-the trials of `results/m2-ablation-*.json`** (referenced by SHA256 in M4's payload,
-`D37`'s `m2_reference` pattern) — never transcribed from `docs/M2-RESULTS.md`, and
-never re-generated: `D28`'s byte-identity chain certifies the decode is deterministic,
-so a re-run buys wall-clock and no information. The deviations table owns this.
+**M2's recorded *edited* arms are read, never re-run.** The real-direction {early},
+{mid}, {late}, full-band, and dose rows, and M2's random full-band arm, are recomputed
+**from the trials of `results/m2-ablation-*.json`** (referenced by SHA256 in M4's
+payload, `D37`'s `m2_reference` pattern) — never transcribed from
+`docs/M2-RESULTS.md`, and never re-generated. The λ = 0 arm is the deliberate
+exception: **M4 generates its own** (arm 1 above), precisely because its byte-identity
+against M0's recorded replies is the run-time proof that M4's environment reproduces
+the frozen decode — which is the very thing that licenses reading M2's edited arms
+instead of re-running them *(PR #16 review F1)*. The deviations table owns this.
 
 **Runner and payload discipline (unchanged, `D41`):** one new runner cut from
 `m2_ablation.py` (`m4_lattice.py`) plus a pure-arithmetic `m4_cells.py` cut from
@@ -172,11 +175,18 @@ A ⊂ B among the seven layer sets (12 pairs: 6 singleton⊂pair, 3 singleton⊂
 overlap size, set differences by name — at the secret level for the real direction
 (deciding-interest unit, per `D1`) and at **both** units for the random lattice
 (trial-level mandatory, `D41`). The pre-registered question is **where non-monotonicity
-enters**: on M2's record silenced({late}) ⊄ silenced(full) at 0.5B; the three unions
-locate the departure — if silenced({late}) ⊆ silenced({mid+late}) ⊆ silenced(full)
-fails at the first inclusion, adding mid-third edits alone disrupts the late third's
-silencing; if at the second, the early third does it; if the chain holds while the
-{early+late} chain fails, the interaction is specific to which thirds combine.
+enters**, and the enumeration accounts for what the recorded substrate already forces:
+at 0.5B silenced({late}) ⊄ silenced(full), so by transitivity **at least one inclusion
+in silenced({late}) ⊆ silenced({mid+late}) ⊆ silenced(full) must fail** — both holding
+is impossible on the record. The reading is over **which**: the first only (adding
+mid-third edits alone disrupts the late third's silencing), the second only (the early
+third's addition does it), or **both** (the disruption enters at the intermediate rung
+*and* the full band's departures are not recovered there). The {early+late} chain is
+read the same way, and the contrast between the two chains — which rung breaks in each
+— says whether the disruption is specific to which thirds combine *(PR #16 review F3 —
+an earlier draft enumerated a chain-holds branch that transitivity forecloses)*. At
+1.5B/3B, where silenced({late}) ⊆ silenced(full) is recorded, all outcomes including
+neither-fails are open, but the sets are degenerate (the rule below).
 
 **Per-text substrate:** for every secret whose set membership differs between any
 comparable pair, the per-text `emitted` vectors of both arms are printed (M2 §2's
@@ -200,8 +210,12 @@ induction-channel claim is licensed; `removed_mass_mean` is a post-cascade reado
 ### D47 — The random draw family: one frozen family per scale, shared across all seven arms
 
 Fresh `D31`-protocol draws: per (eval secret, band layer), one unit-normalized
-`d_model` Gaussian; one generator per scale, seed **20260804**, frozen draw order
+`d_model` Gaussian; one generator per scale, seed **20260806**, frozen draw order
 identical to `D31`'s rule, the stacked fp32 matrix's SHA256 recorded in the payload.
+The seed is chosen off the repo's spent registry — 20260803 (M2's family), 20260804
+(M3's `D31`-protocol sham draw), 20260805 (M3's permutation) — so the payload's seed
+field identifies exactly one family; re-keying a spent generator stream would make two
+different families share a provenance record *(PR #16 review F2)*.
 **All seven random arms at a scale use the same family** — an arm edits the layers in
 its set with that family's per-(secret, layer) directions — so the random lattice's set
 structure is a fact about **layer sets**, never about re-draws. This is the
@@ -239,7 +253,7 @@ per scale) and `docs/M4-RESULTS.md`, every number computed from the payloads.
 | Deviation | From | Why |
 |---|---|---|
 | First gateless milestone | house rule "gates are frozen as code before any real run" | `D41`'s reasoning: deterministic decode leaves no sampling variance on set structure; a manufactured gate invites bar-shaping. `D37`.3 (Arm A) is the precedent at arm level; M4 extends it to a milestone whose every deliverable is that kind of object. Runner discipline unchanged; `D14`-proven integrity aborts stand in (`D48`) |
-| Recorded arms read from M2's frozen payload, not re-run | the cut-runner-runs-its-own-arms pattern of M0–M3 | `D28`'s byte-identity chain makes a re-run informationless; rows are recomputed from `results/m2-ablation-*.json` trials with the payload SHA-referenced (`D37`'s pattern), never transcribed from prose |
+| M2's recorded **edited** arms read from its frozen payload, not re-run | the cut-runner-runs-its-own-arms pattern of M0–M3 | M4's own freshly-run λ = 0 arm proves byte-identity with the frozen decode, which makes a re-run of M2's edited arms informationless; rows are recomputed from `results/m2-ablation-*.json` trials with the payload SHA-referenced (`D37`'s pattern), never transcribed from prose |
 | Fresh random draws (seed 20260804) beside M2's recorded family | `D31`'s M2 realization | A lattice reading needs all seven cells from one family; M2 recorded one cell (full band). M2's row is kept as a beside-texture cell, never pooled (`D47`) |
 | No dose axis on any new arm | M2's full-band dose grid | The dose grid is a full-band-only object; the thirds ran at λ = 1 only (PR #14 F10), and M4's question is set structure at the deployed dose, λ = 1 |
 | Fresh tier texts declined | text-generality | `D41` names-and-declines: a new `D1`-rule certification with no scoped consumer |

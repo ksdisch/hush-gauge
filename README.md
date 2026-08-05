@@ -56,7 +56,8 @@ undecided gate, not a negative one.
 small gateless characterization milestone on the certified `v_secret`; a second candidate
 family is declined (banked); a composition-preserving flip sham is pre-registered for any
 future attempt; and the arc closes as answered — **not unified at these scales with this
-instrument**, no v2. Next: the M4 brief, then the write-up.
+instrument**, no v2. The M4 brief is written (`docs/M4-BRIEF.md`, awaiting approval);
+next: the M4 build, then the write-up.
 
 **M3 complete, 2026-08-04 — Arm B dropped at all three scales, G4 never decided, and that
 is the pre-committed fallback.** M3 constructed a candidate off-switch direction from the
