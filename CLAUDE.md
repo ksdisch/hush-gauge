@@ -31,8 +31,10 @@ for what M4 found; `docs/M4-BRIEF.md` stays normative for how it was specified, 
 
 **M2's non-nesting flag is answered, and the answer is more general than the flag was.**
 At **0.5B** — the only scale whose sets are large enough to read — **5 of the 6 comparable
-pairs whose subset silences anything are not nested** (case-insensitively 5 of 5, no
-exception left), and `D46`'s pre-registered question, *which rung of
+pairs whose subset silences anything are not nested**, and case-insensitively **5 of the 5
+pairs the `DEGENERATE` rule leaves readable** (the lone exception, {early+mid} ⊂ full, is
+itself the row that drops to a singleton under the wider reading). `D46`'s pre-registered
+question, *which rung of
 `{late} ⊆ {mid+late} ⊆ full` breaks*, answers **both**, in both chains and under both
 readings. At 1.5B the single readable pair is not nested either. So the edited layer set
 does **not** behave like a set of independently-acting parts.

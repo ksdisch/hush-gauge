@@ -718,6 +718,17 @@ def lattice_table(rows_by_set: dict[str, dict], *, reading: str, unit: str) -> l
 
     A pair whose subset row is `DEGENERATE` at the secret level is still reported: the
     relation is a fact either way, and the label is what says the fact licenses nothing.
+
+    **The degeneracy fields name their unit.** `degenerate()` is defined on the
+    **secret-level** silenced set — that is `D46`'s rule and there is no trial-level
+    degeneracy rule to have — so the flag is published as
+    `subset_secret_level_degenerate` / `superset_secret_level_degenerate` on **both**
+    units. An unqualified `subset_degenerate` on a trial row would say the opposite of
+    what `D41` means: when the secret level degenerates, the **trial-level rows carry the
+    question**, so a consumer filtering trial rows on that flag would discard exactly the
+    rows the brief made mandatory (PR #18 review F2). Naming the unit keeps the
+    cross-reference `D41` wants — *this pair's secret-level row licenses nothing, read the
+    trial row* — instead of dropping it.
     """
     field = "silenced" if unit == "secret" else "trial_silenced"
     out = []
@@ -742,8 +753,8 @@ def lattice_table(rows_by_set: dict[str, dict], *, reading: str, unit: str) -> l
             "subset_only": as_json(left - right),
             "superset_only": as_json(right - left),
             "nested": left <= right,
-            "subset_degenerate": a["degenerate"],
-            "superset_degenerate": b["degenerate"],
+            "subset_secret_level_degenerate": a["degenerate"],
+            "superset_secret_level_degenerate": b["degenerate"],
         })
     return out
 
@@ -776,10 +787,14 @@ def chain_reading(rows_by_set: dict[str, dict], *, reading: str, unit: str) -> l
             "second_rung_nested": second["nested"],
             "endpoint_nested": endpoint["nested"],
             "breaks": breaks,
-            "degenerate_rows": sorted(
+            # Same rule as `lattice_table`'s: the flag is a **secret-level** fact and says
+            # so in its name, on both units. Emitted rather than suppressed off-unit,
+            # because on a trial row it is the cross-reference `D41` asks for — the
+            # secret-level row licenses nothing, so read this one.
+            "secret_level_degenerate_rows": sorted(
                 slug for slug in (low, middle, high)
                 if rows_by_set[slug]["readings"][reading]["degenerate"]
-            ) if unit == "secret" else [],
+            ),
         })
     return out
 

@@ -52,7 +52,8 @@ into `docs/DECISIONS.md`.
 **M4 COMPLETE, 2026-08-05** (`docs/M4-RESULTS.md`) — the layer-set lattice run on the
 certified `v_secret` at all three scales, **gateless and carrying no verdict**. M2's
 non-nesting flag is answered and it generalizes: at 0.5B, 5 of the 6 comparable pairs
-whose subset silences anything are **not nested**, and `D46`'s pre-registered question —
+whose subset silences anything are **not nested** — case-insensitively 5 of the 5 pairs
+the `DEGENERATE` rule leaves readable — and `D46`'s pre-registered question —
 which rung of `{late} ⊆ {mid+late} ⊆ full` breaks — answers **both**, in both chains and
 both readings. The failure runs both ways: a union can silence secrets neither of its
 parts does (**{mid+late} silences four at 1.5B** where {mid} and {late} each silence

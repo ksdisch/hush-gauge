@@ -326,6 +326,40 @@ def test_lattice_is_reported_at_both_units_for_both_families(payload):
                 assert len(block["chains"][reading][unit]) == 6
 
 
+def test_the_degeneracy_flag_names_the_unit_it_belongs_to(payload):
+    """`D46`'s `DEGENERATE` rule is defined on the **secret-level** silenced set, and there
+    is no trial-level degeneracy rule to have — so the flag must say which unit it means
+    wherever it is published (PR #18 review F2).
+
+    An unqualified `subset_degenerate` on a trial row inverts `D41`: when the secret level
+    degenerates, the **trial-level rows carry the question**, so a consumer filtering trial
+    rows on that flag would discard exactly the rows the brief made mandatory. The 3B
+    payload is the case that bites — every secret-level row there is `DEGENERATE` while its
+    trial rows carry 3–17 silenced trials each.
+    """
+    for family in ("real", "random"):
+        for reading in m4_cells.READINGS:
+            for unit in ("secret", "trial"):
+                rows = payload["cells"]["lattice"][family]["pairs"][reading][unit]
+                assert rows
+                for row in rows:
+                    assert "subset_degenerate" not in row
+                    assert "superset_degenerate" not in row
+                    assert isinstance(row["subset_secret_level_degenerate"], bool)
+                    assert isinstance(row["superset_secret_level_degenerate"], bool)
+                for chain in payload["cells"]["lattice"][family]["chains"][reading][unit]:
+                    assert "degenerate_rows" not in chain
+                    assert isinstance(chain["secret_level_degenerate_rows"], list)
+
+    # The flag carries the *secret-level* fact on a trial row rather than a trial-level
+    # one: it is a cross-reference, not a property of the row it sits on.
+    secret_rows = {(r["subset"], r["superset"]): r for r in
+                   payload["cells"]["lattice"]["real"]["pairs"]["primary"]["secret"]}
+    for row in payload["cells"]["lattice"]["real"]["pairs"]["primary"]["trial"]:
+        twin = secret_rows[(row["subset"], row["superset"])]
+        assert row["subset_secret_level_degenerate"] == twin["subset_secret_level_degenerate"]
+
+
 def test_chain_reading_names_which_rung_breaks(payload):
     """`D46`'s pre-registered monotonicity reading. Transitivity forecloses one branch: if
     the endpoint inclusion fails, at least one rung must — both rungs holding is

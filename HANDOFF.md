@@ -16,7 +16,9 @@ conditional.
 **What it found** (full detail in `docs/M4-RESULTS.md`, which is normative):
 
 - **M2's non-nesting flag is answered and generalizes.** At 0.5B, 5 of the 6 comparable
-  pairs whose subset silences anything are **not nested** (case-insensitively 5 of 5), and
+  pairs whose subset silences anything are **not nested**, and case-insensitively **5 of
+  the 5 pairs the `DEGENERATE` rule leaves readable** (the lone exception, {early+mid} ⊂
+  full, is itself the row that drops to a singleton under the wider reading), and
   `D46`'s pre-registered question — which rung of `{late} ⊆ {mid+late} ⊆ full` breaks —
   answers **both**, in both chains and both readings. At 1.5B the single readable pair is
   not nested either.

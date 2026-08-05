@@ -16,7 +16,9 @@ limits `D46` pre-declared have their own section below §4 and bind everything a
 **M2's non-nesting flag is not an idiosyncrasy of the late-third/full-band pair — it is
 how this direction behaves over the whole layer-set lattice, at the one scale that can
 show it.** At 0.5B, 5 of the 6 comparable pairs whose subset silences anything are **not
-nested** (case-insensitively 5 of 5, with no exception left), and `D46`'s pre-registered
+nested** — and case-insensitively **5 of the 5 pairs the `DEGENERATE` rule leaves
+readable**, with no exception left, because the lone exception ({early+mid} ⊂ full) is
+itself the row that drops to a singleton under the wider reading. `D46`'s pre-registered
 question — which rung of `{late} ⊆ {mid+late} ⊆ full` breaks — answers **both**, in both
 chains and under both readings. At 1.5B the single readable pair is not nested either.
 
@@ -124,8 +126,26 @@ early third is the addition. So the disruption is **not specific to which third 
 added** — the contrast `D46` asked the two chains to draw comes out flat, and it is the
 late third's *presence in a larger set* that fails to preserve its own effect.
 
-The other four chains — the two through {early} and the two through {mid} — hold at every
-rung, but their subsets are the empty set, so they hold trivially and license nothing.
+**The other four chains do not all hold, and the two that break do so at the same rung the
+pair table above already names.** Under both readings the payload records:
+
+| chain | first rung | second rung | endpoint | breaks |
+|---|---|---|---|---|
+| {early} ⊂ {early+mid} ⊂ full | holds | holds | holds | — |
+| {early} ⊂ {early+late} ⊂ full | holds | **fails** | holds | second |
+| {mid} ⊂ {early+mid} ⊂ full | holds | holds | holds | — |
+| {mid} ⊂ {mid+late} ⊂ full | holds | **fails** | holds | second |
+
+The **first** rungs of all four hold trivially — {early} and {mid} silence nothing, so an
+empty set is nested in anything and the row licenses nothing (`D46`). The **second** rungs
+are a different matter: {early+late} ⊂ full and {mid+late} ⊂ full are two of the five
+non-nested pairs in the table above, with subsets of 10 and 8 secrets, and they fail here
+for the same reason they fail there.
+
+Counted across all six chains, the nine distinct rungs reduce to **five whose subset is
+non-degenerate, and four of those five break**. The one that holds is {early+mid} ⊂ full —
+the same single exception the pair table already names, and the same one the
+case-insensitive reading removes.
 
 ### The union of two silencing-nothing thirds silences two secrets
 
@@ -340,9 +360,14 @@ is printed rather than resolved. It is visible in §1's tables — {mid+late}'s 
 falls from 8 to 6 case-insensitively (`January` and `ruby` drop out), and {late}'s from 9
 to 6. The oracle is not touched (`D36`).
 
-At 1.5B the canary is **0 on every M4 arm** and fires only on M2's recorded {late} (2) and
-full band (4). At 3B it is **0 everywhere except {mid+late} real (1)** — the same near-zero
-3B picture M2 recorded.
+At **1.5B** the canary is **0 on every one of M4's eleven new arms**. It fires only on M2's
+recorded rows, and on five of them — {late} (2) and the full band (4) among the layer sets,
+plus the three dose rows `lambda_0.25` (1), `lambda_0.5` (1) and `lambda_0.75` (**6**),
+which `D45` has M4 read and publish beside the lattice. At **3B** it is 0 everywhere except
+M4's {mid+late} (1) and M2's recorded `lambda_0.75` (1) — the same near-zero 3B picture M2
+recorded. *(The dose rows are full-band cells at λ < 1; they are not lattice cells and take
+no part in any set relation, but they are M4 rows under `D45` and are counted here as
+such.)*
 
 **Selectivity holds at every layer set.** Across all seven real layer sets the yardstick —
 the licensed word in the same session — goes 22/25 → **19–24/25** at 0.5B while the secret
