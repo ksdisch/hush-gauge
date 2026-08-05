@@ -159,10 +159,14 @@ instead of re-running them *(PR #16 review F1)*. The deviations table owns this.
 completeness check (25 × 4 per arm, verified against the frozen battery's recorded eval
 split), `D25`'s decode assertion, artifact/lens SHA checks, and the read-back's worst
 residual per edited arm. Because the lattice reads set relations **across two
-payloads**, M4's recorded `environment` block and preflight-resolved edit precision
-must **equal the referenced M2 payload's recorded values, else abort** — `gates/g3.py`'s
-two-payload precedent ("the two payloads record different environments; `D28` requires
-one machine") *(PR #16 review F7)*.
+payloads**, M4's recorded `environment` block must **equal the referenced M2 payload's,
+else abort** — `gates/g3.py`'s two-payload precedent ("the two payloads record different
+environments; `D28` requires one machine") — and, on the same abort, the two payloads'
+`intervention.precision` must agree on **`edit_dtype` and `fallback_used`** *(PR #16
+review F7, scoped by PR #17 review F1: `Precision.payload()` also carries
+`probe_worst_residual`, a per-run measured float — 3.63e-08 / 3.22e-08 / 6.19e-08 across
+M2's scales — so whole-block equality would abort every sweep; the two named fields are
+the arithmetic identity the cross-payload comparison actually needs)*.
 
 ### D46 — The reading: pre-registered rows, both oracles, both units, and the degenerate case
 

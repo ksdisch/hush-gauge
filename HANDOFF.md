@@ -46,11 +46,13 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   candidate**; first permissible use is a future `D42`-admitted brief.
 - **`D44` — the arc closes as answered: not unified at these scales with this
   instrument.** G4 undecided plus A3 incongruent is the fusion premise's outcome, and no
-  design on the table moves A3 (M2's recorded sweeps at 1.5B/3B — full band, single
-  thirds, dose — never fired the causal clause; a *gate-bearing* mute-map effect at 0.5B
+  design on the table moves A3 (M2's recorded sweeps at 1.5B/3B — full band under dose,
+  single thirds and the case-pair span at λ = 1 — never fired the causal clause; a
+  *gate-bearing* mute-map effect at 0.5B
   is excluded by their settled record; 7B is dead in both repos), with one stated
   conditional: a CI-clean union-arm reduction at 1.5B/3B in M4's lattice (≥ 5 of 25
-  secrets silenced, against the 1 the full band achieves on M2's record) re-opens the A3
+  secrets silenced, against the **1** — frozen primary; **0** case-insensitively at
+  1.5B — the full band achieves on M2's record) re-opens the A3
   premise. **No v2.** The kickoff's arc goal itself succeeded — the two repos read as one
   arc whose conclusion is negative. Routing: M4, then the write-up; the LoRA-trained
   "organism arc" is a successor kickoff, not a hush-gauge v2.

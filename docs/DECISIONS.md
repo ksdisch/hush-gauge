@@ -1637,9 +1637,11 @@ scales run the full design** (≈ 6 h measured from M2's per-arm times; `D44`'s 
 stake decides the companion-scale call; 0.5B stays deciding-interest for the flag).
 Runner: `m4_lattice.py` cut from `m2_ablation.py`, `m4_cells.py` cut from `m3_cells.py`;
 payload discipline unchanged, plus — the lattice reads set relations across two payloads
-— M4's recorded `environment` and preflight-resolved edit precision must **equal the
-referenced M2 payload's, else abort** (`gates/g3.py`'s two-payload precedent; PR #16
-review F7).
+— M4's recorded `environment` must **equal the referenced M2 payload's, else abort**
+(`gates/g3.py`'s two-payload precedent), and on the same abort the two payloads'
+`intervention.precision` must agree on **`edit_dtype` and `fallback_used`** — not the
+whole block, which carries the per-run measured `probe_worst_residual` (PR #16 review
+F7 as scoped by PR #17 review F1).
 
 ## D46 — The reading: pre-registered rows, both oracles, both units, the degenerate rule
 
