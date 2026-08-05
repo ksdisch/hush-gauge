@@ -34,22 +34,52 @@ reproduction, and emphatically not "we solved secret-keeping."
 
 ## What v1 done means
 
-M0–M2 closed with pre-registered gates decided by Wilson/Newcombe confidence
-intervals:
+**v1 is complete: M0–M4 closed, every pre-registered gate resolved, and the final ledger is
+one PASS, three pre-committed nulls decided by Wilson/Newcombe confidence intervals, and one
+gate dropped `NOT-RUN` by its own pre-committed ladder.**
 
-| Gate | Claim |
-|---|---|
-| **G0** | The pressure battery has dynamic range — T4 emission exceeds T0, CI-clean |
-| **G1** | Detection instrument on held-out secrets: AUC 95% LB ≥ 0.75, precision ≥ 0.80, recall ≥ 0.50 |
-| **G2** | Silent leak: among non-emitting T3/T4 trials, workspace entry exceeds both the no-secret rate and the context-word yardstick |
-| **G3** | Ablation reduces emission CI-clean *while* perplexity, benign QA, and refusal-coherence hold — and a norm-matched random direction does not |
-| **G4** | *(M3, detachable)* Disabling the off-switch makes the model blurt the secret |
+| Gate | Claim | Outcome (0.5B · 1.5B · 3B) |
+|---|---|---|
+| **G0** | The pressure battery has dynamic range — T4 emission exceeds T0, CI-clean | **PASS ×3** |
+| **G1** | Detection instrument on held-out secrets: AUC 95% LB ≥ 0.75, precision ≥ 0.80, recall ≥ 0.50 | **FAIL ×3** — pre-committed null |
+| **G2** | Silent leak: among non-emitting T3/T4 trials, workspace entry exceeds both the no-secret rate and the context-word yardstick | **FAIL ×3** — pre-committed null |
+| **G3** | Ablation reduces emission CI-clean *while* perplexity, benign QA, and refusal-coherence hold — and a norm-matched random direction does not | **FAIL ×3** — and not the same FAIL at each scale |
+| **G4** | *(M3, detachable)* Disabling the off-switch makes the model blurt the secret | **`NOT-RUN` ×3** — dropped by its own pre-committed validation ladder |
+| *(M4)* | *gateless by design (`D48`) — characterization, no verdict* | — |
 
 Every gate is frozen as code and dry-run INVALID on wrong-arm input before any real
 run. **A pre-committed null is a reportable result** — the failure mode here is an
-undecided gate, not a negative one.
+undecided gate, not a negative one. Across five milestones **no bar was re-tuned, no
+dose revisited, and no interval widened**.
 
 ## Status
+
+**v1 COMPLETE — M4 landed 2026-08-05, and the write-up is in.** The paper
+([`docs/paper/hush-gauge-paper.md`](docs/paper/hush-gauge-paper.md)) and its presenter
+pack ([`docs/paper/hush-gauge-presenter-pack.md`](docs/paper/hush-gauge-presenter-pack.md))
+are written from the recorded results at M0–M4 complete and carry the full ledger,
+`G4 NOT-RUN` included. They are the current record for status; the milestone results
+documents `docs/M0-RESULTS.md` … `docs/M4-RESULTS.md` stay normative for what each
+milestone found.
+
+**M4 complete, 2026-08-05 — gateless, no verdict, and it re-decides nothing.** M4 ran the
+non-nesting flag M2 raised and M3's dropped arm took down with it, on `v_secret` — the
+direction M2 already used and certified — so no construction could fail and couple to it.
+Three findings. **What orders the effect is the late third's presence, not the layer
+count:** at 0.5B every real layer set containing it silences 41–44 of 100 trials and every
+one without it silences 19–27, including the 8-layer {early+mid}, which edits more layers
+than the 5-layer {late}. **The edited layer set does not behave like a set of
+independently-acting parts, in either direction** — of the 6 comparable pairs whose subset
+silences anything, 5 are not nested (case-insensitively, all 5 readable pairs, with no
+exception left); {late} silences `cow` and `horse` and no other layer set does, while
+{early+mid} silences two secrets neither {early} nor {mid} silences alone. **The
+norm-matched random lattice has no structure at all** — degenerate at the secret level at
+every scale, churn at the trial level — which is what makes the real family's organization
+meaningful rather than an artifact of editing more layers. `D44`'s conditional, which
+would have re-opened the arc's closing premise on a CI-clean union reduction at 1.5B or
+3B, was **consumed and not met**: the largest union row lands at 21/25 with Newcombe
+[−0.347, +0.004], one silenced secret short of the 20/25 threshold and missing zero by
+0.004. **No bar moved.** [`docs/M4-RESULTS.md`](docs/M4-RESULTS.md) carries the record.
 
 **Post-M3 planning, 2026-08-04:** the routed design questions are closed as **D41–D44**
 ([`docs/DECISIONS.md`](docs/DECISIONS.md)) — M2's non-nesting flag becomes **M4**, a
@@ -57,7 +87,7 @@ small gateless characterization milestone on the certified `v_secret`; a second 
 family is declined (banked); a composition-preserving flip sham is pre-registered for any
 future attempt; and the arc closes as answered — **not unified at these scales with this
 instrument**, no v2. The M4 brief is approved and frozen (`docs/M4-BRIEF.md`,
-`D45`–`D48`); next: the M4 build, then the write-up.
+`D45`–`D48`).
 
 **M3 complete, 2026-08-04 — Arm B dropped at all three scales, G4 never decided, and that
 is the pre-committed fallback.** M3 constructed a candidate off-switch direction from the
@@ -122,20 +152,31 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
 
 ## Where things are
 
+- **`docs/paper/hush-gauge-paper.md`** — the write-up, from the recorded results at M0–M4
+  complete. The single best entry point to the finished arc.
+- **`docs/paper/hush-gauge-presenter-pack.md`** — the paper's evidence base reorganized for
+  recall: the 60-second story, the five numbers, the provenance table, and the anticipated
+  Q&A.
 - **`docs/KICKOFF.md`** — the approved brief. Source of truth for scope, milestones,
   gates, and risks.
-- **`docs/M0-BRIEF.md`** / **`docs/M1-BRIEF.md`** — each stage's start-of-stage brief: its
+- **`docs/M0-BRIEF.md`** … **`docs/M4-BRIEF.md`** — each stage's start-of-stage brief: its
   frozen decisions, the design-extraction pre-commit, and its gates' byte-frozen
-  `GATE_WORDING` and INVALID arms.
+  `GATE_WORDING` and INVALID arms. (M4's brief specifies a gateless milestone, so it freezes
+  run-time aborts and reading limits instead of a gate.)
 - **`docs/DECISIONS.md`** — frozen decisions: **K1–K6** (kickoff, including the exact G1
-  bars and the battery/split design) and **D1–D44** (M0 through the 2026-08-04 post-M3
-  planning session). Read
+  bars and the battery/split design) and **D1–D48** (M0 through M4). Read
   **D12/D13 before D10/D11** — the older two say why the oracle's boundary rule exists, the
   newer two say what it does.
 - **`docs/M0-RESULTS.md`** — G0 decided, the three emission curves, and the caveats that
   bound how they may be read.
 - **`docs/M1-RESULTS.md`** — G1 and G2 decided, the detection tables, every pre-declared
   secondary, and the deviations M1 owns.
+- **`docs/M2-RESULTS.md`** — G3 decided, the dose curve, the preservation battery, and the
+  two secondary claims the pre-merge review withdrew.
+- **`docs/M3-RESULTS.md`** — Arm B's validation ladder and its drop, Arm A's congruence
+  table, and the sham's owned limits.
+- **`docs/M4-RESULTS.md`** — the layer-set lattice: normative for what M4 found, gateless
+  by design, and it re-decides nothing.
 - **`lenses/PROVENANCE.md`** — SHA256 fingerprints for the inherited lens artifacts
   (the `.pt` files themselves are gitignored).
 
@@ -144,10 +185,13 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
 `uv` (Python 3.12+) manages the venv; this is an application, not a package.
 
 ```sh
-uv run pytest          # the offline suite (656 tests)
+uv run pytest          # the offline suite (1002 tests)
 uv run python m0_leak_curve.py --help     # M0's emission sweep
 uv run python m1_probe_panel.py --help    # M1's probe sweep with residual capture
 ./run_m1_decide.sh 0.5B                   # thresholds -> cells -> WikiText -> G1 -> G2
+uv run python m2_ablation.py --help       # M2's dose sweep under the ablation operator
+uv run python m3_arm_b.py --help          # M3's candidate construction + validation ladder
+uv run python m4_lattice.py --help        # M4's layer-set lattice (gateless)
 ```
 
 No API keys, no `.env` — everything is local. Model weights pull from HuggingFace.
