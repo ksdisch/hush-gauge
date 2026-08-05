@@ -2,7 +2,8 @@
 
 _Last updated: 2026-08-04 (**post-M3 planning session complete: `D41`–`D44` settled and
 recorded. M4 — the gateless non-nesting characterization on `v_secret` — is next; then
-the write-up. No v2: `D44` closes the unification question against at these scales**)_
+the write-up. No v2: `D44` closes the unification question **against**, at these scales
+with this instrument**)_
 
 ## What was just done (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
 
@@ -16,10 +17,14 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   on a direction that needs no ladder. Core content: the layer-set lattice M2 never ran
   ({mid+late}, {early+late}, {early+mid} beside the recorded single thirds and full
   band), plus the same lattice under a fresh `D31`-protocol random direction — which
-  carries `D40`.3's generalization question (generic edit churn vs
+  carries the **churn half** of `D40`.3's generalization question (generic edit churn vs
   content-direction-specific, with a pre-registered `DEGENERATE` rule for empty or
-  singleton silenced sets — the realized prior at 0.5B/3B — and a mandatory trial-level
-  companion row) with zero candidate risk. Both oracle readings
+  singleton silenced sets — the realized prior at **every** scale on M2's record, so the
+  mandatory trial-level companion row carries the question) with zero candidate risk;
+  the second-constructed-direction half stays **open**, banked behind `D42`'s revisit
+  conditions. Each lattice arm also
+  reports the secret-level emission contrast vs λ = 0 with its Newcombe interval
+  (descriptive; `D44` consumes it). Both oracle readings
   pre-registered per row; 0.5B is deciding-interest; fresh tier texts named-and-declined
   (bankable). The M4 brief freezes the rest before any run.
 - **`D42` — a second candidate family is declined, banked.** Three conjunctive revisit
@@ -31,9 +36,11 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   not a stronger candidate. `K5`'s status stays *unknown, not absent*.
 - **`D43` — the composition-preserving within-triple flip sham is pre-registered now**,
   while no candidate is pending and nothing can be tuned against it: per-triple label
-  flip stratified within tier at ⌈n/2⌉ / ⌊n/2⌋ with odd-stratum residues alternated so
-  the overall balance stays exact (per-tier exact iff the stratum is even — at 3B both
-  strata are odd, 13/23), composition-matched exactly, expected retained contrast zero,
+  flip stratified within tier at ⌈n/2⌉ / ⌊n/2⌋, odd strata paired in frozen tier order
+  with each pair's residue sides dealt by a frozen-seeded fair coin, so the overall
+  balance stays exact and every triple's flip probability is exactly 1/2 (per-tier exact
+  iff the stratum is even — at 3B both strata are odd, 13/23), composition-matched
+  exactly, expected retained contrast **exactly zero**,
   and the `sham.composition` block records the realized per-tier split. It does **not**
   fix the frame confound — a sham cannot control for what it does not contain. **Barred from retroactive verdict-bearing use on M3's recorded
   candidate**; first permissible use is a future `D42`-admitted brief.
@@ -42,7 +49,8 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   design on the table moves A3 (M2's recorded sweeps at 1.5B/3B — full band, single
   thirds, dose — never fired the causal clause; a *gate-bearing* mute-map effect at 0.5B
   is excluded by their settled record; 7B is dead in both repos), with one stated
-  conditional: a CI-clean union-arm reduction at 1.5B/3B in M4's lattice re-opens the A3
+  conditional: a CI-clean union-arm reduction at 1.5B/3B in M4's lattice (≥ 5 of 25
+  secrets silenced, against the 1 the full band achieves on M2's record) re-opens the A3
   premise. **No v2.** The kickoff's arc goal itself succeeded — the two repos read as one
   arc whose conclusion is negative. Routing: M4, then the write-up; the LoRA-trained
   "organism arc" is a successor kickoff, not a hush-gauge v2.
