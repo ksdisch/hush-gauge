@@ -1,9 +1,9 @@
 # HANDOFF.md — hush-gauge
 
-_Last updated: 2026-08-04 (**the M4 brief is written — `docs/M4-BRIEF.md`, PR #16,
-`D45`–`D48` Proposed — and awaits Kyle's approval; the PR #14 review's F6–F13 are folded
-into the ledger (PR #15). After approval: the M4 build, then the write-up. No v2: `D44`
-closes the unification question **against**, at these scales with this instrument**)_
+_Last updated: 2026-08-04 (**the M4 brief is APPROVED & FROZEN — `docs/M4-BRIEF.md`,
+`D45`–`D48` mirrored into the ledger; next: the M4 build, then the write-up.** No v2:
+`D44` closes the unification question **against**, at these scales with this
+instrument)_
 
 ## What was just done (2026-08-04, evening) — the post-M3 planning session: `D41`–`D44`
 
@@ -756,14 +756,15 @@ Full record: `~/.claude/reviews/hush-gauge/2026-07-29-docs-m0-brief.md` and
 
 ## Immediate next move
 
-**Kyle approves (or amends) `docs/M4-BRIEF.md`** — written 2026-08-04 (PR #16, after its
-adversarial review), freezing `D45`–`D48` as Proposed: the eleven-arm design (the λ = 0
-identity arm + three real-direction union arms + the seven-arm random lattice under one
-fresh seed-20260806 draw family), all three scales (~6 h), both oracle readings per row,
-the commissioned per-arm Newcombe contrast row, and the gateless deviation owned
-(`D37`.3 precedent). On approval `D45`–`D48` mirror into `docs/DECISIONS.md` and the
-brief freezes. After M4: the write-up (`D44`'s routing), with the negative unification
-as the arc's honest headline.
+**The M4 build.** `docs/M4-BRIEF.md` was **approved by Kyle 2026-08-04** ("Approved.")
+and is frozen; `D45`–`D48` are mirrored into `docs/DECISIONS.md`, and both reviews'
+nice-to-have follow-ups (PR #15 F5–F8, PR #16 F5–F8) are folded in on that recorded
+agreement. The build is fully specified: the eleven-arm design (the λ = 0 identity arm
++ three real-direction union arms + the seven-arm random lattice under one fresh
+seed-20260806 draw family), all three scales (~6 h), both oracle readings per row, the
+commissioned per-arm Newcombe contrast row, and the gateless deviation owned (`D37`.3
+precedent; `D14`-proven integrity aborts stand in). After M4: the write-up (`D44`'s
+routing), with the negative unification as the arc's honest headline.
 
 **Run-config note:** the session after the brief's approval is the **M4 build** — small,
 fully specified, one runner cut from a certified predecessor — **Opus 5 at `high`**:

@@ -232,6 +232,12 @@ exact gate spec frozen at M3 start-of-stage, before any M3 run.
 Pressure generalization: hold out one attack tier entirely at calibration time, test
 whether detection transfers. (The 7B variant is dead — see Scope/Out.)
 
+> **⚠ Post-S1 annotation (2026-08-04):** this phased plan is **closed as approved** —
+> Milestone 0 through Milestone 3 plus S1, annotations only. Post-M3 milestones are
+> recorded in `docs/DECISIONS.md`: **M4** = `D41`, its approved brief `D45`–`D48`
+> (`docs/M4-BRIEF.md`). *(Annotation only — the plan's own text is left as approved;
+> PR #15 review F8.)*
+
 ## Repo structure (dim-stage pattern)
 
 ```
