@@ -401,7 +401,7 @@ like-for-like and no comparison is drawn from them here.
 | `D46`'s forced branch: at 0.5B at least one rung of `{late} ⊆ {mid+late} ⊆ full` fails | both fail | *(degenerate)* | *(degenerate)* | ✅ |
 | the `DEGENERATE` class at 1.5B/3B (`D46` after PR #16 F8) | — | 6/7 real, 7/7 random | 7/7 real, 7/7 random | ✅ |
 | "the 0.5B unions could land anywhere" (Risks) | chain-breaking at **both** edges, **plus** new non-nesting | — | — | ✅ two of the three named outcomes at once |
-| cost ≈ 0.8 / 2.0 / 3.0 h | 0.78 h | 1.82 h | 2.89 h | ✅ 5.49 h against ≈ 6 h |
+| cost ≈ 0.8 / 2.0 / 3.0 h | 0.76 h | 1.82 h | 2.88 h | ✅ 5.46 h against ≈ 6 h |
 
 Every prediction M4 put to a test reproduced. `D46`'s remaining branch — the one where a
 chain holds at both rungs — is **foreclosed** at 0.5B by transitivity (the brief said so
@@ -455,7 +455,7 @@ Nothing here is patched, and nothing re-opens `G0`–`G4`.
 
 |  | 0.5B | 1.5B | 3B |
 |---|---|---|---|
-| wall-clock (11 arms × 100 trials) | 46.5 min | 109.4 min | 173.3 min |
+| wall-clock (11 arms × 100 trials) | 45.3 min | 109.5 min | 172.7 min |
 | band (layers) | L9–L21 (13) | L11–L24 (14) | L14–L32 (19) |
 | thirds early / mid / late | 4 / 4 / 5 | 4 / 4 / 6 | 6 / 6 / 7 |
 | `repetition_penalty` (`D25`, asserted) | 1.1 | 1.1 | 1.05 |
@@ -468,7 +468,7 @@ Nothing here is patched, and nothing re-opens `G0`–`G4`.
 | M2 reference SHA256 | `460c070412f7…` | `c01b7a8d15a2…` | `b49a4548cb4b…` |
 | lens SHA256 | `ffd6c9909838…` | `05143b643874…` | `e8b922ae747c…` |
 
-Total M4 sweep wall-clock **5.49 h** over **3,300 trials** across three runs, against the
+Total M4 sweep wall-clock **5.46 h** over **3,300 trials** across three runs, against the
 brief's ≈ 6 h estimate. No capture, no construction, no preservation battery, no gate
 sweep — `D45`'s cost table, as budgeted.
 

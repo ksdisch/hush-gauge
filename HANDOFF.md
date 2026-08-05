@@ -40,7 +40,7 @@ conditional.
 real data; 300 of 300 λ = 0 trials byte-identical to M0, and byte-identical to **M2's**
 λ = 0 on every shared trial, which is the licence for reading M2's edited arms from the
 SHA-referenced payload (`D45`); `D27`'s read-back held over 2,344,517 checks, worst
-residual 1.21e-07 against a 1e-4 tolerance; 5.49 h of sweep against the brief's ≈ 6 h.
+residual 1.21e-07 against a 1e-4 tolerance; 5.46 h of sweep against the brief's ≈ 6 h.
 
 **Two process notes worth carrying.** (1) A first cut of `m4_cells.py` read only the four
 λ = 1 real layer sets from M2 and missed that `D45` also names its **dose rows** — caught

@@ -307,7 +307,7 @@
   "random_full"
  ],
  "gate": "none \u2014 D48: M4 is gateless. Under D25's deterministic decode a set-structure fact has no sampling variance for a CI to bound, and manufacturing a verdict invites bar-shaping. The integrity block below is what stands in for it.",
- "elapsed_seconds": 6566.1,
+ "elapsed_seconds": 6569.3,
  "trials": [
   {
    "arm": "lambda_0",
@@ -75391,8 +75391,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -75411,8 +75411,8 @@
          "ruby"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -75431,8 +75431,8 @@
          "Japan"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -75447,8 +75447,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -75473,8 +75473,8 @@
          "duck"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "mid",
@@ -75493,8 +75493,8 @@
          "Japan"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -75513,8 +75513,8 @@
          "ruby"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -75539,8 +75539,8 @@
          "duck"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "late",
@@ -75559,8 +75559,8 @@
          "Japan"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -75579,8 +75579,8 @@
          "Japan"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -75603,8 +75603,8 @@
          "Japan"
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -75633,8 +75633,8 @@
          "Japan"
         ],
         "nested": false,
-        "subset_degenerate": false,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": false,
+        "superset_secret_level_degenerate": true
        }
       ],
       "trial": [
@@ -75852,8 +75852,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -76141,8 +76141,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -76442,8 +76442,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -76667,8 +76667,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -76980,8 +76980,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "mid",
@@ -77293,8 +77293,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -77594,8 +77594,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -77927,8 +77927,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "late",
@@ -78244,8 +78244,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -78553,8 +78553,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -78914,8 +78914,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -79307,8 +79307,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": false,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": false,
+        "superset_secret_level_degenerate": true
        }
       ]
      },
@@ -79327,8 +79327,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -79347,8 +79347,8 @@
          "ruby"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -79363,8 +79363,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -79379,8 +79379,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -79405,8 +79405,8 @@
          "duck"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "mid",
@@ -79421,8 +79421,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -79441,8 +79441,8 @@
          "ruby"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -79467,8 +79467,8 @@
          "duck"
         ],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "late",
@@ -79483,8 +79483,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -79499,8 +79499,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -79519,8 +79519,8 @@
         ],
         "superset_only": [],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -79545,8 +79545,8 @@
         ],
         "superset_only": [],
         "nested": false,
-        "subset_degenerate": false,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": false,
+        "superset_secret_level_degenerate": true
        }
       ],
       "trial": [
@@ -79764,8 +79764,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -80053,8 +80053,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -80346,8 +80346,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -80571,8 +80571,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -80884,8 +80884,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "mid",
@@ -81189,8 +81189,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -81482,8 +81482,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -81811,8 +81811,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": false
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": false
        },
        {
         "subset": "late",
@@ -82112,8 +82112,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -82413,8 +82413,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -82766,8 +82766,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -83151,8 +83151,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": false,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": false,
+        "superset_secret_level_degenerate": true
        }
       ]
      }
@@ -83172,7 +83172,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_mid",
          "full"
@@ -83192,7 +83192,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_late",
          "full"
@@ -83210,7 +83210,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_mid",
          "full",
          "mid"
@@ -83230,7 +83230,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "mid"
         ]
@@ -83249,7 +83249,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_late",
          "full",
          "late"
@@ -83269,7 +83269,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "late"
         ]
@@ -83291,7 +83291,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_mid",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -83308,7 +83312,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_late",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -83325,7 +83333,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_mid",
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -83342,7 +83354,10 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -83359,7 +83374,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_late",
+         "full",
+         "late"
+        ]
        },
        {
         "chain": [
@@ -83376,7 +83395,10 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "late"
+        ]
        }
       ]
      },
@@ -83394,7 +83416,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_mid",
          "full"
@@ -83414,7 +83436,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_late",
          "full"
@@ -83432,7 +83454,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_mid",
          "full",
          "mid"
@@ -83452,7 +83474,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "mid"
         ]
@@ -83471,7 +83493,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_late",
          "full",
          "late"
@@ -83491,7 +83513,7 @@
         "breaks": [
          "second"
         ],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "late"
         ]
@@ -83513,7 +83535,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_mid",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -83530,7 +83556,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_late",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -83547,7 +83577,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_mid",
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -83564,7 +83598,10 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -83581,7 +83618,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_late",
+         "full",
+         "late"
+        ]
        },
        {
         "chain": [
@@ -83598,7 +83639,10 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "late"
+        ]
        }
       ]
      }
@@ -83630,8 +83674,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -83646,8 +83690,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -83662,8 +83706,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -83678,8 +83722,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -83694,8 +83738,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -83710,8 +83754,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -83726,8 +83770,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -83742,8 +83786,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -83758,8 +83802,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -83774,8 +83818,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -83790,8 +83834,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -83806,8 +83850,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        }
       ],
       "trial": [
@@ -83953,8 +83997,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -84110,8 +84154,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -84255,8 +84299,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -84380,8 +84424,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -84525,8 +84569,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -84654,8 +84698,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -84831,8 +84875,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -85020,8 +85064,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -85197,8 +85241,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -85342,8 +85386,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -85511,8 +85555,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -85680,8 +85724,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        }
       ]
      },
@@ -85700,8 +85744,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -85716,8 +85760,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -85732,8 +85776,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -85748,8 +85792,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -85764,8 +85808,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -85780,8 +85824,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -85796,8 +85840,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -85812,8 +85856,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -85828,8 +85872,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -85844,8 +85888,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -85860,8 +85904,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -85876,8 +85920,8 @@
         "subset_only": [],
         "superset_only": [],
         "nested": true,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        }
       ],
       "trial": [
@@ -86023,8 +86067,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -86180,8 +86224,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early",
@@ -86325,8 +86369,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -86450,8 +86494,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -86595,8 +86639,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid",
@@ -86724,8 +86768,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -86901,8 +86945,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -87090,8 +87134,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "late",
@@ -87267,8 +87311,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_mid",
@@ -87412,8 +87456,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "early_late",
@@ -87581,8 +87625,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        },
        {
         "subset": "mid_late",
@@ -87750,8 +87794,8 @@
          ]
         ],
         "nested": false,
-        "subset_degenerate": true,
-        "superset_degenerate": true
+        "subset_secret_level_degenerate": true,
+        "superset_secret_level_degenerate": true
        }
       ]
      }
@@ -87771,7 +87815,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_mid",
          "full"
@@ -87789,7 +87833,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_late",
          "full"
@@ -87807,7 +87851,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_mid",
          "full",
          "mid"
@@ -87825,7 +87869,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "mid",
          "mid_late"
@@ -87843,7 +87887,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_late",
          "full",
          "late"
@@ -87861,7 +87905,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "late",
          "mid_late"
@@ -87884,7 +87928,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_mid",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -87901,7 +87949,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_late",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -87918,7 +87970,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_mid",
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -87935,7 +87991,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "mid",
+         "mid_late"
+        ]
        },
        {
         "chain": [
@@ -87952,7 +88012,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_late",
+         "full",
+         "late"
+        ]
        },
        {
         "chain": [
@@ -87969,7 +88033,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "late",
+         "mid_late"
+        ]
        }
       ]
      },
@@ -87987,7 +88055,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_mid",
          "full"
@@ -88005,7 +88073,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early",
          "early_late",
          "full"
@@ -88023,7 +88091,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_mid",
          "full",
          "mid"
@@ -88041,7 +88109,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "mid",
          "mid_late"
@@ -88059,7 +88127,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "early_late",
          "full",
          "late"
@@ -88077,7 +88145,7 @@
         "second_rung_nested": true,
         "endpoint_nested": true,
         "breaks": [],
-        "degenerate_rows": [
+        "secret_level_degenerate_rows": [
          "full",
          "late",
          "mid_late"
@@ -88100,7 +88168,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_mid",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -88117,7 +88189,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early",
+         "early_late",
+         "full"
+        ]
        },
        {
         "chain": [
@@ -88134,7 +88210,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_mid",
+         "full",
+         "mid"
+        ]
        },
        {
         "chain": [
@@ -88151,7 +88231,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "mid",
+         "mid_late"
+        ]
        },
        {
         "chain": [
@@ -88168,7 +88252,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "early_late",
+         "full",
+         "late"
+        ]
        },
        {
         "chain": [
@@ -88185,7 +88273,11 @@
          "first",
          "second"
         ],
-        "degenerate_rows": []
+        "secret_level_degenerate_rows": [
+         "full",
+         "late",
+         "mid_late"
+        ]
        }
       ]
      }

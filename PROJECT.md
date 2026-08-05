@@ -107,9 +107,9 @@ models, built on dim-stage's validated instrument. Never "we solved secret-keepi
 
 ## Current status
 
-**All four milestones closed; `D41` (2026-08-04) adds M4 — a small gateless
-characterization milestone on `v_secret` — as the one outstanding measurement debt before
-the write-up.** G0 PASSES
+**All four gated milestones closed, and M4 — `D41`'s small gateless characterization
+milestone on `v_secret` — is COMPLETE as of 2026-08-05, so the project's one outstanding
+measurement debt is paid and only the write-up remains.** G0 PASSES
 (`docs/M0-RESULTS.md`); G1 and G2 both FAIL as pre-committed nulls
 (`docs/M1-RESULTS.md`); **G3 FAILS on all three scales** (`docs/M2-RESULTS.md`) — also
 pre-committed nulls, and not the same null three times: at 0.5B the causal and specificity
@@ -184,7 +184,7 @@ inputs.
    arc closed — not unified at these scales with this instrument, no v2.
 
 14. ~~The M4 build~~ — **done 2026-08-05**; `m4_cells.py` + `m4_lattice.py` + 29 new tests,
-   eleven arms × 100 trials × three scales in 5.49 h, and `docs/M4-RESULTS.md`. Gateless
+   eleven arms × 100 trials × three scales in 5.46 h, and `docs/M4-RESULTS.md`. Gateless
    (`D48`), no verdict, no bar moved. `D48`'s five aborts all held and none fired on real
    data; 300 of 300 λ = 0 trials byte-identical to M0 and to M2's λ = 0.
 
