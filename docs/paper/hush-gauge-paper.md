@@ -515,8 +515,9 @@ deciding**. Two run-time certifications, both pre-registered:
   3.9 × 10⁻⁸ (span)**, against a tolerance of 10⁻⁴. The licensed on-device fp32 path held
   at every scale and the CPU-float64 fallback never fired. *(M2's own worst-case sentence
   is scoped to those three arms; the largest per-arm residual recorded anywhere in M2's
-  0.5B payload is 1.26 × 10⁻⁷, on the late-third arm. M4's read-back figure below is the
-  study's recorded global.)*
+  0.5B payload is 1.26 × 10⁻⁷, on the late-third arm — which is also the largest recorded
+  on any read-back arm in the study, M2, M3 and M4 alike. M2's ten arms carry 2,763,538
+  checks across the three scales, the most of any milestone.)*
 
 ![M2 dose curve](fig3-dose-curve.png)
 
@@ -622,8 +623,9 @@ operator, layers, positions and dose.
 *The canary fired, and it cost two secondaries.* `case_variant_miss` is non-zero on
 **edited arms only** — 9 of 9 arms at 0.5B, 6 of 9 at 1.5B, 1 of 9 at 3B — and **exactly
 zero on every unedited (λ = 0) arm at every scale**. The norm-matched random arm is one
-of the nine that fire at 0.5B (1 occurrence), so the counter tracks *rank-one late-band
-editing*, not the real direction specifically. Ablation systematically pushes reveals
+of the nine that fire at 0.5B (1 occurrence) — and M4's fresh random family fires **9
+times across five of its seven 0.5B arms** while its λ = 0 arm stays at 0 — so the
+counter tracks *rank-one late-band editing*, not the real direction specifically. Ablation systematically pushes reveals
 into an ALL-CAPS shape the frozen form set does not count; the shapes are fully explicit
 (`The complete word is "JANUARY."`, whose whole cell scored non-emitting). Re-scoring the
 recorded replies case-insensitively under the identical boundary rules moves 7 of 30
@@ -758,10 +760,11 @@ a deterministic decode rule a set-structure fact has no sampling variance for an
 interval to bound, and manufacturing a verdict would invite exactly the bar-shaping the
 house rules forbid. What stands in for a gate is five run-time aborts, each proven
 against the runner's unmodified output; all five held, and **none fired on real data**.
-The read-back held on every λ > 0 edit over **2,344,517 checks** across the three scales,
-worst residual **1.21 × 10⁻⁷** against the same `READBACK_TOL` of 10⁻⁴ — three orders of
-magnitude of headroom, and the study's recorded global that §4.3's scoping note points
-at.
+M4's own read-back held on every λ > 0 edit over **2,344,517 checks** across its three
+scales, worst residual **1.21 × 10⁻⁷** against the same `READBACK_TOL` of 10⁻⁴ — three
+orders of magnitude of headroom. (Scoped to M4, as `docs/M4-RESULTS.md` scopes it: M2's
+arms carry more checks still, and the study's single largest residual is M2's, quoted in
+§4.3.)
 
 Per scale, eleven new arms over the same paired T4 eval population: a λ = 0 identity arm
 byte-asserted against M0, the three real-direction pairwise-union arms at λ = 1, and a
