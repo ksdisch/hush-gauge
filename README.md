@@ -34,8 +34,9 @@ reproduction, and emphatically not "we solved secret-keeping."
 
 ## What v1 done means
 
-**v1 is complete: M0–M4 closed, every pre-registered gate decided by Wilson/Newcombe
-confidence intervals, and the final ledger is four nulls and a `NOT-RUN`.**
+**v1 is complete: M0–M4 closed, every pre-registered gate resolved, and the final ledger is
+one PASS, three pre-committed nulls decided by Wilson/Newcombe confidence intervals, and one
+gate dropped `NOT-RUN` by its own pre-committed ladder.**
 
 | Gate | Claim | Outcome (0.5B · 1.5B · 3B) |
 |---|---|---|
