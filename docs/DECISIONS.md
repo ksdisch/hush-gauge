@@ -1423,8 +1423,13 @@ rule):
   random arm silences 15 trials and induces 19 on a 63/100 baseline — churn with no set
   structure); secret-level stays the deciding-interest unit for the real direction, per
   `D1`. The **churn half** of `D40`.3's question is thereby recovered with zero
-  candidate risk; the content-generalization half needs a second content direction and
-  is banked behind `D42` *(PR #14 review F7)*.
+  candidate risk. The other half — whether the band structure reproduces for a second
+  **constructed, non-random** direction (`D40`.3's original object was Arm B's
+  candidate; "constructed" is the operative property, not the direction being any
+  word's own `v_w`) — remains **open**: a future `D42`-admitted candidate would answer
+  it and nothing short of one is commissioned, so it is banked behind `D42`'s revisit
+  conditions rather than answered *(PR #14 review F7, as defined by PR #15 review
+  F4)*.
 - **Gateless, the `D37`.3 precedent.** Under `D25`'s deterministic decode a set-structure
   fact has no sampling variance for a CI to bound, and manufacturing a gate would invite
   the bar-shaping the house forbids. M4 is the project's first gateless *milestone*; its
@@ -1440,10 +1445,14 @@ rule):
   reading would under-report the thing under test. `D36` stands: the form set is
   untouched.
 - **0.5B is deciding-interest.** The non-nesting is a 0.5B fact — at 1.5B and 3B the
-  two arms' silenced sets are **nested** (∅ ⊂ {`Japan`} and {`duck`} = {`duck`}), so
-  there is no non-nesting to characterize there *(PR #14 review F6 — the earlier "cells
-  do not separate" was false at 1.5B on the counts; the set fact is the one that
-  matters)*. Companion arms at the other scales are the M4 brief's call on cost.
+  recorded late-third and full-band silenced sets hold 0–1 secrets each (frozen primary
+  ∅ vs {`Japan`} and {`duck`} vs {`duck`}; case-insensitively at 1.5B both are ∅): the
+  empty-or-singleton class this decision's own rule reports `DEGENERATE`, so there is
+  **no set structure to read** at those scales and the flag is *measurable* only at
+  0.5B. That is a statement about where the phenomenon has support on the record, not a
+  demonstrated absence of non-nesting at scale *(PR #14 review F6, as sharpened by
+  PR #15 review F1 — the earlier "cells do not separate" was false at 1.5B on the
+  counts)*. Companion arms at the other scales are the M4 brief's call on cost.
 
 **Named and declined, bankable:** fresh tier texts (would answer text-generality, but
 requires a new `D1`-rule roster-disjoint certification and has no scoped consumer); any
@@ -1509,7 +1518,10 @@ triple to each side — so the overall split stays exact wherever `|S|` is even 
 every triple's with-secret member is equally likely to land on either side *(PR #14
 review F11 — the alternation rule this replaces made the residue side deterministic,
 which biased `E[s_i]` to `r_j/n_j` in odd strata and falsified the zero-expectation
-claim below at 3B)*. Per-tier balance is exact **iff the stratum is even** — at M3's
+claim below at 3B)*. An unpaired odd stratum — possible only when `|S|` is odd, which
+no realized scale has — takes its residue side from its own frozen-seeded fair coin,
+keeping every triple at exactly 1/2 with the overall split then off by exactly one
+triple *(PR #15 review F3)*. Per-tier balance is exact **iff the stratum is even** — at M3's
 realized composition that is both strata at 0.5B (T1/T2 = 12/68) and 1.5B (70/84),
 while at 3B **both strata are odd** (13/23), so per-tier balance there is off by one
 triple per stratum with the two residues cancelling overall (`|S|` = 36, even). Both

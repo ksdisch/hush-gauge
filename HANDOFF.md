@@ -21,7 +21,8 @@ settled by Kyle ("I approve all of your recommendations") and recorded in
   content-direction-specific, with a pre-registered `DEGENERATE` rule for empty or
   singleton silenced sets — the realized prior at **every** scale on M2's record, so the
   mandatory trial-level companion row carries the question) with zero candidate risk;
-  the content-generalization half stays banked behind `D42`. Each lattice arm also
+  the second-constructed-direction half stays **open**, banked behind `D42`'s revisit
+  conditions. Each lattice arm also
   reports the secret-level emission contrast vs λ = 0 with its Newcombe interval
   (descriptive; `D44` consumes it). Both oracle readings
   pre-registered per row; 0.5B is deciding-interest; fresh tier texts named-and-declined

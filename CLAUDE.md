@@ -146,8 +146,9 @@ arc (`D41`–`D44` in `docs/DECISIONS.md`, all approved by Kyle):** **`D41`** �
 non-nesting flag gets **M4**, a small **gateless** characterization milestone on the
 already-certified `v_secret`: the layer-set lattice ({mid+late}, {early+late},
 {early+mid} beside the recorded single thirds and full band) plus the same lattice under
-a fresh `D31`-protocol random direction, which carries `D40`.3's generalization question
-with zero candidate risk; both oracle readings per row; 0.5B deciding-interest; fresh
+a fresh `D31`-protocol random direction, which carries the churn half of `D40`.3's
+generalization question with zero candidate risk; both oracle readings per row; 0.5B
+deciding-interest; fresh
 texts named-and-declined. **`D42`** — a second candidate family is **declined, banked**
 behind three conjunctive revisit conditions (frame-matched construction, `D43`'s sham, a
 consumer question surviving `D44`). **`D43`** — the composition-preserving,
