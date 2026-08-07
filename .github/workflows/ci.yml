@@ -1,6 +1,6 @@
 # Runs the offline test suite on push to main and on PRs.
-# The suite needs no API key, downloads no models, and makes no paid calls —
-# that's by design; it gates everything that touches the frozen substrate.
+# "Offline" means no API key and no paid calls — it does reach the HuggingFace
+# Hub for the three pinned tokenizer/config fetches the oracle tests need.
 name: CI
 
 on:
@@ -17,22 +17,18 @@ jobs:
         with:
           enable-cache: true
 
-      # This repo's KICKOFF promised CI and never got it — the only one of the
-      # eight portfolio repos with no workflow at all, found by the portfolio's
-      # 2026-08-07 audit. pytest is invoked directly: `uv run <file>` executes a
-      # module as a plain script, which is how three sibling repos ended up with
-      # green badges over zero assertions.
+      # `--locked` is not optional here. K6 pins torch and transformers to the
+      # exact stack the inherited lens fingerprints were produced under, and the
+      # whole provenance argument rests on that pin; letting uv re-resolve would
+      # quietly test a different one.
       - name: Run the offline suite
-        run: uv run pytest -q
+        run: uv run --locked pytest -q --junit-xml=junit.xml
 
-      # The tripwire. A silent drop in collected tests — the shape the sibling
-      # repos' vacuous CI took — fails the build instead of passing it.
-      - name: Guard the collected test count
-        run: |
-          FLOOR=1002
-          n=$(uv run pytest --collect-only -q | tail -1 | grep -oE '^[0-9]+')
-          echo "collected: $n (floor: $FLOOR)"
-          if [ -z "$n" ] || [ "$n" -lt "$FLOOR" ]; then
-            echo "::error::collected $n tests, expected >= $FLOOR"
-            exit 1
-          fi
+      # Two floors, because this repo has both failure modes. `collected` guards
+      # against tests disappearing. `executed` guards against them going dark:
+      # test_g3.py, test_g4.py and test_m4_cells.py are gated on lens artifacts
+      # that `.gitignore` never tracks (`*.pt`), so a clean checkout runs 835 of
+      # the 1002 and a collected-only count would report 1002 and see nothing.
+      - name: Guard — the suite actually ran, and nothing went dark
+        if: always()
+        run: python3 .github/ci/guard.py junit.xml 1002 835
