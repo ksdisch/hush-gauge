@@ -1,0 +1,34 @@
+# Runs the offline test suite on push to main and on PRs.
+# "Offline" means no API key and no paid calls — it does reach the HuggingFace
+# Hub for the three pinned tokenizer/config fetches the oracle tests need.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  offline-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v8.3.0  # no floating v8 major tag exists
+        with:
+          enable-cache: true
+
+      # `--locked` is not optional here. K6 pins torch and transformers to the
+      # exact stack the inherited lens fingerprints were produced under, and the
+      # whole provenance argument rests on that pin; letting uv re-resolve would
+      # quietly test a different one.
+      - name: Run the offline suite
+        run: uv run --locked pytest -q --junit-xml=junit.xml
+
+      # Two floors, because this repo has both failure modes. `collected` guards
+      # against tests disappearing. `executed` guards against them going dark:
+      # test_g3.py, test_g4.py and test_m4_cells.py are gated on lens artifacts
+      # that `.gitignore` never tracks (`*.pt`), so a clean checkout runs 835 of
+      # the 1002 and a collected-only count would report 1002 and see nothing.
+      - name: Guard — the suite actually ran, and nothing went dark
+        if: always()
+        run: python3 .github/ci/guard.py junit.xml 1002 835

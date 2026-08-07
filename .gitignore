@@ -27,3 +27,4 @@ htmlcov/
 # binary derived artifacts — the tracked result JSON carries their SHA256, the D15
 # aggregates, and everything either gate reads. M2 reuses the sidecars locally.
 *.npz
+junit.xml

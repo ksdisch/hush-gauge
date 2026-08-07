@@ -185,7 +185,8 @@ arithmetic. Full curves, and three caveats that matter more than the headline, i
 `uv` (Python 3.12+) manages the venv; this is an application, not a package.
 
 ```sh
-uv run pytest          # the offline suite (1002 tests)
+uv run --locked pytest # the offline suite: 1002 collected, 835 run in a fresh clone
+                       # (167 need the lens artifacts, which `.gitignore` never tracks)
 uv run python m0_leak_curve.py --help     # M0's emission sweep
 uv run python m1_probe_panel.py --help    # M1's probe sweep with residual capture
 ./run_m1_decide.sh 0.5B                   # thresholds -> cells -> WikiText -> G1 -> G2
