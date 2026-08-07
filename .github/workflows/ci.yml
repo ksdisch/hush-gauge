@@ -1,0 +1,38 @@
+# Runs the offline test suite on push to main and on PRs.
+# The suite needs no API key, downloads no models, and makes no paid calls —
+# that's by design; it gates everything that touches the frozen substrate.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  offline-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v8.3.0  # no floating v8 major tag exists
+        with:
+          enable-cache: true
+
+      # This repo's KICKOFF promised CI and never got it — the only one of the
+      # eight portfolio repos with no workflow at all, found by the portfolio's
+      # 2026-08-07 audit. pytest is invoked directly: `uv run <file>` executes a
+      # module as a plain script, which is how three sibling repos ended up with
+      # green badges over zero assertions.
+      - name: Run the offline suite
+        run: uv run pytest -q
+
+      # The tripwire. A silent drop in collected tests — the shape the sibling
+      # repos' vacuous CI took — fails the build instead of passing it.
+      - name: Guard the collected test count
+        run: |
+          FLOOR=1002
+          n=$(uv run pytest --collect-only -q | tail -1 | grep -oE '^[0-9]+')
+          echo "collected: $n (floor: $FLOOR)"
+          if [ -z "$n" ] || [ "$n" -lt "$FLOOR" ]; then
+            echo "::error::collected $n tests, expected >= $FLOOR"
+            exit 1
+          fi
